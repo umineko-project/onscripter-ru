@@ -1,5 +1,10 @@
 pkgname=ffmpeg
-# 3.4.0 is broken on macOS and produces green stripes in the bottom
+# TODO: Upgrade ffmpeg in some future, but this will require patches:
+# 3.4.6 and 4.0.4 are broken on macOS and produce green stripes in the bottom
+# 4.1.3           is broken on macOS and produces entirely green output
+# 4.0.4 and 4.1.3 are broken on macOS VTDecompressionSessionInvalidate is only
+#                 available on macOS 10.8 or newer
+# Most likely other operating systems are broken as usual.
 pkgver=3.3.9
 pkgrel=2
 depends=(
@@ -96,7 +101,7 @@ configopts=(
     '--disable-shared'
     #optimise size
     '--enable-small'
-    '--disable-logging'
+    #'--disable-logging'
     #remove components
     '--disable-avdevice'
     '--disable-postproc'

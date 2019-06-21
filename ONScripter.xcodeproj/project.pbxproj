@@ -1633,7 +1633,7 @@
 /* Begin PBXLegacyTarget section */
 		1C9F26D51ADB0E7900138E84 /* onscrlib64 */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = "\"${PROJECT_DIR}/Scripts/onscrlib.sh\" x86_64 $(ACTION)";
+			buildArgumentsString = "\"${PROJECT_DIR}/Scripts/onscrlib.sh\" x86_64 \"${PROJECT_DIR}\" $(ACTION)";
 			buildConfigurationList = 1C9F26D61ADB0E7900138E84 /* Build configuration list for PBXLegacyTarget "onscrlib64" */;
 			buildPhases = (
 			);
@@ -1642,12 +1642,12 @@
 			dependencies = (
 			);
 			name = onscrlib64;
-			passBuildSettingsInEnvironment = 1;
+			passBuildSettingsInEnvironment = 0;
 			productName = onscrlib64;
 		};
 		1C9F26D91ADB101C00138E84 /* onscrlib32 */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = "\"${PROJECT_DIR}/Scripts/onscrlib.sh\" i386 $(ACTION)";
+			buildArgumentsString = "\"${PROJECT_DIR}/Scripts/onscrlib.sh\" i386 \"${PROJECT_DIR}\" $(ACTION)";
 			buildConfigurationList = 1C9F26DA1ADB101C00138E84 /* Build configuration list for PBXLegacyTarget "onscrlib32" */;
 			buildPhases = (
 			);
@@ -1656,12 +1656,12 @@
 			dependencies = (
 			);
 			name = onscrlib32;
-			passBuildSettingsInEnvironment = 1;
+			passBuildSettingsInEnvironment = 0;
 			productName = onscrlib32;
 		};
 		2F53519D1D51FEDA0023D8F0 /* onscrlib_armv7s */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = "\"${PROJECT_DIR}/Scripts/onscrlib.sh\" armv7s $(ACTION)";
+			buildArgumentsString = "\"${PROJECT_DIR}/Scripts/onscrlib.sh\" armv7s \"${PROJECT_DIR}\" $(ACTION)";
 			buildConfigurationList = 2F53519E1D51FEDA0023D8F0 /* Build configuration list for PBXLegacyTarget "onscrlib_armv7s" */;
 			buildPhases = (
 			);
@@ -1670,12 +1670,12 @@
 			dependencies = (
 			);
 			name = onscrlib_armv7s;
-			passBuildSettingsInEnvironment = 1;
+			passBuildSettingsInEnvironment = 0;
 			productName = onscrlib_armv7s;
 		};
 		2FA9448A1D52156D00A8C187 /* onscrlib_arm64 */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = "\"${PROJECT_DIR}/Scripts/onscrlib.sh\" arm64 $(ACTION)";
+			buildArgumentsString = "\"${PROJECT_DIR}/Scripts/onscrlib.sh\" arm64 \"${PROJECT_DIR}\" $(ACTION)";
 			buildConfigurationList = 2FA9448B1D52156D00A8C187 /* Build configuration list for PBXLegacyTarget "onscrlib_arm64" */;
 			buildPhases = (
 			);
@@ -1684,12 +1684,12 @@
 			dependencies = (
 			);
 			name = onscrlib_arm64;
-			passBuildSettingsInEnvironment = 1;
+			passBuildSettingsInEnvironment = 0;
 			productName = onscrlib_armv7s;
 		};
 		CEF2085921ADF36100D01AD8 /* onscrlib_armv7 */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = "\"${PROJECT_DIR}/Scripts/onscrlib.sh\" armv7 $(ACTION)";
+			buildArgumentsString = "\"${PROJECT_DIR}/Scripts/onscrlib.sh\" armv7 \"${PROJECT_DIR}\" $(ACTION)";
 			buildConfigurationList = CEF2085A21ADF36100D01AD8 /* Build configuration list for PBXLegacyTarget "onscrlib_armv7" */;
 			buildPhases = (
 			);
@@ -1698,12 +1698,12 @@
 			dependencies = (
 			);
 			name = onscrlib_armv7;
-			passBuildSettingsInEnvironment = 1;
+			passBuildSettingsInEnvironment = 0;
 			productName = onscrlib_armv7s;
 		};
 		CEF816981EF01A550059103C /* onscrlib64h */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = "\"${PROJECT_DIR}/Scripts/onscrlib.sh\" x86_64h $(ACTION)";
+			buildArgumentsString = "\"${PROJECT_DIR}/Scripts/onscrlib.sh\" x86_64h \"${PROJECT_DIR}\" $(ACTION)";
 			buildConfigurationList = CEF816991EF01A550059103C /* Build configuration list for PBXLegacyTarget "onscrlib64h" */;
 			buildPhases = (
 			);
@@ -1712,7 +1712,7 @@
 			dependencies = (
 			);
 			name = onscrlib64h;
-			passBuildSettingsInEnvironment = 1;
+			passBuildSettingsInEnvironment = 0;
 			productName = onscrlib64;
 		};
 /* End PBXLegacyTarget section */
@@ -2933,7 +2933,7 @@
 				OTHER_LDFLAGS = "-Wl,-sectcreate,__RESTRICT,__restrict,/dev/null";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.umineko-project.onscripter-ru-ios";
 				PRODUCT_NAME = "onscripter-ru-ios";
-				PROVISIONING_PROFILE_SPECIFIER = GenericMobile;
+				PROVISIONING_PROFILE_SPECIFIER = "GenericMobile (Apple Development)";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "armv7 armv7s arm64";
@@ -2995,7 +2995,7 @@
 				OTHER_LDFLAGS = "-Wl,-sectcreate,__RESTRICT,__restrict,/dev/null";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.umineko-project.onscripter-ru-ios";
 				PRODUCT_NAME = "onscripter-ru-ios";
-				PROVISIONING_PROFILE_SPECIFIER = GenericMobile;
+				PROVISIONING_PROFILE_SPECIFIER = "GenericMobile (Apple Development)";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;

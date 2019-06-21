@@ -202,20 +202,24 @@ static AVFrame *process(AVFrame *dFrame, AVFrame *&tempFrame) {
 const std::unordered_set<int> MediaProcController::HardwareDecoderIFace::hardwareAcceleratedFormats {
 #if defined(LINUX)
 	AV_PIX_FMT_VDPAU_H264,
-	    AV_PIX_FMT_VDPAU_MPEG1,
-	    AV_PIX_FMT_VDPAU_MPEG2,
-	    AV_PIX_FMT_VDPAU_WMV3,
-	    AV_PIX_FMT_VDPAU_VC1,
-	    AV_PIX_FMT_VDPAU,
-	    AV_PIX_FMT_VAAPI_MOCO,
-	    AV_PIX_FMT_VAAPI_IDCT,
-	    AV_PIX_FMT_VAAPI,
+	AV_PIX_FMT_VDPAU_MPEG1,
+	AV_PIX_FMT_VDPAU_MPEG2,
+	AV_PIX_FMT_VDPAU_WMV3,
+	AV_PIX_FMT_VDPAU_VC1,
+	AV_PIX_FMT_VDPAU,
+	AV_PIX_FMT_VAAPI_MOCO,
+	AV_PIX_FMT_VAAPI_IDCT,
+	AV_PIX_FMT_VAAPI,
 #elif defined(WIN32)
 	AV_PIX_FMT_DXVA2_VLD,
-	    AV_PIX_FMT_D3D11VA_VLD,
+	AV_PIX_FMT_D3D11VA_VLD,
 #elif defined(IOS) || defined(MACOSX)
+#ifdef AV_PIX_FMT_VDA_VLD
+	// VDA support is disabled in our builds, and ffmpeg 4.x has it removed.
+	// Let code compile without it at the very least.
 	AV_PIX_FMT_VDA_VLD,
-	    AV_PIX_FMT_VIDEOTOOLBOX
+#endif
+	AV_PIX_FMT_VIDEOTOOLBOX
 #elif defined(DROID)
 	AV_PIX_FMT_MEDIACODEC
 #endif

@@ -100,4 +100,3 @@ extract_sources() {
 }
 
 # vim: set syntax=sh:
-

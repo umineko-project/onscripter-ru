@@ -1,9 +1,9 @@
 pkgname=fribidi
-pkgver=1.0.4
+pkgver=1.0.5
 pkgrel=1
 depends=('freetype')
 sources=("https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/fribidi-${pkgver}.tar.bz2")
-hashes=('94bdfe553e004d8bd095b109e182682311dd511740d5083326d1582f1df237be')
+hashes=('6a64f2a687f5c4f203a46fa659f43dd43d1f8b845df8d723107e8a7e6158e4ce')
 
 configopts=(
     '--disable-shared'
@@ -64,4 +64,3 @@ extract_sources() {
 }
 
 # vim: set syntax=sh:
-
