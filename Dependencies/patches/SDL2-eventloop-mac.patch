@@ -1,0 +1,67 @@
+diff -rupN a/src/events/SDL_events.c b/src/events/SDL_events.c
+--- a/src/events/SDL_events.c	2016-10-20 06:56:26.000000000 +0300
++++ b/src/events/SDL_events.c	2017-01-05 07:39:41.000000000 +0300
+@@ -33,6 +33,8 @@
+ #endif
+ #include "../video/SDL_sysvideo.h"
+ 
++#include <pthread.h>
++
+ /* An arbitrary limit so we don't have unbounded growth */
+ #define SDL_MAX_QUEUED_EVENTS   65535
+ 
+@@ -402,7 +404,8 @@ SDL_PumpEvents(void)
+     }
+ #if !SDL_JOYSTICK_DISABLED
+     /* Check for joystick state change */
+-    if ((!SDL_disabled_events[SDL_JOYAXISMOTION >> 8] || SDL_JoystickEventState(SDL_QUERY))) {
++    if (pthread_main_np() &&
++		(!SDL_disabled_events[SDL_JOYAXISMOTION >> 8] || SDL_JoystickEventState(SDL_QUERY))) {
+         SDL_JoystickUpdate();
+     }
+ #endif
+diff -rupN a/src/video/cocoa/SDL_cocoaevents.m b/src/video/cocoa/SDL_cocoaevents.m
+--- a/src/video/cocoa/SDL_cocoaevents.m	2016-10-19 20:56:26.000000000 +0300
++++ b/src/video/cocoa/SDL_cocoaevents.m	2017-01-05 08:21:00.000000000 +0300
+@@ -33,6 +33,8 @@
+ #define kIOPMAssertPreventUserIdleDisplaySleep kIOPMAssertionTypePreventUserIdleDisplaySleep
+ #endif
+ 
++#include <pthread.h>
++
+ @interface SDLApplication : NSApplication
+ 
+ - (void)terminate:(id)sender;
+@@ -405,19 +410,20 @@ Cocoa_PumpEvents(_THIS)
+         }
+     }
+ 
+-    for ( ; ; ) {
+-        NSEvent *event = [NSApp nextEventMatchingMask:NSEventMaskAny untilDate:[NSDate distantPast] inMode:NSDefaultRunLoopMode dequeue:YES ];
+-        if ( event == nil ) {
+-            break;
+-        }
++	if (pthread_main_np())
++		for ( ; ; ) {
++			NSEvent *event = [NSApp nextEventMatchingMask:NSEventMaskAny untilDate:[NSDate distantPast] inMode:NSDefaultRunLoopMode dequeue:YES ];
++			if ( event == nil ) {
++				break;
++			}
++
++			if (!s_bShouldHandleEventsInSDLApplication) {
++				Cocoa_DispatchEvent(event);
++			}
+ 
+-        if (!s_bShouldHandleEventsInSDLApplication) {
+-            Cocoa_DispatchEvent(event);
+-        }
+-
+-        // Pass events down to SDLApplication to be handled in sendEvent:
+-        [NSApp sendEvent:event];
+-    }
++			// Pass events down to SDLApplication to be handled in sendEvent:
++			[NSApp sendEvent:event];
++		}
+ }}
+ 
+ void

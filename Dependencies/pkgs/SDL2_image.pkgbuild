@@ -1,0 +1,103 @@
+pkgname=SDL2_image
+pkgver=2.0.3
+pkgrel=1
+depends=('SDL2' 'jpeg' 'libpng')
+sources=(
+    "http://www.libsdl.org/projects/SDL_image/release/$pkgname-$pkgver.tar.gz"
+    'SDL2_image-no-programs.patch'
+)
+hashes=(
+    '3510c25da735ffcd8ce3b65073150ff4f7f9493b866e85b83738083b556d2368'
+    'de84e8ba37cc07dd73cc778a9803b46fe7a4dcc23e81b1608e608d91a9dc4f6a'
+)
+
+cflags="-O3"
+cflags_win32="-I$outdir/include -I$outdir/include/SDL2"
+cppflags_win32="-I$outdir/include -I$outdir/include/SDL2"
+
+configopts=(
+    '--disable-dependency-tracking'
+    '--disable-shared'
+    '--disable-lbm'
+    '--disable-pcx'
+    '--disable-pnm'
+    '--disable-tga'
+    '--disable-tif'
+    '--disable-xcf'
+    '--disable-xv'
+    '--disable-webp'
+    '--disable-jpg-shared'
+    '--disable-png-shared'
+    '--disable-sdltest'
+    "--libdir=$outdir/lib"
+    "--with-sdl-prefix=$outdir"
+)
+
+configopts_mac_extra=(
+    '--disable-imageio'
+)
+
+configopts_ios_extra=(
+    '--disable-imageio'
+)
+
+prebuild() {
+    pushd "$pkgname-$pkgver" &>/dev/null
+
+    apply_patch "${sources[1]}"
+
+    export LIBPNG_LIBS="-L$outdir/lib -lpng"
+    export LIBPNG_CFLAGS="-I$outdir/include/libpng16"
+
+    autogen
+}
+
+# Special version of this to ignore errors in extraction
+# (required for this to work on mingw?)
+extract_sources() {
+    msg "Extracting sources"
+    pushd $srcdir &>/dev/null
+    
+    local netfile
+    for netfile in "${sources[@]}"; do
+        local file=$(get_filename "$netfile")
+        if in_array "$file" "${noextract[@]}"; then
+            continue
+        fi
+        
+        local filetype=$(file -bzL --mime "$file")
+        local ext=${file##*.}
+        local cmd=''
+        local cmd_flags=''
+
+        case "$filetype" in
+            *application/x-tar*)
+                cmd='tar -xf';;
+            *application/x-zip*)
+                cmd='unzip';;
+            *)
+                # MinGW32 has broken mime types in 'file' command, fall back on the
+                # extension to work around
+                case "$ext" in
+                    bz2|gz|tar|xz)
+                        # should look one more level in, to see if tar is there...
+                        cmd='tar -xf';;
+                    *)
+                        continue;;
+                esac;;
+        esac
+
+        local ret=0
+        msg2 "Extracting %s with %s" "$file" "$cmd"
+        $cmd "$file" || ret=$?
+
+        if (( ret )); then
+            warn "Errors while extracting %s; plowing ahead" "$file"
+        fi
+    done
+
+    popd &>/dev/null
+}
+
+# vim: set syntax=sh:
+

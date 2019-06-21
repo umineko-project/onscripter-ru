@@ -1,0 +1,21 @@
+diff -rupN a/smpeg2-config.in b/smpeg2-config.in
+--- a/smpeg2-config.in	2014-08-05 01:18:58.731286700 +0400
++++ b/smpeg2-config.in	2014-08-05 15:12:03.004069000 +0400
+@@ -42,7 +42,7 @@ while test $# -gt 0; do
+       if test @includedir@ != /usr/include ; then
+         includes=-I@includedir@
+       fi
+-      echo $includes -I@includedir@/smpeg2 `@SDL_CONFIG@ --cflags`
++      echo $includes -I@includedir@/smpeg2 `$prefix/bin/sdl2-config --cflags`
+       ;;
+     --libs)
+       if [ "`uname`" = "SunOS" ]; then
+@@ -50,7 +50,7 @@ while test $# -gt 0; do
+       else
+         libdirs="-L@libdir@ @SMPEG_RLD_FLAGS@"
+       fi
+-      echo $libdirs -lsmpeg2 `@SDL_CONFIG@ --libs`
++      echo $libdirs -lsmpeg2 `$prefix/bin/sdl2-config --libs`
+       ;;
+     *)
+       echo "${usage}" 1>&2

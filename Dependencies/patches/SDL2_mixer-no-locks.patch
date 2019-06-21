@@ -1,0 +1,21 @@
+diff -rupN a/mixer.c b/mixer.c
+--- a/mixer.c	2017-10-23 08:31:46.000000000 +0300
++++ b/mixer.c	2017-11-07 02:10:24.000000000 +0300
+@@ -577,7 +577,7 @@ static SDL_AudioSpec *Mix_LoadMusic_RW(M
+         return NULL;
+     }
+ 
+-    Mix_LockAudio();
++    //Mix_LockAudio();
+ 
+     if (interface->Play) {
+         interface->Play(music, 1);
+@@ -626,7 +626,7 @@ static SDL_AudioSpec *Mix_LoadMusic_RW(M
+         interface->Delete(music);
+     }
+ 
+-    Mix_UnlockAudio();
++    //Mix_UnlockAudio();
+ 
+     if (count > 0) {
+         *audio_len = (count - 1) * fragment_size + fragment->size;

@@ -1,0 +1,104 @@
+pkgname=libass
+pkgver=0.14.0
+pkgrel=1
+depends=('harfbuzz' 'fribidi')
+
+sources=(
+    "http://github.com/$pkgname/$pkgname/releases/download/$pkgver/$pkgname-$pkgver.tar.xz"
+    'libass-ignore-iconv.patch'
+    'libass-unicode-font-path-win.patch'
+)
+
+hashes=(
+    '881f2382af48aead75b7a0e02e65d88c5ebd369fe46bc77d9270a94aa8fd38a2'
+    '2482308db0690ec34248cc12d5a7ca3d9e9c7cb8db4273e61a205637d7dfc6fd'
+    '71e38cb4c8ec7e4bc62af64f0c5a6576e7cf2fc750ca43bac725198f2c214fa0'
+)
+
+configopts=(
+    '--disable-shared'
+    '--disable-fontconfig'
+    '--disable-dependency-tracking'
+    '--disable-require-system-font-provider'
+    "--libdir=$outdir/lib"
+    "FREETYPE_CFLAGS=-I$outdir/include/freetype2"
+    "FREETYPE_LIBS=-L$outdir/lib"
+    "FRIBIDI_CFLAGS=-I$outdir/include"
+    "FRIBIDI_LIBS=-L$outdir/lib"
+    "ENCA_CFLAGS=-I$outdir/include"
+    "ENCA_LIBS=-L$outdir/lib"
+    "HARFBUZZ_CFLAGS=-I$outdir/include/harfbuzz"
+    "HARFBUZZ_LIBS=-L$outdir/lib"    
+)
+
+configopts_win32=(
+    '--build=i686-pc-mingw32'
+    '--host=i686-pc-mingw32'
+    '--disable-directwrite'
+)
+
+configopts_ios=( )
+configopts_mac=( )
+
+if [ "$APPLE_CPU_FLAG" == "-m32" ]; then
+    configopts_mac_extra=(
+        '--build=i386-apple-darwin'
+        '--host=i386-apple-darwin'
+        "CC=$(getCC)"
+        "CXX=$(getCXX)"
+    )
+else
+    configopts_mac_extra=(
+        '--build=x86_64-apple-darwin'
+        '--host=x86_64-apple-darwin'
+        "CC=$(getCC)"
+        "CXX=$(getCXX)"
+    )
+fi
+
+cflags="-I$outdir/include/fribidi"
+
+prebuild() {
+    pushd "$pkgname-$pkgver" &>/dev/null
+    
+    apply_patch "${sources[1]}"
+
+    # libass provides no API to configure file i/o, and thus does not support unicode filenames.
+    # This patch enforces utf-8 path support for ass_set_fonts on Windows.
+    if [ "$(getTarget)" == "win32" ]; then
+        apply_patch "${sources[2]}"
+    fi
+}
+
+postbuild() {
+    # Is this necessary?
+    case $(getTarget) in
+    darwin*)
+        unset CC
+        unset CXX
+    ;;
+    esac
+    
+    popd &>/dev/null
+}
+
+#
+download_file() {
+    local url=$1
+    local file=$2
+
+    local ret=0
+    if [ $USE_CURL ]; then
+        curl -kL "$url" -o "$dldir/$file" || ret=$?
+    else
+        wget --no-check-certificate "$url" -O "$dldir/$file" || ret=$?
+    fi
+    
+    if (( $ret )); then
+        rm -f "$dldir/$file"
+        error_out "Failed to download %s" "$file"
+    fi
+}
+
+# vim: set syntax=sh:
+

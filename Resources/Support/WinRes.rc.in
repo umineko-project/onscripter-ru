@@ -1,0 +1,28 @@
+#include "Resources/Support/WinRes.hpp"
+
+ONSCRICON ICON @I@
+
+1 VERSIONINFO
+FILEVERSION @Y@, @M@, @D@, 0
+PRODUCTVERSION @Y@, @M@, @D@, 0
+FILEFLAGS 32
+FILEOS 4
+FILETYPE 1
+{
+   BLOCK "StringFileInfo" {
+       //language ID = U.S. English, charset = Unicode
+       BLOCK "040904B0" {
+           VALUE "FileDescription", "ONScripter-RU"
+           VALUE "OriginalFilename", "onscripter-ru.exe"
+           VALUE "CompanyName", "Umineko Project"
+           VALUE "FileVersion", "@Y@-@0M@-@0D@"
+           VALUE "LegalCopyright", "Copyright 1998-2011 Studio O.G.A. Portions copyright 2005-2006 insani, 2006-2009 Haeleth, 2007-2011 Sonozaki, 2011-@Y@ Umineko Project."
+           VALUE "ProductName", "ONScripter-RU"
+           VALUE "ProductVersion", "@Y@-@0M@-@0D@"
+       }
+   }
+   BLOCK "VarFileInfo" {
+       VALUE "Translation", 0x0409, 0x04B0 // U.S. English, Unicode
+       //VALUE "Translation", 0x0411, 0x03A4 // Japanese, Shift-JIS
+   }
+}

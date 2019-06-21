@@ -1,0 +1,68 @@
+pkgname=fribidi
+pkgver=1.0.4
+sha512=435bd48c48ec3c2dc1f1266e401abdbd400d2202b55df6367dbe84580c21e4aa73205058324cf630dfec365733d3e0ac186d14608baa1c9f63231875fb7cc525
+pkgrel=1
+depends=('freetype')
+sources=("https://src.fedoraproject.org/repo/pkgs/fribidi/fribidi-${pkgver}.tar.bz2/sha512/${sha512}/fribidi-${pkgver}.tar.bz2")
+hashes=('94bdfe553e004d8bd095b109e182682311dd511740d5083326d1582f1df237be')
+
+configopts=(
+    '--disable-shared'
+    '--disable-debug'
+    '--with-glib=no'
+    "--libdir=$outdir/lib"
+)
+
+# Special version that uses bsdtar (which works with 32-bit uid_t)
+extract_sources() {
+    msg "Extracting sources"
+    pushd $srcdir &>/dev/null
+    
+    local tar_command='tar'
+    if [ "$(getHost)" == "win32" ]; then
+        tar_command='bsdtar'
+    fi
+    
+    local netfile
+    for netfile in "${sources[@]}"; do
+        local file=$(get_filename "$netfile")
+        if in_array "$file" "${noextract[@]}"; then
+            continue
+        fi
+        
+        local filetype=$(file -bzL --mime "$file")
+        local ext=${file##*.}
+        local cmd=''
+        local cmd_flags=''
+
+        case "$filetype" in
+            *application/x-tar*)
+                cmd="${tar_command} -xf";;
+            *application/x-zip*)
+                cmd='unzip';;
+            *)
+                # MinGW32 has broken mime types in 'file' command, fall back on the
+                # extension to work around
+                case "$ext" in
+                    bz2|gz|tar|xz)
+                        # should look one more level in, to see if tar is there...
+                        cmd="${tar_command} -xf";;
+                    *)
+                        continue;;
+                esac;;
+        esac
+
+        local ret=0
+        msg2 "Extracting %s with %s" "$file" "$cmd"
+        $cmd "$file" || ret=$?
+
+        if (( ret )); then
+            error_out "Failed to extract %s" "$file"
+        fi
+    done
+
+    popd &>/dev/null
+}
+
+# vim: set syntax=sh:
+

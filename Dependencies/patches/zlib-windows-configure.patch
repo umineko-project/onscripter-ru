@@ -1,0 +1,14 @@
+diff -rupN a/configure b/configure
+--- a/configure	2013-03-24 09:30:09.000000000 +0400
++++ b/configure	2013-05-19 14:53:56.000000000 +0400
+@@ -193,8 +193,8 @@ if test "$gcc" -eq 1 && ($cc -c $test.c)
+   MINGW* | mingw*)
+ # temporary bypass
+         rm -f $test.[co] $test $test$shared_ext
+-        echo "Please use win32/Makefile.gcc instead." | tee -a configure.log
+-        leave 1
++        #echo "Please use win32/Makefile.gcc instead." | tee -a configure.log
++        #leave 1
+         LDSHARED=${LDSHARED-"$cc -shared"}
+         LDSHAREDLIBC=""
+         EXE='.exe' ;;

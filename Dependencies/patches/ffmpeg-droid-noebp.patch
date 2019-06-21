@@ -1,0 +1,11 @@
+diff -rupN a/configure b/configure
+--- a/configure	2018-04-14 02:34:39.000000000 +0300
++++ b/configure	2018-06-28 08:08:59.000000000 +0300
+@@ -6295,6 +6295,7 @@ elif enabled gcc; then
+ elif enabled llvm_gcc; then
+     check_cflags -mllvm -stack-alignment=16
+ elif enabled clang; then
++    disable ebp_available
+     check_cflags -mllvm -stack-alignment=16
+     check_cflags -mstack-alignment=16
+     check_cflags -Qunused-arguments

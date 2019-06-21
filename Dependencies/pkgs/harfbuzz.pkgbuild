@@ -1,0 +1,70 @@
+pkgname=harfbuzz
+pkgver=1.8.1
+pkgrel=1
+depends=('freetype')
+sources=(
+    "https://ftp.netbsd.org/pub/pkgsrc/distfiles/libreoffice/harfbuzz-1.8.1.tar.bz2"
+    'harfbuzz-MemoryBarrier-mingw.patch'
+)
+hashes=(
+    'fbed6392ddb085e45e6090a9f389f72926d0e355f4b0a2ef51d35cf21686df45'
+    'f6e210663ac1ce2411629d355c51ba54bfd3595b58b991883628c0de8ff1663f'
+)
+
+configopts=(
+    '--disable-dependency-tracking'
+    '--disable-shared'
+    '--with-glib=no'
+    '--with-cairo=no'
+    '--with-gobject=no'
+    '--with-icu=no'
+    "--libdir=$outdir/lib"
+    "FREETYPE_CFLAGS=-I$outdir/include/freetype2"
+    "FREETYPE_LIBS=-L$outdir/lib"
+)
+
+ldflags="-L$outdir/lib -lfreetype"
+# Xcode 10 does not have libstdc++
+if [ "$MMAC_VER_MIN" != "10.6" ]; then
+    ldflags_mac_extra="-stdlib=libc++"
+fi
+
+prebuild() {
+    pushd "$pkgname-$pkgver" &>/dev/null
+    
+    # harfbuzz requires insisting on our architecture, all configure options, cflags and ldflags are ignored 
+    case $(getTarget) in
+    darwin*)
+        export CC="$(getCC) $APPLE_CPU_FLAG"
+        export CXX="$(getCXX) $APPLE_CPU_FLAG"
+    ;;
+    droid)
+        export CC="$(getCC)"
+        export CXX="$(getCXX)"
+    ;;
+    win32)
+        apply_patch "${sources[1]}"
+        autoconf
+    ;;
+    esac
+    
+    cppflags="${cppflags[@]} ${cflags[@]}"
+}
+
+postbuild() {
+    case $(getTarget) in
+    darwin*|droid)
+        unset CC
+        unset CXX
+    ;;
+    esac
+    
+    # Freetype needs to be rebuilt with Harfbuzz support now
+    rm -f "$outdir/.pkgs/freetype"
+    rm -rf $(dirname "$outdir")/src/freetype*
+    
+    popd &>/dev/null
+}
+
+# vim: set syntax=sh:
+

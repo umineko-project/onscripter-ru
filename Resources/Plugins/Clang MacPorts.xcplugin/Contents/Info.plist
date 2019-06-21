@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>XCPluginHasUI</key>
+	<string>No</string>
+	<key>CFBundleShortVersionString</key>
+	<string>5.3</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.apple.xcode.compilers.clang.mp</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleName</key>
+	<string>Clang MacPorts Compiler Xcode Plug-in</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundlePackageType</key>
+	<string>BNDL</string>
+	<key>CFBundleVersion</key>
+	<string>1707</string>
+	<key>XCGCReady</key>
+	<string>Yes</string>
+	<key>DVTPlugInCompatibilityUUIDs</key>
+	<array>
+		<string>A16FF353-8441-459E-A50C-B071F53F51B7</string>
+		<string>C4A681B0-4A26-480E-93EC-1218098B9AA0</string>
+		<string>9F75337B-21B4-4ADC-B558-F9CADF7073A7</string>
+		<string>E969541F-E6F9-4D25-8158-72DC3545A6C6</string>
+		<string>ACA8656B-FEA8-4B6D-8E4A-93F4C95C362C</string>
+	</array>
+</dict>
+</plist>

@@ -1,0 +1,127 @@
+diff -rupN a/i686-w64-mingw32/include/stdio.h b/i686-w64-mingw32/include/stdio.h
+--- a/i686-w64-mingw32/include/stdio.h	2017-02-22 22:09:04.875268800 +0300
++++ b/i686-w64-mingw32/include/stdio.h	2017-02-22 08:24:01.993374700 +0300
+@@ -218,7 +218,7 @@ int vasprintf(char **__ret, const char *
+ 
+ /* There seems to be a bug about builtins and static overrides of them
+    in g++.  So we need to do here some trickery.  */
+-#ifdef __cplusplus
++#if defined(__cplusplus) && !defined(__clang__)
+ extern "C++" {
+ #endif
+ 
+@@ -367,7 +367,7 @@ int vsnprintf (char *__stream, size_t __
+ 
+ /* #endif */ /* __NO_ISOCEXT */
+ 
+-#ifdef __cplusplus
++#if defined(__cplusplus) && !defined(__clang__)
+ }
+ #endif
+ 
+diff -rupN a/include/c++/6.3.0/bits/basic_string.h b/include/c++/6.3.0/bits/basic_string.h
+--- a/include/c++/6.3.0/bits/basic_string.h	2017-02-22 22:09:16.906552200 +0300
++++ b/include/c++/6.3.0/bits/basic_string.h	2017-02-22 22:29:54.006278300 +0300
+@@ -224,6 +224,9 @@ _GLIBCXX_BEGIN_NAMESPACE_CXX11
+       // For forward_iterators up to random_access_iterators, used for
+       // string::iterator, _CharT*, etc.
+       template<typename _FwdIterator>
++#ifdef __clang__
++      __attribute__((always_inline))
++#endif
+         void
+         _M_construct(_FwdIterator __beg, _FwdIterator __end,
+ 		     std::forward_iterator_tag);
+@@ -546,6 +549,9 @@ _GLIBCXX_BEGIN_NAMESPACE_CXX11
+ #else
+       template<typename _InputIterator>
+ #endif
++#ifdef __clang__
++        __attribute__((always_inline))
++#endif
+         basic_string(_InputIterator __beg, _InputIterator __end,
+ 		     const _Alloc& __a = _Alloc())
+ 	: _M_dataplus(_M_local_data(), __a)
+@@ -4941,6 +4947,9 @@ _GLIBCXX_END_NAMESPACE_CXX11
+    *  @return  New string with value of @a __lhs followed by @a __rhs.
+    */
+   template<typename _CharT, typename _Traits, typename _Alloc>
++#ifdef __clang__
++      __attribute__((always_inline))
++#endif
+     basic_string<_CharT,_Traits,_Alloc>
+     operator+(const _CharT* __lhs,
+ 	      const basic_string<_CharT,_Traits,_Alloc>& __rhs);
+@@ -4952,6 +4961,9 @@ _GLIBCXX_END_NAMESPACE_CXX11
+    *  @return  New string with @a __lhs followed by @a __rhs.
+    */
+   template<typename _CharT, typename _Traits, typename _Alloc>
++#ifdef __clang__
++      __attribute__((always_inline))
++#endif
+     basic_string<_CharT,_Traits,_Alloc>
+     operator+(_CharT __lhs, const basic_string<_CharT,_Traits,_Alloc>& __rhs);
+ 
+diff -rupN a/include/c++/6.3.0/bits/shared_ptr_base.h b/include/c++/6.3.0/bits/shared_ptr_base.h
+--- a/include/c++/6.3.0/bits/shared_ptr_base.h	2017-02-22 22:07:26.580139000 +0300
++++ b/include/c++/6.3.0/bits/shared_ptr_base.h	2017-02-22 08:24:02.024634600 +0300
+@@ -124,7 +124,11 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
+       // Called when _M_weak_count drops to zero.
+       virtual void
+       _M_destroy() noexcept
++#ifdef __clang__
++      ;
++#else
+       { delete this; }
++#endif
+       
+       virtual void*
+       _M_get_deleter(const std::type_info&) noexcept = 0;
+@@ -140,6 +144,9 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
+       _M_add_ref_lock_nothrow();
+ 
+       void
++#ifdef __clang__
++      __attribute__((always_inline))
++#endif
+       _M_release() noexcept
+       {
+         // Be race-detector-friendly.  For more info see bits/c++config.
+diff -rupN a/include/c++/6.3.0/i686-w64-mingw32/bits/c++config.h b/include/c++/6.3.0/i686-w64-mingw32/bits/c++config.h
+--- a/include/c++/6.3.0/i686-w64-mingw32/bits/c++config.h	2017-02-22 22:28:45.849728900 +0300
++++ b/include/c++/6.3.0/i686-w64-mingw32/bits/c++config.h	2017-02-22 08:24:02.040250800 +0300
+@@ -1496,7 +1496,9 @@ namespace std
+ /* #undef _GLIBCXX_USE_FCHMODAT */
+ 
+ /* Define if __float128 is supported on this host. */
++#if defined(__FLOAT128__) || !defined(__clang__)
+ #define _GLIBCXX_USE_FLOAT128 1
++#endif
+ 
+ /* Defined if gettimeofday is available. */
+ #define _GLIBCXX_USE_GETTIMEOFDAY 1
+diff -rupN a/include/c++/6.3.0/typeinfo b/include/c++/6.3.0/typeinfo
+--- a/include/c++/6.3.0/typeinfo	2017-02-22 22:09:21.609249700 +0300
++++ b/include/c++/6.3.0/typeinfo	2017-02-22 08:24:02.040250800 +0300
+@@ -117,6 +117,9 @@ namespace std
+ 	? __name < __arg.__name
+ 	: __builtin_strcmp (__name, __arg.__name) < 0; }
+ 
++#ifdef __clang__
++      __attribute__((always_inline))
++#endif
+     bool operator==(const type_info& __arg) const _GLIBCXX_NOEXCEPT
+     {
+       return ((__name == __arg.__name)
+diff -rupN a/lib/gcc/i686-w64-mingw32/6.3.0/include-fixed/limits.h b/lib/gcc/i686-w64-mingw32/6.3.0/include-fixed/limits.h
+--- a/lib/gcc/i686-w64-mingw32/6.3.0/include-fixed/limits.h	2017-02-22 22:09:21.609249700 +0300
++++ b/lib/gcc/i686-w64-mingw32/6.3.0/include-fixed/limits.h	2017-02-22 08:24:02.040250800 +0300
+@@ -164,7 +164,7 @@ see the files COPYING3 and COPYING.RUNTI
+ 
+ #else /* not _GCC_LIMITS_H_ */
+ 
+-#ifdef _GCC_NEXT_LIMITS_H
++#if defined(_GCC_NEXT_LIMITS_H) || defined(__clang__)
+ #include_next <limits.h>		/* recurse down to the real one */
+ #endif
+ 

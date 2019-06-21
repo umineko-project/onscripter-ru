@@ -1,0 +1,141 @@
+pkgname=SDL2_gpu
+pkgver=0.12.0
+pkgrel=2
+depends=('SDL2')
+sources=(
+    'SDL2_gpu-droid-nolibm.patch'
+)
+hashes=(
+    'a5442a599192808d0e815a74e22458947a7b58ca2a38b451115e65058fc9b14a'
+)
+giturl=https://github.com/vit9696/sdl-gpu
+githash=b4f0a8ee49cd62fcd43287cc8b2faf3f94d860fa
+
+if [ "$(getTarget)" != "darwin-iOS" ] && [ "$(getTarget)" != "droid" ]; then
+    depends=(${depends[@]} 'libepoxy');
+fi
+
+build() {
+    local logfile="$logdir/$pkgname.git.clone.log"
+    
+    # A temporary fix for upgrading.
+    rm -f "$outdir/include/SDL2/SDL_gpu.h"
+    rm -f "$outdir/include/SDL2/SDL_gpu_OpenGL_2.h"
+    rm -f "$outdir/include/SDL2/SDL_gpu_GLES_2.h"
+    rm -f "$outdir/include/SDL2/SDL_gpu_GLES_3.h"
+    
+    rm -rf "$pkgname-$pkgver"
+    msg2 "Cloning %s version %s with GIT" "$pkgname" "$pkgver"
+    local ret=0
+    git clone "$giturl" "$pkgname-$pkgver" &>"$logfile" || ret=$?
+    if (( $ret )); then
+        tail -n 20 "$logfile"
+        error "GIT clone failed"
+        exit 1
+    fi
+
+    logfile="$logdir/$pkgname.git.checkout.log"
+    pushd "$pkgname-$pkgver" &>/dev/null
+    git checkout "$githash" &>"$logfile"
+    if (( $ret )); then
+        tail -n 20 "$logfile"
+        error "GIT checkout failed"
+        exit 1
+    fi
+
+    msg "Running cmake"
+    
+    local ret=0
+    local logfile="$logdir/$pkgname.cmake.log"
+    
+    export SDL2DIR=$outdir
+    lcf="$CFLAGS ${cflags[@]} $CFLAGS_EXTRA"
+    lcxf="$CPPFLAGS ${cppflags[@]} $CPPFLAGS_EXTRA"
+
+    #Enable debug
+    #lcf="${lcf/-O/-O0} -g -O0"
+
+    case $(getTarget) in
+        win32)
+            if $CROSS_BUILD; then
+                cmake -G "Unix Makefiles" -DCMAKE_SYSTEM_NAME=Windows -DSDL_gpu_USE_SYSTEM_EPOXY=ON -DSDL_gpu_DISABLE_GLES=OFF -DSDL_gpu_DISABLE_GLES_1=ON -DSDL_gpu_DYNAMIC_GLES_2=ON -DSDL_gpu_DYNAMIC_GLES_3=ON -DCMAKE_C_FLAGS="$lcf" -DCMAKE_CXX_FLAGS="$lcxf" &>"$logfile" || ret=$?
+            else
+                cmake -G "MSYS Makefiles" -DSDL_gpu_USE_SYSTEM_EPOXY=ON -DSDL_gpu_DISABLE_GLES=OFF -DSDL_gpu_DISABLE_GLES_1=ON -DSDL_gpu_DYNAMIC_GLES_2=ON -DSDL_gpu_DYNAMIC_GLES_3=ON -DCMAKE_C_FLAGS="$lcf" -DCMAKE_CXX_FLAGS="$lcxf" &>"$logfile" || ret=$?
+            fi
+        ;;
+        darwin-macOS)
+            # This option seems to slow clang down quite a bit on glew compilation (around 4 mins), disable if you need to debug
+            lcf="${lcf/-O/-Os}"
+            target=""
+            cxxstd=""
+            if [ "$MMAC_VER_MIN" != "" ]; then
+                target="-DCMAKE_OSX_DEPLOYMENT_TARGET=$MMAC_VER_MIN"
+                if [ "$MMAC_VER_MIN" != "10.6" ]; then
+                    cxxstd="-std=c++11 -stdlib=libc++"
+                fi
+            fi
+            cmake -G "Unix Makefiles" -DSDL_gpu_USE_SYSTEM_EPOXY=ON -DCMAKE_CXX_COMPILER="$(getCXX)" -DCMAKE_C_COMPILER="$(getCC)" -DCMAKE_C_FLAGS="$lcf" -DCMAKE_CXX_FLAGS="$lcxf $cxxstd" $target &>"$logfile" || ret=$?
+        ;;
+        darwin-iOS)
+            cmake -G "Unix Makefiles" -DSDL_gpu_DISABLE_OPENGL=ON -DSDL_gpu_DISABLE_GLES=OFF -DCMAKE_CXX_COMPILER="$(getCXX)" -DCMAKE_C_COMPILER="$(getCC)" -DCMAKE_C_FLAGS="$lcf" -DCMAKE_CXX_FLAGS="$lcxf" $target &>"$logfile" || ret=$?
+        ;;
+        droid)
+            apply_patch "${sources[0]}"
+            if [ "$(getHost)" == "win32" ]; then
+                cmake -G "MSYS Makefiles" -DCMAKE_SYSTEM_NAME=Darwin -DCMAKE_AR="${CROSS_SYS_PREFIX}$(getHostPrefix)-ar" -DCMAKE_RANLIB="${CROSS_SYS_PREFIX}$(getHostPrefix)-ranlib" -DSDL_gpu_DISABLE_OPENGL=ON -DSDL_gpu_DISABLE_GLES=OFF -DSDL_gpu_DYNAMIC_GLES_3=ON -DCMAKE_CXX_COMPILER="$(getCXX)" -DCMAKE_C_COMPILER="$(getCC)" -DCMAKE_C_FLAGS="$lcf" -DCMAKE_CXX_FLAGS="$lcxf" $target &>"$logfile" || ret=$?
+            elif [ "$(getHost)" == "linux-like" ]; then
+                cmake -G "Unix Makefiles" -DCMAKE_SYSTEM_NAME=Darwin -DSDL_gpu_DISABLE_OPENGL=ON -DSDL_gpu_DISABLE_GLES=OFF -DSDL_gpu_DYNAMIC_GLES_3=ON -DCMAKE_CXX_COMPILER="$(getCXX)" -DCMAKE_C_COMPILER="$(getCC)" -DCMAKE_C_FLAGS="$lcf" -DCMAKE_CXX_FLAGS="$lcxf" $target &>"$logfile" || ret=$?
+            else
+                cmake -G "Unix Makefiles" -DSDL_gpu_DISABLE_OPENGL=ON -DSDL_gpu_DISABLE_GLES=OFF -DSDL_gpu_DYNAMIC_GLES_3=ON -DCMAKE_CXX_COMPILER="$(getCXX)" -DCMAKE_C_COMPILER="$(getCC)" -DCMAKE_C_FLAGS="$lcf" -DCMAKE_CXX_FLAGS="$lcxf" $target &>"$logfile" || ret=$?
+            fi
+        ;;
+        linux-like)
+            cmake -G "Unix Makefiles" -DSDL_gpu_USE_SYSTEM_EPOXY=ON -DCMAKE_C_FLAGS="$lcf" -DCMAKE_CXX_FLAGS="$lcxf" &>"$logfile" || ret=$?
+        ;;
+    esac
+    
+    if (( $ret )); then
+        tail -n 20 "$logfile"
+        error "Cmake %s failed" "$pkgname"
+        error "The full log is: %s" "$logfile"
+        exit 1
+    fi
+    
+    msg "Compiling"
+    
+    local ret=0
+    local logfile="$logdir/$pkgname.make.log"
+    
+    make $MAKEOPTS SDL_gpu &>"$logfile" || ret=$?
+    if (( $ret )); then
+        tail -n 20 "$logfile"
+        error "Compiling %s failed" "$pkgname"
+        error "The full log is: %s" "$logfile"
+        exit 1
+    fi
+    
+    msg "Installing"
+    
+    local ret=0
+    cp "lib/libSDL2_gpu.a" "$outdir/lib/libSDL2_gpu.a" || ret=1
+    cp "include/SDL_gpu.h" "$outdir/include/SDL2/SDL_gpu.h" || ret=1
+    cp "src/externals/gl2stub/gl2stub.h" "$outdir/include/gl2stub.h" || ret=1
+    cp "src/externals/gl2stub/gl2stub_ext.h" "$outdir/include/gl2stub_ext.h" || ret=1
+    cp "src/externals/gl2stub/gl2stub_khrplatform.h" "$outdir/include/gl2stub_khrplatform.h" || ret=1
+    cp "src/externals/gl2stub/gl2stub_platform.h" "$outdir/include/gl2stub_platform.h" || ret=1
+    cp "src/externals/gl3stub/gl3stub.h" "$outdir/include/gl3stub.h" || ret=1
+    cp "include/SDL_gpu_OpenGL_2.h" "$outdir/include/SDL2/SDL_gpu_OpenGL_2.h" || ret=1
+    cp "include/SDL_gpu_GLES_2.h" "$outdir/include/SDL2/SDL_gpu_GLES_2.h" || ret=1
+    cp "include/SDL_gpu_GLES_3.h" "$outdir/include/SDL2/SDL_gpu_GLES_3.h" || ret=1
+    
+    if (( $ret )); then
+        error "Installation %s failed" "$pkgname"
+        exit 1
+    fi
+
+    postbuild
+    
+    msg "Finishing %s" "$pkgname"
+}
+
+# vim: set syntax=sh:

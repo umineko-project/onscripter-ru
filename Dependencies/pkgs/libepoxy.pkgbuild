@@ -1,0 +1,19 @@
+pkgname=libepoxy
+pkgver=1.4.3
+pkgrel=1
+# Do not rush with 1.5.x branch:
+# https://github.com/anholt/libepoxy/issues/160
+# https://github.com/anholt/libepoxy/issues/180
+sources=(
+    "http://github.com/anholt/$pkgname/releases/download/$pkgver/$pkgname-$pkgver.tar.xz"
+)
+hashes=(
+	'0b808a06c9685a62fca34b680abb8bc7fb2fda074478e329b063c1f872b826f6'
+)
+
+configopts=(
+    '--disable-shared'
+)
+
+# vim: set syntax=sh:
+

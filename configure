@@ -1,0 +1,1152 @@
+#!/bin/bash
+
+#
+# configure
+# ONScripter-RU
+#
+# Main ONScripter-RU buildsystem configuration script.
+#
+# Consult LICENSE file for licensing terms and copyright holders.
+#
+
+# Autoconf is ugly and complex. This is still ugly and growing more complex,
+# but it works well enough for most plausible build cases.
+# Using bash 3.2 and newer to simplify the code as it is available on all our targets.
+
+# ---------- Utility definitions ----------
+
+# Generate $LINKpackage variable
+genlink() {
+  eval "LINK$1=\"\\\$(EXTLIB)/lib/lib$1$2\\\$(LIBSUFFIX)\""
+}
+
+# Quick and dirty local header dependency builder.
+gendeps() {
+  if [ ! -f "$1" ]; then
+    echo "fail"
+    echo "Missing source $1!"
+    exit 1
+  fi
+
+  local todo=($(awk '/#include "(.+)"/ {print $2}' "$1"))
+  GENDEPS_CURRENT=()
+
+  local i=0
+  while [ ${#todo[@]} -ne $i ]; do
+    local curr="${todo[$i]//\"}"
+
+    for existing in "${GENDEPS_CURRENT[@]}"; do
+      if [ "$curr" == "$existing" ]; then
+        curr=""
+        break
+      fi
+    done
+
+    if [ "$curr" != "" ]; then
+      local ncurr="$curr"
+      if [ ! -f "$ncurr" ]; then
+        ncurr="$(dirname "$1")/$ncurr"
+        if [ ! -f "$ncurr" ]; then
+          echo "fail"
+          echo "Unresolved dependency $curr of $1!"
+          exit 1
+        fi
+      fi
+
+      GENDEPS_CURRENT+=("$ncurr")
+
+      # This code caches header searches in global GENDEPS_cFILENAME arrays.
+      local hash="${ncurr///}"; hash="${hash//.}"
+      eval GENDEPS_MORE=( '"${GENDEPS_c'$hash'[@]}"' )
+      if [ "$GENDEPS_MORE" == "" ]; then
+        eval GENDEPS_c$hash='($(awk "/#include \"(.+)\"/ {print \$2}" "$ncurr"))'
+        eval GENDEPS_MORE=( '"${GENDEPS_c'$hash'[@]}"' )
+      fi
+
+      for dep in "${GENDEPS_MORE[@]}"; do
+        dep="${dep//\"}"
+        local ndep="$dep"
+        if [ ! -f "$ndep" ]; then
+          ndep="$(dirname "$ncurr")/$ndep"
+          if [ ! -f "$ndep" ]; then
+            echo "fail"
+            echo "Unresolved dependency $dep of $cur!"
+            exit 1
+          fi
+        fi
+        todo+=("$ndep")
+      done
+    fi
+    i=$((i+1))
+  done
+}
+
+# Attempt to convert /c/ to c:/
+pathautofix() {
+  if [[ $(uname) == MINGW* ]]; then
+    echo "$1" | sed -e "s/^\/\([a-zA-Z]\)\//\1:\//g"
+  else
+    echo "$1"
+  fi
+}
+
+# ---------- Program begins here ----------
+
+# It may not be a requirement of our own buildsystem, but many onscrlib packages will fail. 
+if [[ "$(pwd)" =~ \  ]]; then
+  echo "Error: Running in a directory with spaces or non-ascii characters!"
+  echo "You could create a symlink as a workaround."
+  exit 1
+fi
+
+# Default options
+PROJECT="$(pwd)"
+PREFIX=/usr/local
+ONSCRLIB="$(pwd)/Dependencies"
+UNSUPPORTED_COMPILER=false
+VECTORIZE=true
+VECTORIZE_LEVEL=0
+# Removal of __STRICT_ANSI__ is necessary for package compatibility (ffmpeg?).
+# Addition of _ISOC99_SOURCE and _ISOC11_SOURCE fixes printf on MinGW.
+CSTD="-std=c11 -D_ISOC99_SOURCE -D_ISOC11_SOURCE -U__STRICT_ANSI__"
+CXXSTD="-std=c++14 -D_ISOC99_SOURCE -D_ISOC11_SOURCE -U__STRICT_ANSI__"
+
+DEFAULT_CC="gcc"
+DEFAULT_OPT="-Os"
+DEFAULT_MACOSX_CC="clang"
+DEFAULT_DROID_CC="clang"
+DROID_BUILD=false
+DROID_ARCH=arm
+DROID_TOOLCHAIN=""
+CROSS_TRIPLE=""
+TOOLCHAIN_PREFIX=""
+COMPILER_PREFIX=""
+EMBED_PATH=""
+BUILD_PATH=""
+
+VERSION=$(awk '/define VER_NUMBER/ {print $3}' Resources/Support/Version.hpp | sed s/-ru$//)
+
+# ---------- Parse options ----------
+
+prev=
+for opt
+do
+  if test -n "$prev"; then
+    eval "$prev=\$opt"
+    prev=
+    continue
+  fi
+  arg=`expr "x$opt" : 'x[^=]*=\(.*\)'`
+  case $opt in
+      --prefix=* | -prefix=*)
+        PREFIX=$arg ;;
+      --prefix | -prefix)
+        prev=PREFIX ;;
+      --platform=* | -platform=*)
+        PLATFORM=$arg ;;
+      --platform | -platform)
+        prev=PLATFORM ;;
+      --make=* | -make=*)
+        MAKE=$arg ;;
+      --make | -make)
+        prev=MAKE ;;
+      --std=* | -std=*)
+        CXXSTD=-std=$arg ;;
+      --pedantic | -pedantic)
+        EXTRAOSCFLAGS="$EXTRAOSCFLAGS -pedantic" ;;
+      --with-werror | -with-werror)
+        EXTRAOSCFLAGS="$EXTRAOSCFLAGS -Werror" ;;
+      --unsupported-compiler | -unsupported-compiler)
+        UNSUPPORTED_COMPILER=true ;;
+      --unsupported-compiler=* | -unsupported-compiler=*)
+        UNSUPPORTED_COMPILER=$arg ;;
+      --novectorize | -novectorize)
+        VECTORIZE=false ;;
+      --vectorize-verbose | -vectorize-verbose)
+        VECTORIZE_LEVEL=3 ;;
+      --vectorize-verbose=* | -vectorize-verbose=*)
+        VECTORIZE_LEVEL=$arg ;;
+      --release-build | -release-build)
+        EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DPUBLIC_RELEASE" ;;
+      --strip-binary | -strip-binary)
+        EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -s" ;;
+      --directx-sdk-path=* | -directx-sdk-path)
+        EXTRACFLAGS="$EXTRACFLAGS -I${arg}/include"
+        EXTRALDFLAGS="$EXTRALDFLAGS -L${arg}/lib"
+        ;;
+      --prefer-clang | -prefer-clang)
+        DEFAULT_CC="clang" ;;
+      --droid-build | -droid-build)
+        DROID_BUILD=true ;;
+      --droid-arch=* | -droid-arch=*)
+        DROID_ARCH="$arg" ;;
+      --droid-toolchain=* | -droid-toolchain=*)
+        DROID_TOOLCHAIN="$arg"
+        TOOLCHAIN_PREFIX="${DROID_TOOLCHAIN}/bin/"
+        ;;
+      --cross=* | -cross=*)
+        CROSS_TRIPLE=$arg ;;
+      --embed-path=* | =embed-path=*)
+        EMBED_PATH="$arg" ;;
+      --build-path=* | -build-path=*)
+        BUILD_PATH="$arg" ;;
+    -\? | -h | -help | --help)
+      cat <<-__ENDHELP
+	Usage: $0 <options>
+	
+	Options:
+	  --help                   display this message
+	  --prefix=DIR             install in prefix DIR (default is /usr/local)
+	  --make=NAME              use GNU make executable with the given name
+	  --std=STD                c++ compiles with -std=STD (default is c++14)
+	  --pedantic               compile with -pedantic
+	  --unsupported-compiler   don't check for known compilers
+	  --with-werror            compile with -Werror
+	  --novectorize            don't use compiler automatic vectorization
+	  --vectorize-verbose[=(1-5)] set vectorization verbosity level (def 0)
+	
+	Build-specific options:
+	  --build-path=DIR         absolute path to build directory (default is DerivedData)
+	  --release-build          build with PUBLIC_RELEASE flag 	
+	  --strip-binary           strip debug information from the executable
+	  --directx-sdk-path=DIR   enable DirectX 9 SDK support (Windows only)
+	  --prefer-clang           use clang compiler if CC is not specified
+	  --droid-build            build for droid
+	  --droid-arch=ARCH        build for droid arch: arm|arm64|x86 (default is arm)
+	  --droid-toolchain=DIR    path to droid toolchain (default is auto)
+	  --cross=TRIPLE           cross compilation triple
+	  --embed-path=EMBED       path to compiled embed binary (default is target compile)
+	__ENDHELP
+      exit 0
+      ;;
+    *)
+      echo "Error: unknown option $opt"
+      exit 2
+      ;;
+  esac
+done
+if test -n "$prev"; then
+  opt=--`echo $prev | tr '[A-Z]_' '[a-z]-'`
+  echo "Error: missing argument to $opt" >&2
+  exit 2
+fi
+
+# ---------- Configuration begin ----------
+
+if [ "$BUILD_PATH" == "" ]; then
+  BUILD_PATH="${PROJECT}/DerivedData"
+fi
+
+if $DROID_BUILD; then
+  if [ "$DROID_TOOLCHAIN" == "" ]; then
+    chmod a+x Scripts/ndktoolchain.sh
+    ./Scripts/ndktoolchain.sh "$BUILD_PATH" || exit 1
+    DROID_TOOLCHAIN="$BUILD_PATH/ndk/toolchain-$DROID_ARCH"
+    TOOLCHAIN_PREFIX="$DROID_TOOLCHAIN/bin/"
+  fi
+fi
+
+if $DROID_BUILD; then
+  if [[ $(uname) == MINGW* ]]; then
+    echo "Warning: cross-compiling on Windows is not recommend!"
+    echo "Attempting to fix unix-like HDD name in DROID_TOOLCHAIN..."
+    DROID_TOOLCHAIN=$(pathautofix "$DROID_TOOLCHAIN")
+    echo "Used toolchain is: $DROID_TOOLCHAIN"
+  fi
+  if [ ! -f "$DROID_TOOLCHAIN/triple" ]; then
+    echo "Error: no droid toolchain discovered!"
+    exit 1
+  fi
+else
+  if [[ $(uname) == Darwin* ]] && [ "$CROSS_TRIPLE" == "" ]; then
+    echo "Warning: Building for macOS via configure is unsupported, use Xcode!"
+    echo "Warning: Binaries are built without Cocoa extensions and arch support!"
+  fi
+fi
+
+if [[ "$EXTRAOSCFLAGS" =~ "PUBLIC_RELEASE" ]]; then
+  echo "Configuring ONScripter-RU $VERSION (release)"
+else
+  echo "Configuring ONScripter-RU $VERSION (develop)"
+fi
+
+# ---------- Platform detection ----------
+
+echo -n "Checking platform type... "
+if [ "$CROSS_TRIPLE" != "" ]; then
+  PLATFORM="$CROSS_TRIPLE"
+  COMPILER_PREFIX="${CROSS_TRIPLE}-"
+elif $DROID_BUILD; then
+  PLATFORM="droid-$(cat $DROID_TOOLCHAIN/triple)"
+  COMPILER_PREFIX="${TOOLCHAIN_PREFIX}$(cat $DROID_TOOLCHAIN/triple)-"
+else
+  chmod +x Scripts/config.guess Scripts/config.sub
+  PLATFORM=$(./Scripts/config.guess)
+fi
+
+SYS=Posix
+POSIX=Vanilla
+case "$PLATFORM" in
+*mingw*)   echo "MinGW";    SYS=MinGW ;;
+*darwin*)  echo "macOS";    SYS=MacOSX ;;
+*droid*)   echo "Droid";    SYS=Droid ;;
+*linux*)   echo "Linux";    POSIX=Linux ;;
+*solaris*) echo "Solaris";  POSIX=Solaris ;;
+*freebsd*) echo "FreeBSD";  POSIX=FreeBSD ;;
+*netbsd*)  echo "NetBSD";   POSIX=NetBSD ;;
+*openbsd*) echo "OpenBSD";  POSIX=OpenBSD ;;
+*)         echo "$PLATFORM (unsupported; using vanilla Posix build instructions)" ;;
+esac
+
+echo -n "Checking cpu type...      "
+ARCH=
+case "$PLATFORM" in
+*mingw32)  echo "i686";     ARCH=i686;;
+*droid*86*)echo "i386";     ARCH=i386;;
+*86_64*)   echo "x86_64";   ARCH=x86_64;;
+*86*)      ARCH=`expr "x$PLATFORM" : 'x\(.*86\).*'`; \
+           echo "$ARCH";;
+*aarch64*) echo "arm64";    ARCH=aarch64;;
+*arm*)     echo "arm";      ARCH=arm;;
+*)         echo "unknown";;
+esac
+
+if [ "$SYS" == "MacOSX" ]; then
+  DEFAULT_CC="$DEFAULT_MACOSX_CC"
+elif [ "$SYS" == "Droid" ]; then
+  DEFAULT_CC="$DEFAULT_DROID_CC"
+fi
+
+BUILD_PATH+="/${SYS}-${ARCH}"
+
+# ---------- Compiler detection ----------
+
+if [ -z "$CC" ]; then
+  CC="${COMPILER_PREFIX}$DEFAULT_CC"
+fi
+
+if $UNSUPPORTED_COMPILER; then
+  echo "Unsupported compiler requested; please don't complain if anything doesn't work!"
+else
+  echo -n "Checking C compiler...    "
+  CC_TMP=`($CC --version) 2>/dev/null | head -1`
+  case "$CC_TMP" in
+    gcc* | *apple*gcc* | *\(GCC\)*) 
+      [[ "$CC_TMP" =~ \ ([0-9](\.[0-9_]+)+)($|\ ) ]] && 
+      CC_VER="${BASH_REMATCH[1]}"; echo "gcc $CC_VER" ;;
+    Apple*) CC_VER=`expr "x$CC_TMP" : 'x.*version \([0-9][.][0-9][.][0-9]\)'`; echo "Apple clang $CC_VER" ;;
+    *clang*) CC_VER=`expr "x$CC_TMP" : 'x.*version \([0-9][.][0-9]\)'`; echo "clang $CC_VER" ;;
+    icc*) echo icc ;;
+    *)  echo "error"
+        cat <<-_ERR
+
+	Compiler not recognised, or no compiler found.
+	Please install a supported C compiler (e.g. gcc). If you already have one installed, try setting the environment variable CC appropriately.
+	If you want to use an unsupported compiler, set CC appropriately and run configure with the --unsupported-compiler option; you will be on your own if anything doesn't work.
+	_ERR
+        exit 1 ;;
+  esac
+fi
+
+if [ -z "$CXX" ]; then
+  case "$CC" in
+    *gcc) CXX="${COMPILER_PREFIX}g++" ;;
+    *icc)     CXX="${COMPILER_PREFIX}icpc" ;;
+    *clang)   CXX="${COMPILER_PREFIX}clang++" ;;
+    *)        CXX=$CC ;;
+  esac
+fi
+
+CXX_TMP=`($CXX --version) 2>/dev/null | head -1`
+if ! $UNSUPPORTED_COMPILER; then
+  echo -n "Checking C++ compiler...  "
+  case "$CXX_TMP" in
+    g++* | *apple*g++* | *\(GCC\)*) 
+      [[ "$CXX_TMP" =~ \ ([0-9](\.[0-9_]+)+)($|\ ) ]] &&
+      CXX_VER="${BASH_REMATCH[1]}"; echo "g++ $CXX_VER" ;;
+    Apple*) CXX_VER=`expr "x$CXX_TMP" : 'x.*version \([0-9][.][0-9][.][0-9]\)'`; echo "Apple clang++ $CXX_VER" ;;
+    *clang*) CXX_VER=`expr "x$CXX_TMP" : 'x.*version \([0-9][.][0-9]\)'`; echo "clang++ $CXX_VER" ;;
+    icpc*) echo icpc ;;
+    *)  echo "error"
+        cat <<-_ERR
+
+	Compiler not recognised, or no compiler found.
+	Please install a supported C++ compiler (e.g. g++). If you already have one installed, try setting the environment variable CXX appropriately.
+	If you want to use an unsupported compiler, set CXX appropriately and run configure with the --unsupported-compiler option; you will be on your own if anything doesn't work.
+	_ERR
+        exit 1 ;;
+  esac
+fi
+
+case "$CXX_TMP" in
+  g++* | *apple*g++* | Apple* | *clang* | *\(GCC\)*)
+    EXTRAOSCFLAGS="$EXTRAOSCFLAGS -Wall -Wextra" ;;
+esac
+
+# ---------- Auto-vectorization ----------
+
+VECFLAGS=
+if $VECTORIZE; then
+  echo -n "Checking vectorization... "
+
+  case "x$ARCH:$CXX_TMP" in
+    xx86_64:g++*|xx86_64:*apple*g++*|x*86:g++*|x*86:*apple*g++*|*\(GCC\)*)
+      VECFLAGS="-mmmx -msse -msse2 -msse3 -mfpmath=sse,387" ;;
+    xx86_64:*|x*86:*) 
+      # clang doesn't offer -mfpmath=387
+      VECFLAGS="-mmmx -msse -msse2 -msse3 -mfpmath=sse" ;;
+    xarm:*)
+      VECFLAGS="-mthumb -mfpu=neon" ;;
+  esac
+
+  case "$CXX_TMP:$CC_VER" in
+    g++*:*.*|*apple*g++*:*.*|*\(GCC\)*:*.*)
+      VECFLAGS="-ffast-math -ftree-vectorize $VECFLAGS"
+      if [ $VECTORIZE_LEVEL != 0 ]; then
+        VECFLAGS="$VECFLAGS -ftree-vectorizer-verbose=$VECTORIZE_LEVEL"
+      fi
+      echo "ok, $VECTORIZE_LEVEL level"
+    ;;
+    *clang*|Apple*)
+      VECFLAGS="-ffast-math -ftree-vectorize $VECFLAGS"
+      echo "ok, default level"
+    ;;
+    *) 
+      echo "none"
+    ;;
+  esac
+fi
+
+EXTRACFLAGS="$EXTRACFLAGS $VECFLAGS"
+
+# ---------- Make (must be GNU) and other tools ----------
+
+if [ -z "$MAKE" ]; then
+  MAKE="make"
+fi
+
+echo -n "Checking for GNU make...  "
+case "`($MAKE -v) 2>/dev/null | head -1`" in
+  GNU?Make*)
+    echo "$MAKE" ;;
+  *)
+    case "`(gmake -v) 2>/dev/null | head -1`" in
+      GNU?Make*)
+        MAKE=gmake
+        echo "gmake" ;;
+      *)
+        echo "no"
+        cat <<-_ERR
+
+	Unable to locate GNU make.
+	Please install GNU make. If it's installed, try setting the environment variable MAKE appropriately, or use the --make option to configure.
+	_ERR
+        exit 1 ;;
+    esac ;;
+esac
+
+# ar, ranlib (for simplicity's sake we assume that these are ar and
+# ranlib if make is make)
+
+if [ -z "$AR"     ]; then
+  AR="${COMPILER_PREFIX}ar"
+fi
+
+if [ -z "$RANLIB" ]; then
+  RANLIB="${COMPILER_PREFIX}ranlib"
+fi
+
+if [ -z "$WINDRES" ]; then
+  WINDRES="${COMPILER_PREFIX}windres"
+fi
+
+if [ "x$MAKE" != "xmake" ]; then
+  echo -n "Checking for ar...        "
+  if ($AR -V >/dev/null) 2>/dev/null; then
+    echo $AR
+  else
+    AR=gar
+    if ($AR -V >/dev/null) 2>/dev/null; then
+      echo $AR
+    else
+      echo "not found"
+      echo "Unable to locate ar. If it's installed, try setting the environment variable AR appropriately."
+      exit 1
+    fi
+  fi
+
+  echo -n "Checking for ranlib... "
+  if ($RANLIB -V >/dev/null) 2>/dev/null; then
+    echo $RANLIB
+  else
+    RANLIB=granlib
+    if ($RANLIB -V >/dev/null) 2>/dev/null; then
+      echo $RANLIB
+    else
+      echo "not found"
+      echo "Unable to locate ranlib. If it's installed, try setting the environment variable RANLIB appropriately. (If your platform does not need ranlib, just set RANLIB=true.)"
+      exit 1
+    fi
+  fi
+fi
+
+# ---------- Compiler flag support ----------
+
+echo -n "Deciding on flags...      "
+
+case "$SYS" in
+Posix)  EXE=     ; OBJ=.o ; LIB=.a ; W32= ;;
+MacOSX) EXE=     ; OBJ=.o ; LIB=.a ; W32= ;;
+MinGW)  EXE=.exe ; OBJ=.o ; LIB=.a ; W32=true ;;
+Droid)  EXE=     ; OBJ=.o ; LIB=.a ; W32= ;;
+*)      echo "error"
+        echo "Found an unsupported system $SYS!"
+        exit 1
+        ;;
+esac
+
+# disable ogg vorbis static callbacks when building; they generate warnings
+EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DOV_EXCLUDE_STATIC_CALLBACKS"
+
+case "$CXX_TMP:$SYS" in
+  clang*:"MacOSX")
+    CXXSTD="$CXXSTD -stdlib=libc++"
+    EXTRACFLAGS="$EXTRACFLAGS -mmacosx-version-min=10.6"
+    EXTRALDFLAGS="$EXTRALDFLAGS -mmacosx-version-min=10.6"
+    EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DMACOSX -DDISABLE_OBJC"
+    EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -stdlib=libc++ -Wl,-framework,VideoToolbox -Wl,-framework,CoreMedia -lc++ -lc++abi"
+  ;;
+  Apple*:"MacOSX")
+    CXXSTD="$CXXSTD -stdlib=libc++"
+    EXTRACFLAGS="$EXTRACFLAGS -mmacosx-version-min=10.7"
+    EXTRALDFLAGS="$EXTRALDFLAGS -mmacosx-version-min=10.7"
+    EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DMACOSX -DDISABLE_OBJC"
+    EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -stdlib=libc++ -Wl,-framework,VideoToolbox -Wl,-framework,CoreMedia -lc++ -lc++abi"
+  ;;
+  *clang*:"MinGW")
+    LINK_START_GROUP="-Wl,--start-group"
+    LINK_END_GROUP="-Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic -Wl,--end-group"
+    EXTRALDFLAGS="$EXTRALDFLAGS -static-libgcc"
+    EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DWIN32 -DPTW32_STATIC_LIB"
+    EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -lwinmm -lshlwapi -lws2_32 -lglu32 -lopengl32 -Wl,--wrap=SDL_LoadObject -Wl,--large-address-aware"
+  ;;
+  *clang*:"Droid")
+    LINK_START_GROUP="-Wl,--start-group"
+    LINK_END_GROUP="-Wl,--end-group"
+    EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DDROID"
+    EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -shared -static-libstdc++"
+  ;;
+  *g++*:"MinGW")
+    LINK_START_GROUP="-Wl,--start-group"
+    LINK_END_GROUP="-Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic -Wl,--end-group"
+    EXTRALDFLAGS="$EXTRALDFLAGS -static-libgcc -static-libstdc++ -mthreads"
+    EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DWIN32 -DPTW32_STATIC_LIB -mthreads"
+    EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -lwinmm -lshlwapi -lws2_32 -lglu32 -lopengl32 -Wl,--wrap=SDL_LoadObject -Wl,--large-address-aware"
+  ;;
+  g++*:"Posix" | *clang*:"Posix")
+    LINK_START_GROUP="-Wl,--start-group"
+    LINK_END_GROUP="-Wl,--end-group"
+    EXTRALDFLAGS="$EXTRALDFLAGS -static-libgcc -static-libstdc++"
+    #FIXME: Passing -DLINUX is roughly a hack, we should properly handle BSD.
+    EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DLINUX -D__STDC_CONSTANT_MACROS"
+    #FIXME: These flags originate from ONScripter project and need to be updated.
+    if [ "$POSIX" == "FreeBSD" ]; then
+      EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DCONST_ICONV"
+      EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -L/usr/X11R6/lib -lX11 -lXi -lXrandr -liconv"
+    elif [ "$POSIX" == "NetBSD" ]; then
+      EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS \$(foreach x,11 i randr ext render,/usr/X11R6/lib/libX\$(x).a) -lossaudio"
+    elif [ "$POSIX" == "OpenBSD" ]; then
+      EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -L/usr/X11R6/lib -lX11 -lXi -lXrandr -lossaudio"
+    elif [ "$POSIX" == "Solaris" ]; then
+      EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DCONST_ICONV"
+      EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -lX11 -lXext"
+    fi 
+  ;;
+  *apple*g++*)
+    EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DMACOSX -D__STDC_CONSTANT_MACROS"
+    EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -Wl,-framework,OpenGL -Wl,-framework,VideoToolbox -Wl,-framework,CoreMedia"
+  ;;
+esac
+
+echo "done"
+
+# ---------- External library support ----------
+
+echo -n "Copying dependencies...   "
+
+if [ ! -d "$ONSCRLIB" ]; then
+  echo "fail"
+
+  cat <<_EOF
+Unable to locate Dependencies folder.
+_EOF
+  exit 1
+fi
+
+ONS_PKGS="onscrlib"
+if [ "$CROSS_TRIPLE" != "" ]; then
+  ONS_PKG_OPTS="-c $CROSS_TRIPLE"
+  echo "onscrlib cross"
+elif [ "$SYS" == "Droid" ]; then
+  ONS_PKG_OPTS="-g $DROID_TOOLCHAIN"
+  echo "onscrlib droid"
+else
+  echo "onscrlib native"
+fi
+
+mkdir -p "${BUILD_PATH}/Dependencies"
+
+pushd "$ONSCRLIB" &> /dev/null
+find . -type d -exec mkdir -p "${BUILD_PATH}/Dependencies"/{} \;
+find . -type f -exec cp {} "${BUILD_PATH}/Dependencies"/{} \;
+find . -type l -exec cp -a {} "${BUILD_PATH}/Dependencies"/{} \;
+popd &> /dev/null
+
+chmod +x "${BUILD_PATH}/Dependencies/build.sh"
+
+SDL_CONFIG="\$(EXTLIB)/bin/sdl2-config"
+SMPEG_CONFIG="\$(EXTLIB)/bin/smpeg2-config"
+FREETYPE_CONFIG="\$(EXTLIB)/bin/freetype-config"
+
+genlink z
+genlink png
+genlink jpeg
+genlink SDL2main
+genlink SDL2_image
+genlink ogg
+genlink vorbis
+genlink vorbisfile
+genlink SDL2_mixer
+genlink bz2
+genlink SDL2_gpu
+genlink avutil
+genlink avformat
+genlink avcodec
+genlink swscale
+genlink swresample
+genlink ass
+genlink fribidi
+genlink freetype
+genlink harfbuzz
+
+if [ "$SYS" == "Droid" ]; then
+  if [ "$ARCH" == "aarch64" ]; then
+    genlink unwind -aarch64
+    LINKunwindArch="$LINKunwind"
+    genlink unwind
+    LINKunwind="$LINKunwind $LINKunwindArch"
+  elif [ "$ARCH" == "arm" ]; then
+    # No arm support atm
+    LINKunwind=""
+  else
+    genlink unwind -x86
+    LINKunwindArch="$LINKunwind"
+    genlink unwind
+    LINKunwind="$LINKunwind $LINKunwindArch"
+  fi
+else
+	genlink usb -1.0
+  genlink epoxy
+fi
+
+# ---------- Embedded resources configuration ----------
+
+echo -n "Preparing embed data...   "
+
+PROJECT_DIR="" LIST_PREFIX="\$(PROJECT)/" source Scripts/resources.sh
+RESOURCE_FILE="Resources/Support/Resources.cpp"
+WRESOURCE_FILE="Resources/Support/WinRes.rc"
+
+echo "done"
+
+if [ "$EMBED_PATH" == "" ]; then
+  #FIXME: This should be moved to Tool/embed buildscript.
+
+  echo -n "Preparing embed tool...   "
+
+  EMBED_PATH="${BUILD_PATH}/Tools/embed/embed$EXE"
+  mkdir -p "${BUILD_PATH}/Tools/embed"
+
+  if [ "$EMBED_CC" == "" ]; then
+    command -v gcc >/dev/null 2>&1 
+    if (( $? )); then
+      command -v clang >/dev/null 2>&1 
+      if (( $? )); then
+        echo "fail"
+        echo "Unable to find c compiler to generate embed tool!"
+        exit 1
+      else
+        EMBED_CC=clang
+      fi
+    else
+      EMBED_CC=gcc
+    fi
+  fi
+
+  $EMBED_CC -std=c11 -D_ISOC99_SOURCE -D_ISOC11_SOURCE "Tools/embed/embed.c" -o "$EMBED_PATH"
+  if (( $? )); then
+    echo "fail"
+    echo "Unable to generate embed!"
+    exit 1
+  fi
+
+  "$EMBED_PATH" --version &>/dev/null
+  if (( $? )); then
+    echo "fail"
+    echo "Unable to test embed!"
+    exit 1
+  fi
+
+  echo "done"
+fi
+
+# ---------- Source and header dependencies ----------
+
+echo -n "Preparing build tree...   "
+
+SOURCES=(
+  'Engine/Components/Async.cpp'
+  'Engine/Components/Dialogue.cpp'
+  'Engine/Components/DynamicProperty.cpp'
+  'Engine/Components/Fonts.cpp'
+  'Engine/Components/GlyphAtlas.cpp'
+  'Engine/Components/Joystick.cpp'
+  'Engine/Components/TextWindow.cpp'
+  'Engine/Components/Window.cpp'
+  'Engine/Core/Animation.cpp'
+  'Engine/Core/Command.cpp'
+  'Engine/Core/CommandExt.cpp'
+  'Engine/Core/Effect.cpp'
+  'Engine/Core/EffectBreakup.cpp'
+  'Engine/Core/EffectTrig.cpp'
+  'Engine/Core/Event.cpp'
+  'Engine/Core/File.cpp'
+  'Engine/Core/Image.cpp'
+  'Engine/Core/Lips.cpp'
+  'Engine/Core/Loader.cpp'
+  'Engine/Core/ONScripter.cpp'
+  'Engine/Core/Parser.cpp'
+  'Engine/Core/ParserCommand.cpp'
+  'Engine/Core/Sound.cpp'
+  'Engine/Core/Text.cpp'
+  'Engine/Entities/Animation.cpp'
+  'Engine/Entities/ConstantRefresh.cpp'
+  'Engine/Entities/Font.cpp'
+  'Engine/Entities/Glyph.cpp'
+  'Engine/Entities/StringTree.cpp'
+  'Engine/Graphics/Common.cpp'
+  'Engine/Graphics/GL2.cpp'
+  'Engine/Graphics/GLES2.cpp'
+  'Engine/Graphics/GLES3.cpp'
+  'Engine/Graphics/GPU.cpp'
+  'Engine/Graphics/PNG.cpp'
+  'Engine/Graphics/Pool.cpp'
+  'Engine/Handlers/LUA.cpp'
+  'Engine/Handlers/Script.cpp'
+  'Engine/Layers/Furu.cpp'
+  'Engine/Layers/Layer.cpp'
+  'Engine/Layers/Media.cpp'
+  'Engine/Layers/ObjectFall.cpp'
+  'Engine/Layers/Subtitle.cpp'
+  'Engine/Media/AudioDecoder.cpp'
+  'Engine/Media/Controller.cpp'
+  'Engine/Media/Demux.cpp'
+  'Engine/Media/HardwareDecoder.cpp'
+  'Engine/Media/SubtitleDecoder.cpp'
+  'Engine/Media/SubtitleDriver.cpp'
+  'Engine/Media/VideoDecoder.cpp'
+  'Engine/Readers/Direct.cpp'
+  'Engine/Readers/Nsa.cpp'
+  'Engine/Readers/Sar.cpp'
+  'Support/AudioBridge.cpp'
+  'Support/Cache.cpp'
+  'Support/DirPaths.cpp'
+  'Support/DirtyRect.cpp'
+  'Support/FileIO.cpp'
+  'Support/Unicode.cpp'
+  'External/slre.c'
+  "${RESOURCE_FILE}"
+)
+
+HEADERS=(
+  'Engine/Components/Async.hpp'
+  'Engine/Components/Base.hpp'
+  'Engine/Components/Dialogue.hpp'
+  'Engine/Components/DynamicProperty.hpp'
+  'Engine/Components/Fonts.hpp'
+  'Engine/Components/GlyphAtlas.hpp'
+  'Engine/Components/Joystick.hpp'
+  'Engine/Components/TextWindow.hpp'
+  'Engine/Components/Window.hpp'
+  'Engine/Core/ONScripter.hpp'
+  'Engine/Core/Parser.hpp'
+  'Engine/Entities/Animation.hpp'
+  'Engine/Entities/Breakup.hpp'
+  'Engine/Entities/ConstantRefresh.hpp'
+  'Engine/Entities/Font.hpp'
+  'Engine/Entities/Glyph.hpp'
+  'Engine/Entities/Spriteset.hpp'
+  'Engine/Entities/StringTree.hpp'
+  'Engine/Entities/Variable.hpp'
+  'Engine/Graphics/Common.hpp'
+  'Engine/Graphics/GPU.hpp'
+  'Engine/Graphics/PNG.hpp'
+  'Engine/Graphics/Pool.hpp'
+  'Engine/Handlers/LUA.hpp'
+  'Engine/Handlers/Script.hpp'
+  'Engine/Layers/Furu.hpp'
+  'Engine/Layers/Layer.hpp'
+  'Engine/Layers/Media.hpp'
+  'Engine/Layers/ObjectFall.hpp'
+  'Engine/Layers/Subtitle.hpp'
+  'Engine/Media/Controller.hpp'
+  'Engine/Media/SubtitleDriver.hpp'
+  'Engine/Readers/Base.hpp'
+  'Engine/Readers/Direct.hpp'
+  'Engine/Readers/Nsa.hpp'
+  'Engine/Readers/Sar.hpp'
+  'Support/Apple/CocoaWrapper.hpp'
+  'Support/Apple/UIKitWrapper.hpp'
+  'Support/AudioBridge.hpp'
+  'Support/Cache.hpp'
+  'Support/Camera.hpp'
+  'Support/Clock.hpp'
+  'Support/DirPaths.hpp'
+  'Support/DirtyRect.hpp'
+  'Support/Droid/DroidProfile.hpp'
+  'Support/FileDefs.hpp'
+  'Support/FileIO.hpp'
+  'Support/KeyState.hpp'
+  'Support/Unicode.hpp'
+  'External/Compatibility.hpp'
+  'External/LimitedQueue.hpp'
+  'External/LRUCache.hpp'
+  'External/slre.h'
+)
+
+if [ "$SYS" == "Droid" ]; then
+  SOURCES+=('Support/Droid/DroidProfile.cpp')
+elif [ "$SYS" == "MinGW" ]; then
+  SOURCES+=('Resources/Support/WinRes.rc.in')
+fi
+
+OBJECTS="ONSCRIPTER_OBJS ="
+DEPENDCIES=""
+DIRS=()
+CMOBJECTS="$(pathautofix "${BUILD_PATH}")/onscripter-ru${EXE}"
+CMOBJECTS+=";$(pathautofix "${BUILD_PATH}")/Resources/Support/Resources.cpp"
+CMOBJECTS+=";$(pathautofix "${BUILD_PATH}")/Resources/Support/Resources$OBJ"
+CMSOURCES=()
+CMHEADERS=()
+
+for src in "${SOURCES[@]}"; do
+  DIRS+=("$(dirname "${BUILD_PATH}/$src")")
+  obj="\$(BUILD_PATH)/${src/.cpp/\$(OBJSUFFIX)}"
+  obj="${obj/.c/\$(OBJSUFFIX)}"
+  obj="${obj/.rc.in/\$(OBJSUFFIX)}"
+
+  OBJECTS="${OBJECTS}  \x5C\n\t${obj}"
+  if [ "$src" != "Resources/Support/Resources.cpp" ]; then
+    gendeps "$src"
+    DEPENDCIES+="${obj}: \$(ONS_PKG_DEPS)"
+    for dep in "${GENDEPS_CURRENT[@]}"; do
+      DEPENDCIES+=" \$(PROJECT)/$dep"
+    done
+    DEPENDCIES+="\n"
+    CMSOURCES+=("$(pathautofix "${PROJECT}/$src")")
+    cmobj="${obj/\$(BUILD_PATH)/${BUILD_PATH}}"
+    cmobj="${cmobj/\$(OBJSUFFIX)/${OBJ}}"
+    CMOBJECTS+=";$(pathautofix "$cmobj")"
+  else
+    gendeps 'Resources/Support/Resources.hpp'
+    GENDEPS_CURRENT+=("${RESOURCE_FILES[@]}")
+    DEPENDCIES+="\$(BUILD_PATH)/${RESOURCE_FILE}: \$(ONS_PKG_DEPS)"
+    for dep in "${GENDEPS_CURRENT[@]}"; do
+      DEPENDCIES+=" \$(PROJECT)/$dep"
+    done
+    DEPENDCIES+="\n${obj}: \$(ONS_PKG_DEPS)"
+    for dep in "${GENDEPS_CURRENT[@]}"; do
+      DEPENDCIES+=" \$(PROJECT)/$dep"
+    done
+    DEPENDCIES+=" \$(BUILD_PATH)/${RESOURCE_FILE}\n"
+  fi
+done
+
+for hdr in "${HEADERS[@]}"; do
+  CMHEADERS+=("$(pathautofix "${PROJECT}/$hdr")")
+done
+
+DIRS=($(echo "${DIRS[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
+for dir in "${DIRS[@]}"; do
+  mkdir -p "$dir"
+done
+
+OBJECTS="${OBJECTS}\n"
+
+echo "done"
+
+echo -n "Writing Makefile...       "
+
+cat > "$BUILD_PATH/Makefile" <<_EOF
+# -*- makefile-gmake -*-
+#
+# THIS IS A GENERATED FILE - changes will not be kept if configure is
+# run again.
+#
+# Makefile for ONScripter-RU
+#
+# Consult LICENSE file for licensing terms and copyright holders.
+#
+
+WIN32=$W32
+OBJSUFFIX=$OBJ
+LIBSUFFIX=$LIB
+EXESUFFIX=$EXE
+
+PROJECT         = $PROJECT
+BUILD_PATH      = $BUILD_PATH
+PREFIX          ?= $PREFIX
+TARGET          ?= onscripter-ru
+
+ONSCRLIB        = \$(BUILD_PATH)/Dependencies
+EXTLIB          = \$(BUILD_PATH)/Dependencies/onscrlib
+EMBED           = $EMBED_PATH
+SDL_CONFIG      = $SDL_CONFIG
+PKG_CONFIG_PATH = \$(EXTLIB)/lib/pkgconfig
+ONS_PKGS        = $ONS_PKGS
+ONS_PKG_OPTS    = $ONS_PKG_OPTS
+ONS_PKG_DEPS    = \$(addprefix \$(EXTLIB)/.pkgs/,\$(ONS_PKGS))
+
+EXTRAOSCFLAGS   = $EXTRAOSCFLAGS
+EXTRAOSLDFLAGS  = $EXTRAOSLDFLAGS
+WICONFILE       = \$(PROJECT)/Resources/Images/icon.ico
+WICONFILEREL    = Resources/Images/icon.ico
+RCOBJECTS       = \$(BUILD_PATH)/$RESOURCE_FILE \$(BUILD_PATH)/$WRESOURCE_FILE
+
+export PATH     := \$(EXTLIB)/bin:\$(PATH)
+export CFLAGS   := -I\$(EXTLIB)/include \$(CFLAGS) $EXTRACFLAGS
+export CPPFLAGS := -I\$(EXTLIB)/include \$(CPPFLAGS) $EXTRACFLAGS
+export LDFLAGS  := -L\$(EXTLIB)/lib \$(LDFLAGS) $EXTRALDFLAGS
+export CSTD     := $CSTD
+export CXXSTD   := $CXXSTD
+
+export CC       := $CC
+export CXX      := $CXX
+export MAKE     := $MAKE
+export GNUMAKE  := $MAKE
+export AR       := $AR
+export RANLIB   := $RANLIB
+export WINDRES  := $WINDRES
+
+ifdef DEBUG
+	NPGOSCFLAGS    = -g -ggdb -pipe -Wpointer-arith -DDEBUG=1 \$(EXTRAOSCFLAGS)
+	OSCFLAGS       = -O0 -pg \$(NPGOSCFLAGS)
+	export LDFLAGS := -pg \$(LDFLAGS)
+else
+	ifdef PROF
+		NPGOSCFLAGS     = -pipe -Wpointer-arith -DPROFILE=1 \$(EXTRAOSCFLAGS)
+		OSCFLAGS        = $DEFAULT_OPT -pg \$(NPGOSCFLAGS)
+		export LDFLAGS  := -pg $ \$(LDFLAGS)
+	else
+		NPGOSCFLAGS     = -fomit-frame-pointer -pipe -Wpointer-arith \$(EXTRAOSCFLAGS)
+		OSCFLAGS        = $DEFAULT_OPT \$(NPGOSCFLAGS)
+	endif
+endif
+
+INCS = -I\$(PROJECT) -I\$(EXTLIB)/include \\
+	\$(shell \$(SDL_CONFIG) --cflags) \\
+	\$(shell $SMPEG_CONFIG --cflags) \\
+	\$(shell $FREETYPE_CONFIG --cflags)
+
+LIBS = \$(EXTRAOSLDFLAGS) -L\$(EXTLIB)/lib $LINK_START_GROUP \\
+	\$(shell \$(SDL_CONFIG) --static-libs) \$(filter-out \$(shell \$(SDL_CONFIG) --libs),\$(shell $SMPEG_CONFIG --libs)) \\
+	\$(shell $FREETYPE_CONFIG --libs) \\
+	$LINKSDL2_image $LINKjpeg $LINKpng $LINKz \\
+	$LINKSDL2_mixer $LINKogg $LINKvorbis $LINKvorbisfile \\
+	$LINKSDL2_gpu $LINKepoxy $LINKbz2 \\
+	$LINKavutil $LINKavformat $LINKavcodec $LINKswscale $LINKswresample \\
+	$LINKass $LINKusb $LINKfribidi $LINKharfbuzz $LINKunwind $LINK_END_GROUP
+
+.SUFFIXES:
+.SUFFIXES: $OBJ .cpp .h .c
+
+.PHONY: all clean distclean binary final onscrlibclean apk apkall
+
+binary: \$(BUILD_PATH)/\$(TARGET)\$(EXESUFFIX)
+
+all: binary
+
+final: binary
+	strip -p --strip-all $<
+
+clean:
+	@-\$(RM) \$(EXTLIB)/.pkgs/onscrlib
+	@-\$(RM) \$(CLEANUP) \$(RCOBJECTS)
+	@-\$(RM) \$(BUILD_PATH)/\$(TARGET)\$(EXESUFFIX) \$(BUILD_PATH)/onscripter-ru\$(EXESUFFIX)
+	@rm -rf \$(BUILD_PATH)/Droid-package
+	@find "\$(BUILD_PATH)/Engine" -name '*.o' -exec rm -f {} \;
+	@find "\$(BUILD_PATH)/External" -name '*.o' -exec rm -f {} \;
+	@find "\$(BUILD_PATH)/Resources" -name '*.o' -exec rm -f {} \;
+	@find "\$(BUILD_PATH)/Support" -name '*.o' -exec rm -f {} \;
+
+distclean: clean
+	@-\$(RM) \$(PROJECT)/Makefile \$(BUILD_PATH)/Makefile \$(BUILD_PATH)/Tools/embed/embed*
+
+onscrlibclean:
+	@echo "Cleaning Dependencies folder \$(ONSCRLIB)"
+	@\$(MAKE) -C \$(ONSCRLIB) clean OUTDIR=\$(EXTLIB)
+
+install: binary
+	./Scripts/install-sh -c -s \$(BUILD_PATH)/\$(TARGET)\$(EXESUFFIX) \$(PREFIX)/bin/\$(TARGET)\$(EXESUFFIX)
+
+uninstall:
+	-\$(RM) \$(PREFIX)/bin/\$(TARGET)\$(EXESUFFIX)
+
+_EOF
+
+printf "$OBJECTS\n" >> "$BUILD_PATH/Makefile"
+printf "$DEPENDCIES" >> "$BUILD_PATH/Makefile"
+
+cat >> "$BUILD_PATH/Makefile" <<_EOF
+
+\$(BUILD_PATH)/\$(TARGET)\$(EXESUFFIX): \$(ONSCRIPTER_OBJS)
+	@echo "[LINK] \$(BUILD_PATH)/\$(TARGET)\$(EXESUFFIX)"
+	@\$(CXX) -o \$@ \$(LDFLAGS) \$(ONSCRIPTER_OBJS) \$(LIBS)
+
+\$(BUILD_PATH)/%\$(OBJSUFFIX): \$(PROJECT)/%.cpp
+	@echo "[CXX] \$<"
+	@\$(CXX) -c \$(CXXSTD) \$(CFLAGS) \$(OSCFLAGS) \$(INCS) \$(DEFS) \$< -o \$@
+
+\$(BUILD_PATH)/%\$(OBJSUFFIX): \$(BUILD_PATH)/%.cpp
+	@echo "[CXX] \$<"
+	@\$(CXX) -c \$(CXXSTD) \$(CFLAGS) \$(OSCFLAGS) \$(INCS) \$(DEFS) \$< -o \$@
+
+\$(BUILD_PATH)/%\$(OBJSUFFIX): \$(PROJECT)/%.c
+	@echo "[CC] \$<"
+	@\$(CC) -c \$(CSTD) \$(CFLAGS) \$(OSCFLAGS) \$(INCS) \$(DEFS) \$< -o \$@
+
+\$(BUILD_PATH)/%\$(OBJSUFFIX): \$(BUILD_PATH)/%.c
+	@echo "[CC] \$<"
+	@\$(CC) -c \$(CSTD) \$(CFLAGS) \$(OSCFLAGS) \$(INCS) \$(DEFS) \$< -o \$@
+
+\$(BUILD_PATH)/${WRESOURCE_FILE/.rc/\$(OBJSUFFIX)}: \$(BUILD_PATH)/$WRESOURCE_FILE \$(WICONFILE)
+	@echo "[RES] \$<"
+	@\$(WINDRES) \$(INCS) \$< -o \$@
+
+\$(BUILD_PATH)/$RESOURCE_FILE:
+	@echo "[EMBED] \$(BUILD_PATH)/$RESOURCE_FILE"
+	@\$(EMBED) ${RESOURCE_LIST[@]} \$@ > \$(BUILD_PATH)/${RESOURCE_FILE/.cpp/.log}
+
+\$(BUILD_PATH)/$WRESOURCE_FILE: \$(PROJECT)/$WRESOURCE_FILE.in \$(PROJECT)/Resources/Support/Version.hpp
+	@echo "[RESGEN] \$@"
+	@ver=\`awk '/define VER_NUMBER/ { print $\$3 }' \$(PROJECT)/Resources/Support/Version.hpp\`; \\
+	y=\`echo $\$ver | awk '{print substr($\$1,0,4)}'\`; \\
+	m=\`echo $\$ver | awk '{print substr($\$1,5,2)}'\`; mn=\`expr $\$m + 0\`; \\
+	d=\`echo $\$ver | awk '{print substr($\$1,7,2)}'\`; dn=\`expr $\$d + 0\`; \\
+	i=\"\$(WICONFILEREL)\"; \\
+	sed -e "s/@Y@/$\$y/g;s/@0M@/$\$m/g;s/@M@/$\$mn/g;s/@0D@/$\$d/g;s/@D@/$\$dn/g;s%@I@%$\$i%g" \$< > \$@
+
+\$(EXTLIB)/.pkgs/%:
+	@echo "Building \$* package..."
+	@unset MAKEFLAGS; cd \$(ONSCRLIB); \\
+	./build.sh \$(ONS_PKG_OPTS) -o \$(EXTLIB) \$*
+
+apk: binary
+	@echo "Building apk..."
+	\$(PROJECT)/Scripts/apkbuild.tool \$(BUILD_PATH)
+
+apkall: binary
+	@echo "Building apk..."
+	\$(PROJECT)/Scripts/apkbuild.tool \$(BUILD_PATH)/../
+
+_EOF
+
+cat > "Makefile" <<_EOF
+# -*- makefile-gmake -*-
+#
+# THIS IS A GENERATED FILE - changes will not be kept if configure is
+# run again.
+#
+# Current Makefile selector for ONScripter-RU
+# This file allows to build ONScripter-RU from configure folder.
+#
+# Consult LICENSE file for licensing terms and copyright holders.
+#
+
+include $BUILD_PATH/Makefile
+_EOF
+
+cat > "$BUILD_PATH/CMakeLists.txt" <<_EOF
+cmake_minimum_required(VERSION 2.8.4)
+
+#
+# CMakeLists.txt
+# ONScripter-RU
+#
+# THIS IS A GENERATED FILE - changes will not be kept if configure is
+# run again.
+#
+# A very rough CMake script to allow building from an external IDE.
+# Preconfigured project with configure scripts is required prior to using.
+#
+# Consult LICENSE file for licensing terms and copyright holders.
+#
+
+# Define our real target
+project(ONScripter)
+
+if (WIN32)
+	# Currently hardcoded, can be extracted but not worth it
+	set(MSYS_PATH C:\\\\msys64)
+	
+	# Windows path separator fixes
+	STRING(REPLACE / \\\\ BIN_DIR \${PROJECT_BINARY_DIR})
+	STRING(REPLACE / \\\\ SOURCE_DIR \${CMAKE_SOURCE_DIR})
+
+	# Custom script to wrap over make
+	add_custom_target(ONScripter COMMAND \${SOURCE_DIR}\\\\Scripts\\\\idebuild.cmd build $(pathautofix "${BUILD_PATH}") \${MSYS_PATH} \${BIN_DIR})
+else()
+	set(BIN_DIR \${PROJECT_BINARY_DIR})
+	set(SOURCE_DIR \${CMAKE_SOURCE_DIR})
+
+	# Custom script to wrap over make (unix way)
+	add_custom_target(ONScripter COMMAND \${SOURCE_DIR}/Scripts/idebuild.sh build $(pathautofix "${BUILD_PATH}") \${BIN_DIR})
+endif()
+
+# Some workaround to make cleaning work
+
+set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "$CMOBJECTS")
+
+# Some workaround to make CLion think we have proper project
+
+include_directories("$(pathautofix "${PROJECT}")")
+include_directories("$(pathautofix "${BUILD_PATH}")")
+include_directories("$(pathautofix "${BUILD_PATH}")/Dependencies/onscrlib/include")
+include_directories("$(pathautofix "${BUILD_PATH}")/Dependencies/onscrlib/include/freetype2")
+
+set(CMAKE_C_FLAGS "\${CMAKE_C_FLAGS} $CSTD $CFLAGS $EXTRAOSCFLAGS")
+set(CMAKE_CXX_FLAGS "\${CMAKE_CXX_FLAGS} $CXXSTD $CFLAGS $EXTRAOSCFLAGS ")
+
+add_executable("DUMMY" ${CMSOURCES[@]} ${CMHEADERS[@]})
+_EOF
+
+cat > "CMakeLists.txt" <<_EOF
+cmake_minimum_required(VERSION 2.8.4)
+
+#
+# CMakeLists.txt
+# ONScripter-RU
+#
+# THIS IS A GENERATED FILE - changes will not be kept if configure is
+# run again.
+#
+# Current CMakeLists.txt file selector
+#
+# Consult LICENSE file for licensing terms and copyright holders.
+#
+
+include("$(pathautofix "${BUILD_PATH}")/CMakeLists.txt")
+_EOF
+
+echo "done"
+echo "Now run \"$MAKE\" to build ONScripter-RU."

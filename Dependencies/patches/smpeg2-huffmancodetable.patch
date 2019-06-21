@@ -1,0 +1,12 @@
+diff -rupN a/MPEGaudio.h b/MPEGaudio.h
+--- a/MPEGaudio.h	2016-08-06 15:45:04.665806700 +0100
++++ b/MPEGaudio.h	2016-08-06 15:47:12.822665700 +0100
+@@ -110,7 +110,7 @@ typedef struct
+ typedef struct
+ {
+   int tablename;
+-  unsigned int xlen,ylen;
++  int xlen,ylen;
+   unsigned int linbits;
+   unsigned int treelen;
+   const unsigned int (*val)[2];

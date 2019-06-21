@@ -1,0 +1,19 @@
+diff -rupN a/include/libunwind-common.h.in b/include/libunwind-common.h.in
+--- a/include/libunwind-common.h.in	2017-02-20 19:42:26.000000000 +0300
++++ b/include/libunwind-common.h.in	2017-02-20 20:53:24.000000000 +0300
+@@ -33,12 +33,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DE
+ #define UNW_PASTE2(x,y)	x##y
+ #define UNW_PASTE(x,y)	UNW_PASTE2(x,y)
+ #define UNW_OBJ(fn)	UNW_PASTE(UNW_PREFIX, fn)
+-#define UNW_ARCH_OBJ(fn) UNW_PASTE(UNW_PASTE(UNW_PASTE(_U,UNW_TARGET),_), fn)
++#define UNW_ARCH_OBJ(fn) UNW_PASTE(UNW_PASTE(UNW_PASTE(_,UNW_PASTE(U,UNW_TARGET)),_), fn)
+ 
+ #ifdef UNW_LOCAL_ONLY
+-# define UNW_PREFIX	UNW_PASTE(UNW_PASTE(_UL,UNW_TARGET),_)
++# define UNW_PREFIX UNW_PASTE(UNW_PASTE(_,UNW_PASTE(UL,UNW_TARGET)),_)
+ #else /* !UNW_LOCAL_ONLY */
+-# define UNW_PREFIX	UNW_PASTE(UNW_PASTE(_U,UNW_TARGET),_)
++# define UNW_PREFIX UNW_PASTE(UNW_PASTE(_,UNW_PASTE(U,UNW_TARGET)),_)
+ #endif /* !UNW_LOCAL_ONLY */
+ 
+ /* Error codes.  The unwind routines return the *negated* values of

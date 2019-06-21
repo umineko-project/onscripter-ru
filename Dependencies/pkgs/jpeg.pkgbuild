@@ -1,0 +1,14 @@
+pkgname=jpeg
+pkgver=9c
+pkgrel=1
+sources=("http://www.ijg.org/files/jpegsrc.v$pkgver.tar.gz")
+hashes=('650250979303a649e21f87b5ccd02672af1ea6954b911342ea491f351ceb7122')
+
+configopts=(
+    '--disable-dependency-tracking'
+    '--disable-shared'
+    "--libdir=$outdir/lib"
+)
+
+# vim: set syntax=sh:
+

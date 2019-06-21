@@ -1,0 +1,76 @@
+pkgname=smpeg2
+pkgver=2.0.0
+pkgrel=2
+depends=('SDL2')
+sources=(
+    'https://www.libsdl.org/projects/smpeg/release/smpeg2-2.0.0.tar.gz'
+    'smpeg2-svn-r413.patch'
+    'smpeg2-assembler-flags.patch'
+    'smpeg2-sdl2-config-path.patch'
+    'smpeg2-huffmancodetable.patch'
+    'smpeg2-include-fix.patch'
+    'smpeg2-config-guess.patch'
+    'smpeg2-no-programs.patch'
+)
+hashes=(
+    '979a65b211744a44fa641a9b6e4d64e64a12ff703ae776bafe3c4c4cd85494b3'
+    '21a49a1580e816edfe798a24547a0cfe94023f2335fa05f41ce47fd96224a5e3'
+    'b6fe676765a3e9c4488d3124662347f76ab8edad193c13fa6c5886f83c32d86e'
+    'd4f2f9c7bfdb00d72fe2523fa627872d584914c217ce37402d85943232635d2c'
+    '4b7814f9755cf2cf597fb672d53cb0b9eddf43f370e6d269c05477a39a1339a7'
+    'f60d0b3cff0cc32332c968d69d489d92f40d1133453593ef402ffb0a96924c7a'
+    'b09ea3d016afdf6a62d0f5d9c48a92e142ee768250e8ed99f223460685632168'
+    '1749da9868f3cb57d699fffbcaeea78a430a60839b1ebf11962f1f71e49a9bbc'
+)
+svnurl=svn://svn.icculus.org/smpeg/trunk
+
+cflags="-O3"
+
+configopts=(
+    '--disable-shared'
+    '--enable-static'
+    '--disable-debug'
+    '--disable-dependency-tracking'
+    '--enable-mmx'
+    "--libdir=$outdir/lib"
+    "--with-sdl-prefix=$outdir"
+)
+
+# Xcode 10 does not have libstdc++
+if [ "$MMAC_VER_MIN" != "10.6" ]; then
+    ldflags_mac_extra="-stdlib=libc++"
+fi
+
+prebuild() {
+    pushd "$pkgname-$pkgver" &>/dev/null
+    
+    apply_patch "${sources[1]}"
+    apply_patch "${sources[2]}"
+    apply_patch "${sources[3]}"
+    apply_patch "${sources[4]}"
+    apply_patch "${sources[5]}"
+
+    if [ "$(getTarget)" == "droid" ]; then
+        apply_patch "${sources[6]}"
+        apply_patch "${sources[7]}"
+        export CC="$(getCC)"
+        export CXX="$(getCXX)"
+    fi
+
+    chmod +x install-sh
+
+    autogen
+}
+
+postbuild() {
+    if [ "$(getTarget)" == "droid" ]; then
+        unset CC
+        unset CXX
+    fi
+    
+    popd &>/dev/null
+}
+
+# vim: set syntax=sh:
+
+

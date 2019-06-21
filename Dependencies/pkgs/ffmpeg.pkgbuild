@@ -1,0 +1,272 @@
+pkgname=ffmpeg
+# 3.4.0 is broken on macOS and produces green stripes in the bottom
+pkgver=3.3.9
+pkgrel=2
+depends=(
+    'zlib'
+    'bzip2'
+)
+sources=(
+    "http://ffmpeg.org/releases/ffmpeg-$pkgver.tar.bz2"
+    'ffmpeg-compact-unwind.patch'
+    'ffmpeg-droid-noebp.patch'
+)
+hashes=(
+    '5633c4a3379a504f0b43a20a2222a8fe50f19be7d5a6eb435056c42150cb4905'
+    'f0c076b46522bfbd02f86b4a7dfbd53816bbbc2cd4dd3cba50116f96ef521087'
+    'c806a4ffa327be5c0430ee59f67092c59f13ed1bac59aea027fc4bc288bc4db0'
+)
+addcrossopt=false
+
+giturl=git://source.ffmpeg.org/ffmpeg.git
+
+if [ "$APPLE_CPU_FLAG" == "-m32" ]; then
+    cflags_mac_extra="-D__STDC_CONSTANT_MACROS -march=i686 -mmacosx-version-min=$MMAC_VER_MIN"
+    configopts_mac=(
+        '--arch=x86_32'
+        '--cpu=pentium4'
+        "--cc=$(getCC)"
+        '--enable-videotoolbox'
+        '--disable-vda'
+        '--disable-decoders'
+    )
+    cflags_ios_extra="-D__STDC_CONSTANT_MACROS"
+    if in_array "$APPLE_ARCH" "-arch armv7s"; then
+        configopts_ios=(
+            '--cpu=cortex-a9'
+            '--cc=clang-armv7s'
+            '--as=as-armv7s'
+            '--enable-videotoolbox'
+            '--disable-vda'
+            '--enable-pic'
+            '--enable-thumb'
+            '--disable-decoders'
+        )
+    else
+        configopts_ios=(
+            '--cpu=cortex-a9'
+            '--cc=clang-armv7'
+            '--as=as-armv7'
+            '--enable-videotoolbox'
+            '--disable-vda'
+            '--enable-pic'
+            '--enable-thumb'
+            '--disable-decoders'
+        )
+    fi
+else
+    cflags_mac_extra="-D__STDC_CONSTANT_MACROS -mmacosx-version-min=$MMAC_VER_MIN"
+    configopts_mac=(
+        '--arch=x86_64'
+        '--cpu=core2'
+        "--cc=$(getCC)"
+        '--enable-videotoolbox'
+        '--disable-vda'
+        '--disable-decoders'
+    )
+    cflags_ios_extra="-D__STDC_CONSTANT_MACROS"
+    configopts_ios=(
+        '--cc=clang-arm64'
+        '--enable-videotoolbox'
+        '--disable-vda'
+        '--enable-pic'
+        '--enable-thumb'
+        '--disable-decoders'
+    )
+fi
+
+cflags_droid="-D__STDC_CONSTANT_MACROS"
+configopts_droid=(
+    "--cc=$(getCC)"
+    '--enable-pic'
+    '--enable-thumb'
+    '--enable-mediacodec'
+    '--enable-jni'
+    '--disable-decoders'
+    '--enable-decoder=h264_mediacodec'
+    '--enable-decoder=mpeg4_mediacodec'
+)
+
+cflags_linux="-D__STDC_CONSTANT_MACROS"
+cflags_win32="-D__STDC_CONSTANT_MACROS -m32 -march=i686"
+
+configopts=(
+    #static build
+    '--enable-static'
+    '--disable-shared'
+    #optimise size
+    '--enable-small'
+    '--disable-logging'
+    #remove components
+    '--disable-avdevice'
+    '--disable-postproc'
+    '--disable-avfilter'
+    '--disable-programs'
+    '--disable-network'
+    '--disable-doc'
+    '--disable-outdevs'
+    '--disable-iconv'
+    #disable unused modules
+    '--disable-filters'
+    '--disable-bsfs'
+    '--disable-protocols'
+    '--enable-protocol=file'
+    '--disable-encoders'
+    '--disable-muxers'
+    '--disable-indevs'
+    #disable parsers
+    '--disable-parsers'
+    '--enable-parser=aac'
+    '--enable-parser=flac'
+    '--enable-parser=aac_latm'
+    '--enable-parser=ac3'
+    '--enable-parser=h261'
+    '--enable-parser=rv30'
+    '--enable-parser=adx'
+    '--enable-parser=h263'
+    '--enable-parser=rv40'
+    '--enable-parser=h264'
+    '--enable-parser=mjpeg'
+    '--enable-parser=vc1'
+    '--enable-parser=mpeg4video'
+    '--enable-parser=vp3'
+    '--enable-parser=mpegaudio'
+    '--enable-parser=vp8'
+    '--enable-parser=dvaudio'
+    '--enable-parser=mpegvideo'
+    '--enable-parser=vp9'
+    '--enable-parser=opus'
+    #enable format
+    '--disable-demuxers'
+    '--enable-demuxer=avi'
+    '--enable-demuxer=flv'
+    '--enable-demuxer=h261'
+    '--enable-demuxer=h263'
+    '--enable-demuxer=h264'
+    '--enable-demuxer=m4v'
+    '--enable-demuxer=matroska'
+    '--enable-demuxer=mgsts'
+    '--enable-demuxer=mjpeg'
+    '--enable-demuxer=mov'
+    '--enable-demuxer=mpegps'
+    '--enable-demuxer=mpegts'
+    '--enable-demuxer=mpegtsraw'
+    '--enable-demuxer=mpegvideo'
+    '--enable-demuxer=rawvideo'
+    '--enable-demuxer=rm'
+    '--enable-demuxer=vc1'
+    '--enable-demuxer=vc1t'
+    #enable decoders
+    '--enable-decoder=flv'
+    '--enable-decoder=fraps'
+    '--enable-decoder=gif'
+    '--enable-decoder=h261'
+    '--enable-decoder=h263'
+    '--enable-decoder=h263i'
+    '--enable-decoder=h263p'
+    '--enable-decoder=h264'
+    '--enable-decoder=mjpeg'
+    '--enable-decoder=mjpegb'
+    '--enable-decoder=mmvideo'
+    '--enable-decoder=motionpixels'
+    '--enable-decoder=mpc7'
+    '--enable-decoder=mpc8'
+    '--enable-decoder=mpeg1video'
+    '--enable-decoder=mpeg2video'
+    '--enable-decoder=mpeg4'
+    '--enable-decoder=mpegvideo'
+    '--enable-decoder=msa1'
+    '--enable-decoder=msmpeg4v1'
+    '--enable-decoder=msmpeg4v2'
+    '--enable-decoder=msmpeg4v3'
+    '--enable-decoder=mts2'
+    '--enable-decoder=mvc1'
+    '--enable-decoder=mvc2'
+    '--enable-decoder=pam'
+    '--enable-decoder=r10k'
+    '--enable-decoder=r210'
+    '--enable-decoder=rawvideo'
+    '--enable-decoder=targa'
+    '--enable-decoder=targa_y216'
+    '--enable-decoder=theora'
+    '--enable-decoder=truemotion1'
+    '--enable-decoder=truemotion2'
+    '--enable-decoder=vc1'
+    '--enable-decoder=vc1image'
+    '--enable-decoder=vcr1'
+    '--enable-decoder=wmv1'
+    '--enable-decoder=wmv2'
+    '--enable-decoder=wmv3'
+    '--enable-decoder=wmv3image'
+    '--enable-decoder=yop'
+    '--enable-decoder=yuv4'
+    '--enable-decoder=zlib'
+    '--enable-decoder=aac'
+    '--enable-decoder=ac3'
+    '--enable-decoder=mp2'
+    '--enable-decoder=mp3'
+    '--enable-decoder=flac'
+    '--enable-decoder=vorbis'
+    "--libdir=$outdir/lib"
+)
+
+configopts_win32=(
+    '--extra-libs=-static'
+    '--extra-cflags=--static'
+    '--disable-hwaccels'
+    '--disable-decoders'
+)
+
+if [ "$(getTarget)" == "win32" ] && [ "$(getCC)" != "gcc" ]; then
+    configopts_win32+=('--cc=ccreal')
+fi
+
+configopts_linux=(
+    '--extra-libs=-static'
+    '--extra-cflags=--static'
+    '--disable-hwaccels'
+    '--disable-decoders'
+)
+
+if $CROSS_BUILD; then
+    configopts+=(
+        '--enable-cross-compile'
+        "--arch=$(getTargetCPU)"
+    )
+    configopts_win32+=(
+        '--target-os=mingw32'
+    )
+    configopts_ios+=(
+        '--target-os=darwin'
+    )
+    configopts_droid+=(
+        '--target-os=android'
+        "--ar=${CROSS_SYS_PREFIX}$(getHostPrefix)-ar"
+        "--ranlib=${CROSS_SYS_PREFIX}$(getHostPrefix)-ranlib"
+    )
+    if [ "$(getTarget)" == "droid" ] && [ "$(getTargetCPU)" == "arm" ]; then
+        configopts_droid+=('--as=clang-as-armv7s')
+    fi
+fi
+
+prebuild() {
+    pushd "$pkgname-$pkgver" &>/dev/null
+    
+    case $(getTarget) in
+    darwin*)
+        # Enforce optnone on some methods that have large stack size to ensure that rbp frame style is used.
+        # This avoids issues when generating compact unwind data.
+        if [ "$APPLE_CPU_FLAG" == "-m64" ]; then
+            apply_patch "${sources[1]}"
+        fi
+    ;;
+    droid)
+        # As discussed in https://bugs.chromium.org/p/chromium/issues/detail?id=796379
+        if [ "$(getTargetCPU)" == "x86_32" ]; then
+            apply_patch "${sources[2]}"
+        fi
+    ;;
+    esac
+}
+
+# vim: set syntax=sh:

@@ -1,0 +1,111 @@
+pkgname=SDL2_mixer
+pkgver=2.0.2
+pkgrel=3
+depends=('SDL2' 'libogg' 'libvorbis' 'smpeg2')
+sources=(
+    "http://www.libsdl.org/projects/SDL_mixer/release/$pkgname-$pkgver.tar.gz"
+    'SDL2_mixer-no-programs.patch'
+    'SDL2_mixer-no-locks.patch'
+)
+hashes=(
+    '4e615e27efca4f439df9af6aa2c6de84150d17cbfd12174b54868c12f19c83bb'
+    'e76692f6fa21a7327e35203e38346aa2f30f169486ac399bae3c703d17586bf7'
+    '161173d801e429175accf8e6370fb092427917fddf373c7a64e12b60b017608d'
+)
+
+cflags="-O3"
+cflags_win32="-I$outdir/include -I$outdir/include/smpeg2 -I$outdir/include/vorbis -I$outdir/include/ogg -I$outdir/include/SDL2"
+cppflags_win32="-I$outdir/include -I$outdir/include/smpeg2 -I$outdir/include/vorbis -I$outdir/include/ogg -I$outdir/include/SDL2"
+
+#FIXME: Is this still needed?
+if [ "$(getTarget)" != "droid" ] && [ "$(getTarget)" != "darwin-macOS" ] && [ "$(getTarget)" != "darwin-iOS" ]; then
+    ldflags=(
+        '-lstdc++'
+    )
+fi
+
+configopts=(
+    '--disable-dependency-tracking'
+    '--disable-shared'
+    '--disable-music-cmd'
+    '--disable-music-mod'
+    '--disable-music-mod-modplug'
+    '--disable-music-mod-modplug-shared'
+    '--disable-music-mod-mikmod-shared'
+    '--disable-music-midi'
+    '--disable-music-midi-timidity'
+    '--disable-music-midi-native'
+    '--disable-music-midi-fluidsynth'
+    '--disable-music-flac'
+    '--disable-music-flac-shared'
+    '--disable-music-ogg-shared'
+    '--disable-sdltest'
+    '--disable-smpegtest'
+    '--disable-music-mp3-smpeg-shared'
+    "--with-smpeg-prefix=$outdir"
+    "--libdir=$outdir/lib"
+    "--with-sdl-prefix=$outdir"
+)
+
+prebuild() {
+    pushd "$pkgname-$pkgver" &>/dev/null
+
+    autogen
+
+    apply_patch "${sources[1]}"
+
+    # This was introduced in https://hg.libsdl.org/SDL_mixer/diff/92882ef2ab81/mixer.c
+    # It causes severe stuttering all over the game, for example right before d41020.
+    # Reproducible on macOS, Windows, iOS and possibly all the other platforms.
+    apply_patch "${sources[2]}"
+}
+
+# Special version of this to ignore errors in extraction
+# (required for this to work on mingw?)
+extract_sources() {
+    msg "Extracting sources"
+    pushd $srcdir &>/dev/null
+    
+    local netfile
+    for netfile in "${sources[@]}"; do
+        local file=$(get_filename "$netfile")
+        if in_array "$file" "${noextract[@]}"; then
+            continue
+        fi
+        
+        local filetype=$(file -bzL --mime "$file")
+        local ext=${file##*.}
+        local cmd=''
+        local cmd_flags=''
+
+        case "$filetype" in
+            *application/x-tar*)
+                cmd='tar -xf';;
+            *application/x-zip*)
+                cmd='unzip';;
+            *)
+                # MinGW32 has broken mime types in 'file' command, fall back on the
+                # extension to work around
+                case "$ext" in
+                    bz2|gz|tar|xz)
+                        # should look one more level in, to see if tar is there...
+                        cmd='tar -xf';;
+                    *)
+                        continue;;
+                esac;;
+        esac
+
+        local ret=0
+        msg2 "Extracting %s with %s" "$file" "$cmd"
+        $cmd "$file" || ret=$?
+
+        if (( ret )); then
+            warn "Errors while extracting %s; plowing ahead" "$file"
+        fi
+    done
+
+    popd &>/dev/null
+}
+
+# vim: set syntax=sh:
+

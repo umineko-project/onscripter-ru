@@ -1,0 +1,62 @@
+pkgname=bzip2
+pkgver=1.0.6
+pkgrel=1
+sources=(
+    "https://src.fedoraproject.org/lookaside/pkgs/rpms/R/bzip2-1.0.6.tar.gz/00b516f4704d4a7cb50a1d97e6e8e15b/bzip2-1.0.6.tar.gz"
+    'bzip2-cflags.patch'
+    'bzip2-install.patch'
+    'bzip2-clang.patch'
+    'bzip2-notest.patch'
+    'bzip2-ccreal.patch'
+    'bzip2-paths.patch'
+)
+
+hashes=(
+    'a2848f34fcd5d6cf47def00461fcb528a0484d8edef8208d6d2e2909dc61d9cd'
+    '50f5a99456f59760bc7010e9459d318b882831cb561f485d6cc373ac92ceec51'
+    '87089aaa0f2dff30b20d69517144e380bb934235483434753056f19b55715116'
+    '07683f24017e6ff5379c53c39830e0c52a6de881693ca6ad29f91ca9c83347db'
+    'c6d55102340644da8f5a54779fd12f457522f9af72e0db7ef9b7113e339f9266'
+    'c83dee5c1c52806e582d46a7ae7aa85ae89fd74c07d6575fc3d3f2a49923a136'
+    '613b290b2f00aa2084884e558218265171dc6533fd280cbbb7921054b6613dc0'
+)
+
+build() {
+    msg "Performing pre-build actions"
+    prebuild
+
+    apply_patch "${sources[1]}"
+    apply_patch "${sources[2]}"
+    
+    if [ "$(getCC)" == "clang" ]; then
+        apply_patch "${sources[3]}"
+    elif [ "$(getCC)" != "gcc" ]; then
+        apply_patch "${sources[5]}"
+    fi
+    
+    apply_patch "${sources[4]}"
+    apply_patch "${sources[6]}"
+
+    msg "Compiling %s" "$pkgname"
+    export CFLAGS="$CFLAGS ${cflags[@]}"
+    export LDFLAGS="$LDFLAGS ${ldflags[@]}"
+    compile
+
+    msg "Installing %s" "$pkgname"
+    local ret=0
+    local logfile="$logdir/$pkgname.install.log"
+    make $MAKEOPTS install PREFIX="$outdir" &>"$logfile" || ret=$?
+   
+    if (( $ret )); then
+        tail -n 20 "$logfile"
+        error "Installing %s failed" "$pkgname"
+        error "The full log is: %s" "$logfile"
+        exit 1
+    fi
+
+    msg "Finishing %s" "$pkgname"
+    postbuild
+}
+
+# vim: set syntax=sh:
+

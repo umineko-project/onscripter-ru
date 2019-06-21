@@ -1,0 +1,35 @@
+# OS-specific
+.DS_Store
+thumbs.db
+
+# Objects
+*.o
+*.exe
+Tools/nscdec/nscdec
+Tools/nscmake/nscmake
+CMakeLists.txt
+/Makefile
+
+# Xcode
+DerivedData
+xcuserdata
+xcshareddata
+project.xcworkspace
+build
+
+# IDEA
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf
+.idea/**/contentModel.xml
+.idea/**/dataSources/
+.idea/**/dataSources.ids
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
+.idea/**/dbnavigator.xml
+cmake-build-*/
+*.iws

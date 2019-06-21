@@ -1,0 +1,1 @@
+clang -arch armv7s "$@"

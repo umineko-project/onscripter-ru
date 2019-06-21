@@ -1,0 +1,1 @@
+gas-preprocessor.pl -arch arm -as-type apple-clang -- clang -arch armv7 "$@"

@@ -1,0 +1,52 @@
+pkgname=lua
+pkgver=5.3.4
+pkgrel=1
+sources=("http://www.lua.org/ftp/lua-$pkgver.tar.gz")
+hashes=('f681aa518233bc407e23acf0f5887c884f17436f000d453b2491a9f11a52400c')
+
+build() {
+    msg "Compiling %s" "$pkgname"
+
+    pushd "$pkgname-$pkgver" &>/dev/null
+
+    local ret=0
+    local logfile="$logdir/$pkgname.compile.log"
+    
+    lcf="$CFLAGS ${cflags[@]} $CFLAGS_EXTRA"
+    lldf="$LDFLAGS ${ldflags[@]} $LDFLAGS_EXTRA"
+    
+    case $(getTarget) in
+        win32)
+            make $MAKEOPTS mingw CXX="$(getCXX)" CC="$(getCC)" MYCFLAGS="$lcf" MYLDFLAGS="$lldf" &>"$logfile" || ret=$?
+        ;;
+        darwin*)
+            make $MAKEOPTS macosx CXX="$(getCXX)" CC="$(getCC)" MYCFLAGS="$lcf" MYLDFLAGS="$lldf" &>"$logfile" || ret=$?
+        ;;
+        linux-like)
+            make $MAKEOPTS linux MYCFLAGS="$lcf" MYLDFLAGS="$lldf" &>"$logfile" || ret=$?
+        ;;
+    esac
+        
+    if (( $ret )); then
+        tail -n 20 "$logfile"
+        error "Compiling %s failed" "$pkgname"
+        error "The full log is: %s" "$logfile"
+        exit 1
+    fi
+    
+    msg "Installing"
+      
+    cp "src/liblua.a" "$outdir/lib/liblua.a"
+    cp "src/lua.h" "$outdir/include/lua.h"
+    cp "src/luaconf.h" "$outdir/include/luaconf.h"
+    cp "src/lualib.h" "$outdir/include/lualib.h"
+    cp "src/lauxlib.h" "$outdir/include/lauxlib.h"
+    cp "src/lua.hpp" "$outdir/include/lua.hpp"
+    
+    msg "Finishing %s" "$pkgname"
+    
+    postbuild
+}
+
+# vim: set syntax=sh:
+

@@ -1,0 +1,33 @@
+diff -rupN a/libavcodec/bitstream.c b/libavcodec/bitstream.c
+--- a/libavcodec/bitstream.c	2017-04-13 04:55:55.000000000 +0300
++++ b/libavcodec/bitstream.c	2017-04-16 02:14:01.000000000 +0300
+@@ -265,6 +265,7 @@ static int build_table(VLC *vlc, int tab
+    'use_static' should be set to 1 for tables, which should be freed
+    with av_free_static(), 0 if ff_free_vlc() will be used.
+ */
++__attribute__((optnone))
+ int ff_init_vlc_sparse(VLC *vlc_arg, int nb_bits, int nb_codes,
+                        const void *bits, int bits_wrap, int bits_size,
+                        const void *codes, int codes_wrap, int codes_size,
+diff -rupN a/libavcodec/mpeg12.c b/libavcodec/mpeg12.c
+--- a/libavcodec/mpeg12.c	2017-04-13 04:55:55.000000000 +0300
++++ b/libavcodec/mpeg12.c	2017-04-16 02:14:11.000000000 +0300
+@@ -67,6 +67,7 @@ static const uint8_t table_mb_btype[11][
+     { 2, 5 }, // 0x1E MB_QUANT|MB_FOR|MB_BACK|MB_PAT
+ };
+ 
++__attribute__((optnone))
+ av_cold void ff_init_2d_vlc_rl(RLTable *rl, unsigned static_size, int flags)
+ {
+     int i;
+diff -rupN a/libavcodec/rl.c b/libavcodec/rl.c
+--- a/libavcodec/rl.c	2017-04-13 04:55:55.000000000 +0300
++++ b/libavcodec/rl.c	2017-04-16 02:14:14.000000000 +0300
+@@ -102,6 +102,7 @@ fail:
+     return AVERROR(ENOMEM);
+ }
+ 
++__attribute__((optnone))
+ av_cold void ff_rl_init_vlc(RLTable *rl, unsigned static_size)
+ {
+     int i, q;

@@ -1,0 +1,104 @@
+pkgname=freetype
+pkgver=2.9.1
+pkgrel=2
+sources=("http://download.savannah.gnu.org/releases/freetype/freetype-$pkgver.tar.bz2")
+hashes=('db8d87ea720ea9d5edc5388fc7a0497bb11ba9fe972245e0f7f4c7e8b1e1e84d')
+
+if [ -e "$outdir/.pkgs/harfbuzz" ]; then
+    configopts=(
+        '--disable-shared'
+        "--libdir=$outdir/lib"
+        '--enable-freetype-config'
+        "HARFBUZZ_CFLAGS=-I$outdir/include/harfbuzz"
+        "HARFBUZZ_LIBS=-L$outdir/lib"
+        "LIBPNG_CFLAGS=-I$outdir/include/libpng16"
+        "LIBPNG_LIBS=-L$outdir/lib"
+    )
+elif [ $(( $PKGBUILD_RECURSION_DEPTH )) -ge 1 ]; then
+    configopts=(
+        '--disable-shared'
+        "--libdir=$outdir/lib"
+        '--without-harfbuzz'
+        '--enable-freetype-config'
+        "LIBPNG_CFLAGS=-I$outdir/include/libpng16"
+        "LIBPNG_LIBS=-L$outdir/lib"
+    )
+else
+    error_out "Please, install harfbuzz before building freetype manually"
+fi
+
+cflags_win32="-U__STRICT_ANSI__"
+if [ -e "$outdir/.pkgs/harfbuzz" ]; then
+    ldflags="-L$outdir/lib -lpng -lharfbuzz"
+else
+    ldflags="-L$outdir/lib -lpng"
+fi
+
+build() {
+    msg "Performing pre-build actions"
+    prebuild
+    
+    msg "Configuring %s" "$pkgname"
+    configure
+ 
+    # freetype's build system seems to break if CC is defined in the environment
+    # for the compilation stage
+    unset CC
+   
+    msg "Compiling %s" "$pkgname"
+    compile
+    
+    msg "Installing %s" "$pkgname"
+    copy
+    
+    if [ -e "$outdir/.pkgs/harfbuzz" ]; then    
+        local ret=0
+        
+        msg "Patching %s-config" "$pkgname"
+        logfile="$logdir/$pkgname.freetype-config-patch.log"
+        ret=0
+        case $(getHost) in
+        darwin-macOS)
+            sed -i "" "s,-L$outdir/lib -L$outdir/lib,-L$outdir/lib -lharfbuzz,g" "$outdir/bin/freetype-config" &>"$logfile" || ret=$?
+            if (( $ret == 0 )); then
+                sed -i "" "s,pkg-config --atleast-pkgconfig-version,false,g" "$outdir/bin/freetype-config" &>"$logfile" || ret=$?
+            fi
+        ;;
+        *)
+            sed -i "s,-L$outdir/lib -L$outdir/lib,-L$outdir/lib -lharfbuzz,g" "$outdir/bin/freetype-config" &>"$logfile" || ret=$?
+            if (( $ret == 0 )); then
+                sed -i "s,pkg-config --atleast-pkgconfig-version,false,g" "$outdir/bin/freetype-config" &>"$logfile" || ret=$?
+            fi
+        ;;
+        esac
+        if (( $ret )); then
+            tail -n 20 "$logfile"
+            error "Patching freetype-config failed."
+            exit
+        fi
+        
+        msg "Patching libharfbuzz.la" "$pkgname"
+        logfile="$logdir/$pkgname.libharfbuzz-patch.log"
+        ret=0
+        case $(getHost) in
+        darwin-macOS)
+            sed -i "" "s,$outdir/lib/libfreetype.la,$outdir/lib/libfreetype.la $outdir/lib/libharfbuzz.la,g" "$outdir/lib/libharfbuzz.la" &>"$logfile" || ret=$?
+        ;;
+        *)
+            sed -i "s,$outdir/lib/libfreetype.la,$outdir/lib/libfreetype.la $outdir/lib/libharfbuzz.la,g" "$outdir/lib/libharfbuzz.la" &>"$logfile" || ret=$?
+        ;;
+        esac
+        if (( $ret )); then
+            tail -n 20 "$logfile"
+            error "Patching libharfbuzz.la failed."
+            exit
+        fi
+    fi
+    
+    postbuild
+
+    msg "Finishing %s" "$pkgname"
+}
+
+# vim: set syntax=sh:
+

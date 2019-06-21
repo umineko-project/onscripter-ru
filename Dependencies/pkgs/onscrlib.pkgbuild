@@ -1,0 +1,38 @@
+pkgname=onscrlib
+pkgver=1.0
+pkgrel=1
+type=meta
+
+depends=(
+    'bzip2'
+    'zlib'
+    'libpng'
+    'libogg'
+    'libvorbis'
+    'jpeg'
+    'ffmpeg'
+    'harfbuzz'
+    'freetype'
+    'SDL2'
+    'smpeg2'
+    'SDL2_image'
+    'SDL2_mixer'
+    'SDL2_gpu'
+    'fribidi'
+    'libass'
+)
+
+if [ "$(getTarget)" != "darwin-iOS" ] && [ "$(getTarget)" != "droid" ]; then
+    depends=(${depends[@]} 'lua' 'libusb');
+fi
+
+if [ "$(getTarget)" == "droid" ] && [ "$(getTargetCPU)" != "arm" ]; then
+    depends=(${depends[@]} 'libunwind');
+fi
+
+
+build() {
+    msg "onscrlib built successfully."
+}
+
+# vim: set syntax=sh:

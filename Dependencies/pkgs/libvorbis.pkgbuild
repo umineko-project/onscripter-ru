@@ -1,0 +1,31 @@
+pkgname=libvorbis
+pkgver=1.3.6
+pkgrel=1
+depends=('libogg')
+sources=(
+    "http://downloads.xiph.org/releases/vorbis/libvorbis-$pkgver.tar.xz"
+    'libvorbis-droid-flags.patch'
+)
+hashes=(
+    'af00bb5a784e7c9e69f56823de4637c350643deedaf333d0fa86ecdba6fcb415'
+    '4066a7fcab3c75a3c48b589f712edb0ec2107a5ebac7c955fe0c7c7deb376c37'
+)
+
+cflags_win32="-mstackrealign"
+
+configopts=(
+    '--disable-dependency-tracking'
+    '--disable-shared'
+    "--libdir=$outdir/lib"
+)
+
+prebuild() {
+    pushd "$pkgname-$pkgver" &>/dev/null
+    
+    if [ "$(getTarget)" == "droid" ]; then
+        # Seems to be only necessary for x86-like builds
+        apply_patch "${sources[1]}"
+    fi
+}
+
+# vim: set syntax=sh:

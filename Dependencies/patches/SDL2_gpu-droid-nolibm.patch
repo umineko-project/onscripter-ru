@@ -1,0 +1,15 @@
+diff -rupN a/CMakeLists.txt b/CMakeLists.txt
+--- a/CMakeLists.txt	2017-01-05 08:23:41.000000000 +0300
++++ b/CMakeLists.txt	2017-02-08 22:17:28.000000000 +0300
+@@ -227,11 +227,6 @@ if(NOT STBI_WRITE_FOUND)
+   message(" Using bundled version of stb-image-write")
+ endif(NOT STBI_WRITE_FOUND)
+ 
+-if(NOT WIN32 AND NOT EMSCRIPTEN)
+-  find_library(M_LIB m)
+-  link_libraries(${M_LIB})
+-endif (NOT WIN32 AND NOT EMSCRIPTEN)
+-
+ # Make local includes look in the right places
+ include_directories(include)
+ include_directories(src)

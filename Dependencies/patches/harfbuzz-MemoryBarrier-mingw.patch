@@ -1,0 +1,16 @@
+diff -rupN a/src/hb-atomic-private.hh b/src/hb-atomic-private.hh
+--- a/src/hb-atomic-private.hh	2014-08-11 00:53:50.545330400 +0400
++++ b/src/hb-atomic-private.hh	2014-08-31 13:39:44.509636100 +0400
+@@ -50,12 +50,8 @@
+  * properly.  As such, define a function to wrap the whole
+  * thing. */
+ static inline void _HBMemoryBarrier (void) {
+-#if !defined(MemoryBarrier)
+   long dummy = 0;
+   InterlockedExchange (&dummy, 1);
+-#else
+-  MemoryBarrier ();
+-#endif
+ }
+ 
+ typedef LONG hb_atomic_int_t;

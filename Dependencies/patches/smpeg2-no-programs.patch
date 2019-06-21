@@ -1,0 +1,20 @@
+diff -rupN a/Makefile.am b/Makefile.am
+--- a/Makefile.am	2017-02-04 00:28:27.000000000 +0300
++++ b/Makefile.am	2017-02-04 00:30:28.000000000 +0300
+@@ -90,12 +90,12 @@ video/16bit_mmx.lo: video/16bit_mmx.cpp
+ video/32bit_mmx.lo: video/32bit_mmx.cpp
+ 	$(CXX) -c -o $@ $^ $(CXXFLAGS)
+ 
+-bin_PROGRAMS = plaympeg
++# bin_PROGRAMS = plaympeg
+ 
+ # Sources for plaympeg
+-man_MANS = plaympeg.1
+-plaympeg_SOURCES = plaympeg.c
+-plaympeg_LDADD = libsmpeg2.la
++# man_MANS = plaympeg.1
++# plaympeg_SOURCES = plaympeg.c
++# plaympeg_LDADD = libsmpeg2.la
+ 
+ # M4 macro file for inclusion with autoconf
+ m4datadir = $(datadir)/aclocal

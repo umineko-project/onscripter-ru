@@ -1,0 +1,41 @@
+(
+	{
+		Identifier = com.custom.compilers.llvm.clang.nouveau;
+		BasedOn    = "default:com.apple.compilers.llvm.clang.1_0";
+		Name       = "LVLM / Clang Macports (3.3)";
+		Version    = "com.custom.compilers.llvm.clang.nouveau";
+		Vendor     = "BesplSoft";
+		ExecPath   = "/opt/local/bin/clang";
+		Architectures = (i386);
+		
+		SupportsZeroLink              = No;
+		SupportsPredictiveCompilation = No;
+    	SupportsHeadermaps            = No;
+    	DashIFlagAcceptsHeadermaps    = No;
+
+        Options = (
+        {   Name = SDKROOT;
+            Type = Path;
+            CommandLineArgs = ();
+        },
+        /* overrides */
+        {   Name = arch;
+            CommandLineArgs = ( );
+/* despite overriding arch here, the link command still generates it, so we have to implement it in the compiler too */
+        },
+        {   Name = USE_HEADERMAP;
+            Type = bool;
+            DefaultValue = NO;
+        },
+        {   Name = PREBINDING; /* this override doesn't work */
+            Type = bool;
+            DefaultValue = NO;
+        },
+        {   Name = WARNING_CFLAGS;
+            CommandLineArgs = ( );
+        },
+
+		);
+
+	}
+)

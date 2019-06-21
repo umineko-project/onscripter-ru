@@ -1,0 +1,31 @@
+Copyright (c) 2001-2011 Ogapee. All rights reserved.
+ogapee@aqua.dti2.ne.jp
+
+Copyright (c) 2008-2011 "Uncle" Mion Sonozaki
+UncleMion@gmail.com
+
+Copyright (c) 2011-2019 Umineko Project. All rights reserved.
+m@umineko-project.org
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+A copy of the GNU General Public License is included along with
+this program in LICENSE-GPLv2 file.
+
+All code subject of exclusive ownership of Umineko Project may
+also be licensed under the terms of BSD 3-Clause License included
+in LICENSE-BSD file.
+
+As an exception, originally stated by Ogapee, Studio Oga, it is
+allowed to release games based on this engine in DRM-protected stores
+such as Apple App Store for macOS, iOS, and iPadOS as long as
+all the modifications are available for public on the source level.
+Refer to https://onscripter.osdn.jp/ios for more details.

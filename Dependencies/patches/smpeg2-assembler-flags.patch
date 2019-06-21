@@ -1,0 +1,11 @@
+--- a/configure.in	(revision 391)
++++ b/configure.in	(working copy)
+@@ -26,8 +26,6 @@
+ AC_SUBST(BINARY_AGE)
+ AC_SUBST(VERSION)
+ 
+-ASFLAGS=""
+-CCASFLAGS=""
+ AC_SUBST(ASFLAGS)
+ AC_SUBST(CCASFLAGS)
+ 
