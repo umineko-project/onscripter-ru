@@ -2,7 +2,7 @@ pkgname=SDL2
 pkgver=2.0.8
 pkgrel=3
 sources=(
-    "http://libsdl.org/release/SDL2-$pkgver.tar.gz"
+    "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/SDL2-$pkgver.tar.gz"
     'SDL2-disable-libs.patch'
     'SDL2-cpuinfo-flags.patch'
     'SDL2-windows-haptic.patch'

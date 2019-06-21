@@ -2,7 +2,7 @@ pkgname=zlib
 pkgver=1.2.11
 pkgrel=1
 sources=(
-    "http://zlib.net/zlib-$pkgver.tar.xz"
+    "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/zlib-$pkgver.tar.xz"
     'zlib-windows-configure.patch'
 )
 

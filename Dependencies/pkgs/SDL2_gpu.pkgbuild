@@ -8,7 +8,7 @@ sources=(
 hashes=(
     'a5442a599192808d0e815a74e22458947a7b58ca2a38b451115e65058fc9b14a'
 )
-giturl=https://github.com/vit9696/sdl-gpu
+giturl=https://github.com/umineko-project/sdl-gpu
 githash=b4f0a8ee49cd62fcd43287cc8b2faf3f94d860fa
 
 if [ "$(getTarget)" != "darwin-iOS" ] && [ "$(getTarget)" != "droid" ]; then

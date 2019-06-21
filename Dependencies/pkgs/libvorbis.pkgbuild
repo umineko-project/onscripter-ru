@@ -3,7 +3,7 @@ pkgver=1.3.6
 pkgrel=1
 depends=('libogg')
 sources=(
-    "http://downloads.xiph.org/releases/vorbis/libvorbis-$pkgver.tar.xz"
+    "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/libvorbis-$pkgver.tar.xz"
     'libvorbis-droid-flags.patch'
 )
 hashes=(

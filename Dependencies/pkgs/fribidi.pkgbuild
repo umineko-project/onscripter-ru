@@ -1,9 +1,8 @@
 pkgname=fribidi
 pkgver=1.0.4
-sha512=435bd48c48ec3c2dc1f1266e401abdbd400d2202b55df6367dbe84580c21e4aa73205058324cf630dfec365733d3e0ac186d14608baa1c9f63231875fb7cc525
 pkgrel=1
 depends=('freetype')
-sources=("https://src.fedoraproject.org/repo/pkgs/fribidi/fribidi-${pkgver}.tar.bz2/sha512/${sha512}/fribidi-${pkgver}.tar.bz2")
+sources=("https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/fribidi-${pkgver}.tar.bz2")
 hashes=('94bdfe553e004d8bd095b109e182682311dd511740d5083326d1582f1df237be')
 
 configopts=(

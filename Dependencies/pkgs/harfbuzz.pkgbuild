@@ -3,7 +3,7 @@ pkgver=1.8.1
 pkgrel=1
 depends=('freetype')
 sources=(
-    "https://ftp.netbsd.org/pub/pkgsrc/distfiles/libreoffice/harfbuzz-1.8.1.tar.bz2"
+    "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/harfbuzz-1.8.1.tar.bz2"
     'harfbuzz-MemoryBarrier-mingw.patch'
 )
 hashes=(

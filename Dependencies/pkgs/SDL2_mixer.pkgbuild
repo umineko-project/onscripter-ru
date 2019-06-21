@@ -3,7 +3,7 @@ pkgver=2.0.2
 pkgrel=3
 depends=('SDL2' 'libogg' 'libvorbis' 'smpeg2')
 sources=(
-    "http://www.libsdl.org/projects/SDL_mixer/release/$pkgname-$pkgver.tar.gz"
+    "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/$pkgname-$pkgver.tar.gz"
     'SDL2_mixer-no-programs.patch'
     'SDL2_mixer-no-locks.patch'
 )

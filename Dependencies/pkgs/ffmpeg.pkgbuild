@@ -7,7 +7,7 @@ depends=(
     'bzip2'
 )
 sources=(
-    "http://ffmpeg.org/releases/ffmpeg-$pkgver.tar.bz2"
+    "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/ffmpeg-$pkgver.tar.bz2"
     'ffmpeg-compact-unwind.patch'
     'ffmpeg-droid-noebp.patch'
 )

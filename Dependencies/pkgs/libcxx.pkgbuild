@@ -5,7 +5,7 @@ depends=('libcxxabi')
 # Do not rush with 6.0.x branch:
 # https://trac.macports.org/ticket/55705
 sources=(
-    "http://releases.llvm.org/${pkgver}/${pkgname}-${pkgver}.src.tar.xz"
+    "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/${pkgname}-${pkgver}.src.tar.xz"
 )
 hashes=(
     '6edf88e913175536e1182058753fff2365e388e017a9ec7427feb9929c52e298'

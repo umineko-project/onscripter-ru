@@ -5,7 +5,7 @@ pkgrel=1
 # https://github.com/anholt/libepoxy/issues/160
 # https://github.com/anholt/libepoxy/issues/180
 sources=(
-    "http://github.com/anholt/$pkgname/releases/download/$pkgver/$pkgname-$pkgver.tar.xz"
+    "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/$pkgname-$pkgver.tar.xz"
 )
 hashes=(
 	'0b808a06c9685a62fca34b680abb8bc7fb2fda074478e329b063c1f872b826f6'

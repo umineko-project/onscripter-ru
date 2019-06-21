@@ -3,7 +3,7 @@ pkgver=2.0.3
 pkgrel=1
 depends=('SDL2' 'jpeg' 'libpng')
 sources=(
-    "http://www.libsdl.org/projects/SDL_image/release/$pkgname-$pkgver.tar.gz"
+    "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/$pkgname-$pkgver.tar.gz"
     'SDL2_image-no-programs.patch'
 )
 hashes=(
