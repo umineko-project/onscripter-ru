@@ -23,7 +23,7 @@ depends=(
 )
 
 if [ "$(getTarget)" != "darwin-iOS" ] && [ "$(getTarget)" != "droid" ]; then
-    depends=(${depends[@]} 'lua' 'libusb');
+    depends=(${depends[@]} 'lua' 'libusb' 'libepoxy');
 fi
 
 if [ "$(getTarget)" == "droid" ] && [ "$(getTargetCPU)" != "arm" ]; then
