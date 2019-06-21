@@ -1,0 +1,140 @@
+1) breakup.dll (sprite appearing/disappearing - circles); parameters:
+	print 99,A,"breakup.dll/BCD"
+		A - time in milliseconds
+		B - vertical direction: u(top), l(bottom)
+		C - horizontal direction: l(left), r(right)
+		D - type: (b)breakup, (p)accumulate; B/P are reversed directions
+
+2) snow.dll (falling objects); parameters:
+
+	a)	setlayer A,B,"snow.dll"
+		A - layer number
+		B - update frequency in milliseconds
+	b)	layermessage A,"B"
+		A - layer number
+		B - message type:
+			e	Resets current definition buffers; images and movement settings are preserved.
+				layermessage A,"e"
+			f	Defines that all the objects can be displayed now with the current settings.
+				layermessage A,"f"
+			g	Returns current movement parameters (can be retrieved by getret).
+				layermessage A,"g"
+				;getret $variable
+				;debug_string $variable
+			h	Suspends object adding, can be resumed by "r".
+				layermessage A,"h"
+			i	Loads three 24-bit images as the objects. You can use lsp numbers here; bottom left colour will be your alpha.
+				layermessage A,"i|rain1.bmp,rain2.bmp,rain3.bmp"
+			n	Returns the number of objects on the screen (can be retrieved by getret).
+				layermessage A,"n"
+			p	Suspends object movement and adding, can be resumed by "r".
+				layermessage A,"p"
+			r	Resumes the proccess.
+				layermessage A,"r"
+			s	Set object parameters.
+				layermessage A,"s|C,D,E,F,G"
+				C - interval between object additions (1 ~ 10000) (frames)
+				D - fall (Y) speed (1 ~ screen_height) (pixels/frame)
+				E - wind (X) speed (-screen_width/2 ~ +screen_width/2) (pixels/frame)
+				F - oscillation amplitude (0 ~ screen_width/2 (pixels)
+				G - oscillation speed? how far to move on the sin curve per frame? (0 ~ 359) (degrees/frame)
+			t	Same as "s", but the values are relative to the current ones; always call "s" first.
+				layermessage A,"t|C,D,E,F,G"
+			x	Erases current images from the memory and resets all the definition buffers; movement settings are preserved.
+				layermessage A,"x"
+	c)	lsp A,"*B",C,D
+		A - sprite number
+		B - layer number
+		C - 0 (not working correctly)
+		D - Y top value
+		layer z-order; x and y values can be omitted
+
+3) trvswave.dll (sprite appearing/disappearing - wave); parameters:
+	print 99,A,"trvswave.dll/B"
+		A - time in milliseconds
+		B - h (does nothing)
+
+4) cascade.dll (sprite appearing/disappearing - cascade); parameters:
+	print 99,A,"trvswave.dll/BC"
+		A - time in milliseconds
+		B - moving direction: u(up), d(down), l(left), r(right)
+		C - appearance: i(in), o(out), x(cross)
+
+5) whirl.dll (sprite appearing/disappearing - whirling); parameters:
+	print 99,A,"trvswave.dll/B"
+		A - time in milliseconds
+		B - direction l(left), r(right)
+
+6) hana.dll (falling objects); parameters:
+
+	a)	setlayer A,B,"hana.dll"
+		A - layer number
+		B - update frequency in milliseconds
+	b)	layermessage A,"B"
+		A - layer number
+		B - message type:
+			e	Resets current definition buffers; images and movement settings are preserved.
+				layermessage A,"e"
+			f	Defines that all the objects can be displayed now with the current settings.
+				layermessage A,"f"
+			g	Returns current movement parameters (can be retrieved by getret).
+				layermessage A,"g"
+				;getret $variable
+				;debug_string $variable
+			h	Suspends object adding, can be resumed by "r".
+				layermessage A,"h"
+			i	Loads three 24-bit images as the objects. You can use sprite numbers here; bottom left colour will be your alpha.
+				You should also specify the number of cells in a sprite as a following param.
+				If lsp sprite was used you must specify the number of cells there and it will have a higher priority.
+				layermessage A,"i|rain1.bmp,2,rain2.bmp,2,rain3.bmp,2"
+			n	Returns the number of objects on the screen (can be retrieved by getret).
+				layermessage A,"n"
+			p	Suspends object movement and adding, can be resumed by "r".
+				layermessage A,"p"
+			r	Resumes the proccess.
+				layermessage A,"r"
+			s	Set object parameters.
+				layermessage A,"s|C,D,E,F,G"
+				C - interval between object additions (1 ~ 10000) (frames)
+				D - fall (Y) speed (1 ~ screen_height) (pixels/frame)
+				E - wind (X) speed (-screen_width/2 ~ +screen_width/2) (pixels/frame)
+				F - oscillation amplitude (0 ~ screen_width/2 (pixels)
+				G - oscillation speed? how far to move on the sin curve per frame? (0 ~ 359) (degrees/frame)
+			t	Same as "s", but the values are relative to the current ones; always call "s" first.
+				layermessage A,"t|C,D,E,F,G"
+			x	Erases current images from the memory and resets all the definition buffers; movement settings are preserved.
+				layermessage A,"x"
+	c)	lsp A,"*B",C,D
+		A - sprite number
+		B - layer number
+		C - 0 (not working correctly)
+		D - Y top value
+		layer z-order; x and y values can be omitted
+
+7) oldmovie.dll (rubbish on the screen); parameters:
+
+	a)	setlayer A,B,"oldmovie.dll/C"
+		A - layer number
+		B - update frequency in milliseconds
+		C - mode indicates whether to advance the frame each time repaint is requested. 1(advance), 0 or omit(not advance).
+	b)	layermessage A,"B"
+		A - layer number
+		B - message type:
+			s	Set object parameters.
+				layermessage A,"s|C,D,E,F,G,H"
+				C - blur degree (0 ~ 3)
+				D - noise degree (0 ~ 24)
+				E - flash degree (0 ~ 24)
+				F - amount of flash to display at once multiplied by 100 (0 ~ 400) (-1 to disable)
+				G - amount of dust to display at once multiplied by 100 (0 ~ 400) (-1 to disable)
+				H - sprite number with noise
+	c)	lsp A,"*B",C,D
+		A - sprite number
+		B - layer number
+		C - X left value
+		D - Y top value
+		layer z-order; x and y values can be omitted
+	d)	lsph A,"B",0,0
+		A - sprite number
+		B - sprite string with a number of cells
+	e)	You can use vsp and allsphide to hide and display the layer. Use csp to remove the layer.
