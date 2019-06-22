@@ -1,19 +1,17 @@
 pkgname=SDL2
-pkgver=2.0.8
-pkgrel=3
+pkgver=2.0.9
+pkgrel=1
 sources=(
     "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/SDL2-$pkgver.tar.gz"
     'SDL2-disable-libs.patch'
-    'SDL2-cpuinfo-flags.patch'
     'SDL2-windows-haptic.patch'
     'SDL2-droid-noglctx-handle.patch'
     'SDL2-eventloop-mac.patch'
     'SDL2-force-metal-ios.patch'
 )
 hashes=(
-    'edc77c57308661d576e843344d8638e025a7818bff73f8fbfab09c3c5fd092ec'
-    'e59b137a3fa45c5d11d76c1b2bdf1d0d99eb266dc755831380752f3b09fa9a28'
-    '8e141e9dc97d36cefe49f0b7cb73433e43a8fbb9aad864a27304346ffcd3f1a2'
+    '255186dc676ecd0c1dbf10ec8a2cc5d6869b5079d8a38194c2aecdff54b324b1'
+    '1564340e7f6c1eb95eb2e64e55be3bfa70e0faa89c92af4b915b500e3d21946d'
     '3b1f02d495e299dce066a21f64936ea588052856f11b5e5b490adc414a80bcae'
     'd6aedf087de4334584c5c82af29b644d96d7c023ad7c3acffe14cc7002fb02a6'
     '8d86b718ec4ebea6cc49d7457d02cc23eef90a73ef325dadf462e03bc15673b6'
@@ -62,17 +60,16 @@ prebuild() {
     
     apply_patch "${sources[1]}"
     apply_patch "${sources[2]}"
-    apply_patch "${sources[3]}"
     # This is necessary because SDL_GL_MakeCurrent is not thread-safe
-    apply_patch "${sources[4]}"
+    apply_patch "${sources[3]}"
     
     case $(getTarget) in
         darwin-iOS)
+            apply_patch "${sources[4]}"
             apply_patch "${sources[5]}"
-            apply_patch "${sources[6]}"
         ;;
         darwin-macOS)
-            apply_patch "${sources[5]}"
+            apply_patch "${sources[4]}"
         ;;
         droid)
             export CC="$(getCC)"

@@ -1,7 +1,7 @@
 diff -rupN a/configure.in b/configure.in
---- a/configure.in	2017-10-23 22:27:45.000000000 +0300
-+++ b/configure.in	2017-11-04 01:12:19.000000000 +0300
-@@ -234,7 +234,8 @@ if test x$enable_libc = xyes; then
+--- a/configure.in	2018-10-31 18:07:22.000000000 +0300
++++ b/configure.in	2019-06-22 12:44:51.000000000 +0300
+@@ -241,7 +241,8 @@ if test x$enable_libc = xyes; then
  
      dnl Check for C library headers
      AC_HEADER_STDC
@@ -11,9 +11,9 @@ diff -rupN a/configure.in b/configure.in
  
      dnl Check for typedefs, structures, etc.
      AC_TYPE_SIZE_T
-@@ -273,13 +274,13 @@ if test x$enable_libc = xyes; then
+@@ -280,13 +281,13 @@ if test x$enable_libc = xyes; then
      AC_CHECK_LIB(m, pow, [LIBS="$LIBS -lm"; EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lm"])
-     AC_CHECK_FUNCS(atan atan2 acos asin ceil copysign cos cosf fabs floor log pow scalbn sin sinf sqrt sqrtf tan tanf)
+     AC_CHECK_FUNCS(acos acosf asin asinf atan atanf atan2 atan2f ceil ceilf copysign copysignf cos cosf exp expf fabs fabsf floor floorf fmod fmodf log logf log10 log10f pow powf scalbn scalbnf sin sinf sqrt sqrtf tan tanf)
  
 -    AC_CHECK_LIB(iconv, iconv_open, [LIBS="$LIBS -liconv"; EXTRA_LDFLAGS="$EXTRA_LDFLAGS -liconv"])
 -    AC_CHECK_FUNCS(iconv)
@@ -22,18 +22,18 @@ diff -rupN a/configure.in b/configure.in
  
      AC_CHECK_MEMBER(struct sigaction.sa_sigaction,[AC_DEFINE([HAVE_SA_SIGACTION], 1, [ ])], ,[#include <signal.h>])
  
- 	dnl Check for additional non-standard headers
+     dnl Check for additional non-standard headers
 -    AC_CHECK_HEADERS(libunwind.h)
 +    #AC_CHECK_HEADERS(libunwind.h)
  fi
  
  dnl AC_CHECK_SIZEOF(void*)
-@@ -2972,7 +2973,7 @@ AC_HELP_STRING([--enable-directx], [use 
+@@ -3046,7 +3047,7 @@ AC_HELP_STRING([--enable-directx], [use 
                    , enable_directx=yes)
      if test x$enable_directx = xyes; then
          AC_CHECK_HEADER(d3d9.h, have_d3d=yes)
 -        AC_CHECK_HEADER(d3d11_1.h, have_d3d11=yes)
-+        # AC_CHECK_HEADER(d3d11_1.h, have_d3d11=yes)
++        #AC_CHECK_HEADER(d3d11_1.h, have_d3d11=yes)
          AC_CHECK_HEADER(ddraw.h, have_ddraw=yes)
          AC_CHECK_HEADER(dsound.h, have_dsound=yes)
          AC_CHECK_HEADER(dinput.h, have_dinput=yes)

@@ -1,5 +1,5 @@
 pkgname=SDL2_image
-pkgver=2.0.3
+pkgver=2.0.4
 pkgrel=1
 depends=('SDL2' 'jpeg' 'libpng')
 sources=(
@@ -7,7 +7,7 @@ sources=(
     'SDL2_image-no-programs.patch'
 )
 hashes=(
-    '3510c25da735ffcd8ce3b65073150ff4f7f9493b866e85b83738083b556d2368'
+    'e74ec49c2402eb242fbfa16f2f43a19582a74c2eabfbfb873f00d4250038ceac'
     'de84e8ba37cc07dd73cc778a9803b46fe7a4dcc23e81b1608e608d91a9dc4f6a'
 )
 

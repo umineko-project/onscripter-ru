@@ -22,7 +22,6 @@ hashes=(
     'b09ea3d016afdf6a62d0f5d9c48a92e142ee768250e8ed99f223460685632168'
     '1749da9868f3cb57d699fffbcaeea78a430a60839b1ebf11962f1f71e49a9bbc'
 )
-svnurl=svn://svn.icculus.org/smpeg/trunk
 
 cflags="-O3"
 
@@ -72,5 +71,3 @@ postbuild() {
 }
 
 # vim: set syntax=sh:
-
-

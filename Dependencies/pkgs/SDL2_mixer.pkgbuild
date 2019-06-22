@@ -2,6 +2,10 @@ pkgname=SDL2_mixer
 pkgver=2.0.2
 pkgrel=3
 depends=('SDL2' 'libogg' 'libvorbis' 'smpeg2')
+# TODO: Upgrade SDL2_mixer in some future:
+# 2.0.3 release is not available for downloading
+# 2.0.4 dropped smpeg (mp3) support in favour of smpeg123,
+#       which we do not have in dependencies (yet).
 sources=(
     "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/$pkgname-$pkgver.tar.gz"
     'SDL2_mixer-no-programs.patch'
