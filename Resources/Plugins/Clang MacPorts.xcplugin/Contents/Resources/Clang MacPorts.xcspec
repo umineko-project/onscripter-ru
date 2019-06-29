@@ -2194,7 +2194,7 @@
 		FallbackTools = (
 			"com.apple.compilers.llvmgcc42",
 		);
-		ExecPath = "$(CLANG)++";
+		ExecPath = "$(CLANG)";
 		SupportsGeneratePreprocessedFile = YES;
 		SupportsGenerateAssemblyFile = YES;
 		CommandResultsPostprocessor = "XCClangResultsPostprocessor";
