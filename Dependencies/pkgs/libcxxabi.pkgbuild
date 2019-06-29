@@ -1,13 +1,11 @@
 pkgname=libcxxabi
-pkgver=5.0.2
+pkgver=8.0.0
 pkgrel=1
-# Do not rush with 6.0.x branch:
-# https://trac.macports.org/ticket/55705
 sources=(
     "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/${pkgname}-${pkgver}.src.tar.xz"
 )
 hashes=(
-    '1bbf9bf2c92a4d627dd7bb7a15166acecae924b19898dc0573244f9d533a978a'
+    'c2d6de9629f7c072ac20ada776374e9e3168142f20a46cdb9d6df973922b07cd'
 )
 
 prebuild() {
@@ -21,9 +19,16 @@ configure() {
     local ret=0
     local logfile="$logdir/$pkgname.cmake.log"
 
-    export CC="$(ls /opt/local/bin/clang-mp*)"
-    export CXX="$(ls /opt/local/bin/clang++-mp*)"
-    llvmconfig="$(ls /opt/local/bin/llvm-config-mp*)"
+    if [ -x /opt/clang/bin/clang ]; then
+        export CC="/opt/clang/bin/clang"
+        export CXX="/opt/clang/bin/clang++"
+        llvmconfig="/opt/clang/bin/llvm-config"
+    else
+        export CC="$(ls /opt/local/bin/clang-mp*)"
+        export CXX="$(ls /opt/local/bin/clang++-mp*)"
+        llvmconfig="$(ls /opt/local/bin/llvm-config-mp*)"
+    fi
+
     lcf="$CFLAGS ${cflags[@]} $CFLAGS_EXTRA"
     lcxf="$CPPFLAGS ${cppflags[@]} $CPPFLAGS_EXTRA"
 

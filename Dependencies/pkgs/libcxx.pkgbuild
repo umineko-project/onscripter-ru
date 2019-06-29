@@ -1,17 +1,21 @@
 pkgname=libcxx
-pkgver=5.0.2
+pkgver=8.0.0
 pkgrel=1
 depends=('libcxxabi')
-# Do not rush with 6.0.x branch:
-# https://trac.macports.org/ticket/55705
 sources=(
     "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/${pkgname}-${pkgver}.src.tar.xz"
+    'libcxx-snow-leo.patch'
 )
 hashes=(
-    '6edf88e913175536e1182058753fff2365e388e017a9ec7427feb9929c52e298'
+    'c2902675e7c84324fb2c1e45489220f250ede016cc3117186785d9dc291f9de2'
+    '8d32757ce846c1a31c2143a3a187eb1ce24e858a1fde959f6716740a1e51f856'
 )
 
 prebuild() {
+    pushd "$pkgname-$pkgver.src" &>/dev/null
+    apply_patch "${sources[1]}"
+    popd &>/dev/null
+
     mkdir -p "$pkgname-$pkgver"
     pushd "$pkgname-$pkgver" &>/dev/null
 }
@@ -22,9 +26,16 @@ configure() {
     local ret=0
     local logfile="$logdir/$pkgname.cmake.log"
 
-    export CC="$(ls /opt/local/bin/clang-mp*)"
-    export CXX="$(ls /opt/local/bin/clang++-mp*)"
-    llvmconfig="$(ls /opt/local/bin/llvm-config-mp*)"
+    if [ -x /opt/clang/bin/clang ]; then
+        export CC="/opt/clang/bin/clang"
+        export CXX="/opt/clang/bin/clang++"
+        llvmconfig="/opt/clang/bin/llvm-config"
+    else
+        export CC="$(ls /opt/local/bin/clang-mp*)"
+        export CXX="$(ls /opt/local/bin/clang++-mp*)"
+        llvmconfig="$(ls /opt/local/bin/llvm-config-mp*)"
+    fi
+
     lcf="$CFLAGS ${cflags[@]} $CFLAGS_EXTRA"
     lcxf="$CPPFLAGS ${cppflags[@]} $CPPFLAGS_EXTRA"
 

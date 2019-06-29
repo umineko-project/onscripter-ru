@@ -1,0 +1,21 @@
+diff -rupN a/lib/CMakeLists.txt b/lib/CMakeLists.txt
+--- a/lib/CMakeLists.txt	2019-01-06 09:14:31.000000000 +0300
++++ b/lib/CMakeLists.txt	2019-06-29 19:09:29.000000000 +0300
+@@ -149,9 +149,14 @@ if (LIBCXX_OSX_REEXPORT_LIBCXXABI_SYMBOL
+   endif()
+ 
+   if ( CMAKE_OSX_DEPLOYMENT_TARGET STREQUAL "10.6" )
+-    message(FATAL_ERROR "Mac OSX 10.6 is not supported anymore as a deployment "
+-                        "target. If you need support for this, please contact "
+-                        "the libc++ maintainers.")
++    add_definitions(-D__STRICT_ANSI__)
++    add_link_flags(
++      "-compatibility_version 1"
++      "-current_version 1"
++      "-install_name /usr/lib/libc++.1.dylib"
++      "-Wl,-reexport_library,/usr/lib/libc++abi.dylib"
++      "-Wl,-unexported_symbols_list,${CMAKE_CURRENT_SOURCE_DIR}/libc++unexp.exp"
++      "/usr/lib/libSystem.B.dylib")
+   else()
+     if ("armv7" IN_LIST CMAKE_OSX_ARCHITECTURES)
+       set(RE_EXPORT_LIST "${CMAKE_CURRENT_SOURCE_DIR}/libc++sjlj-abi.exp")
