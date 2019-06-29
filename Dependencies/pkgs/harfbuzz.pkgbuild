@@ -4,11 +4,11 @@ pkgrel=1
 depends=('freetype')
 sources=(
     "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/harfbuzz-${pkgver}.tar.xz"
-    'harfbuzz-MemoryBarrier-mingw.patch'
+    'harfbuzz-multithread-mingw.patch'
 )
 hashes=(
     '7c8fcf9a2bbe3df5ed9650060d89f9b7cfd40ec5729671447ace8b0505527e8b'
-    'f6e210663ac1ce2411629d355c51ba54bfd3595b58b991883628c0de8ff1663f'
+    '9b54df6b3b095b639906009d749132104c3e6ce0143d66b3cac7f01a9d1810bd'
 )
 
 configopts=(
@@ -31,7 +31,8 @@ fi
 
 prebuild() {
     pushd "$pkgname-$pkgver" &>/dev/null
-    
+    apply_patch "${sources[1]}"
+
     # harfbuzz requires insisting on our architecture, all configure options, cflags and ldflags are ignored 
     case $(getTarget) in
     darwin*)
@@ -43,7 +44,6 @@ prebuild() {
         export CXX="$(getCXX)"
     ;;
     win32)
-        apply_patch "${sources[1]}"
         autoconf
     ;;
     esac
