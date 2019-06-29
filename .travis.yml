@@ -1,0 +1,194 @@
+language: cpp
+
+# We depend on revision numbering here
+git:
+  depth: false
+
+matrix:
+  include:
+  - os: osx
+    name: "macOS build"
+    # It is important to use Xcode 9.4 as we need 32-bit support.
+    osx_image: xcode9.4
+    compiler: clang
+    script:
+      # Preparatory actions
+      - BUILD=$(($(git rev-list --count --first-parent HEAD)+3500))
+      - echo "Build number ${BUILD}"
+      - chmod a+x configure
+      - mkdir -p ciout
+      # Disable compiler overrides as they cause problems
+      - unset CC ; unset CXX ; unset CC_FOR_BUILD ; unset CXX_FOR_BUILD
+      # homebrew addon is just broken
+      - HOMEBREW_NO_AUTO_UPDATE=1 brew install yasm
+      # Copy Xcode compiler plugin and activate compatibility with Xcode.
+      - mkdir -p ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-Ins
+      - cp -r Resources/Plugins/Clang\ MacPorts.xcplugin ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-Ins/
+      - XCODEUUID=$(defaults read /Applications/Xcode-9.4.1.app/Contents/Info DVTPlugInCompatibilityUUID)
+      - defaults write ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-Ins/Clang\ MacPorts.xcplugin/Contents/Info.plist DVTPlugInCompatibilityUUIDs -array-add $XCODEUUID
+      # Bootstrap custom clang
+      - curl -OL https://releases.llvm.org/8.0.0/clang+llvm-8.0.0-x86_64-apple-darwin.tar.xz || exit 1
+      - sum=$(shasum -a 256 clang+llvm-8.0.0-x86_64-apple-darwin.tar.xz | cut -f1 -d' ')
+      - expsum="94ebeb70f17b6384e052c47fef24a6d70d3d949ab27b6c83d4ab7b298278ad6f"
+      - if [ "$sum" != "$expsum" ]; then echo "Clang hash $sum does not match $expsum" ; exit 1 ; fi
+      - tar -xf clang+llvm-8.0.0-x86_64-apple-darwin.tar.xz
+      - sudo mkdir -p /opt
+      - sudo mv clang+llvm-8.0.0-x86_64-apple-darwin /opt/clang
+      # Provide support for typeinfo on 10.6
+      - sudo perl -pi -e 'BEGIN{undef $/;} s/(_LIBCPP_AVAILABILITY_TYPEINFO_VTABLE[ ]+\\\n[^\n]+10)\.9/\1.6/;' /opt/clang/include/c++/v1/__config
+      # Build debug build
+      - xcodebuild -target onscripter-ru-osx -configuration Debug || exit 1
+      - mv build/Debug/onscripter-ru-osx.app ciout ; cd ciout
+      - zip -qry onscripter-ru_osx_r${BUILD}_dbg.zip onscripter-ru-osx.app || exit 1
+      - rm -rf onscripter-ru-osx.app ; cd -
+      # Build release build
+      - xcodebuild -target onscripter-ru-osx -configuration Release clean || exit 1
+      - xcodebuild -target onscripter-ru-osx -configuration Release || exit 1
+      - mv build/Release/onscripter-ru-osx.app ciout ; cd ciout
+      - zip -qry onscripter-ru_osx_r${BUILD}.zip onscripter-ru-osx.app || exit 1
+      - rm -rf onscripter-ru-osx.app ; cd -
+
+  - os: linux
+    name: "Linux build"
+    dist: xenial
+
+    addons:
+      apt:
+        packages:
+        - yasm
+        - libreadline-dev
+        - libasound-dev
+        - libgl1-mesa-dev
+        - libegl1-mesa-dev
+        - libxrandr-dev
+
+    script:
+      - BUILD=$(($(git rev-list --count --first-parent HEAD)+3500))
+      - echo "Build number ${BUILD}"
+      - chmod a+x configure
+      - mkdir -p ciout
+      # Build develop build
+      - ./configure || exit 1
+      - make -j $(getconf _NPROCESSORS_ONLN) || exit 1
+      - mv DerivedData/Posix-x86_64/onscripter-ru ciout ; cd ciout
+      - zip -qry onscripter-ru_linux64_r${BUILD}_dev.zip onscripter-ru || exit 1
+      - rm onscripter-ru ; cd ..
+      # Build release build
+      - ./configure --release-build --strip-binary || exit 1
+      - make clean || exit 1
+      - make -j $(getconf _NPROCESSORS_ONLN) || exit 1
+      - mv DerivedData/Posix-x86_64/onscripter-ru ciout ; cd ciout
+      - zip -qry onscripter-ru_linux64_r${BUILD}.zip onscripter-ru || exit 1
+      - rm onscripter-ru ; cd ..
+
+  - os: osx
+    # Should not be important here, as we target Windows
+    name: "Windows build"
+    osx_image: xcode9.4
+    compiler: clang
+    script:
+      # Preparatory actions
+      - BUILD=$(($(git rev-list --count --first-parent HEAD)+3500))
+      - echo "Build number ${BUILD}"
+      - chmod a+x configure
+      - mkdir -p ciout
+      # Disable compiler overrides as they cause problems
+      - unset CC ; unset CXX ; unset CC_FOR_BUILD ; unset CXX_FOR_BUILD
+      # homebrew addon is just broken
+      - HOMEBREW_NO_AUTO_UPDATE=1 brew install yasm mingw-w64
+      # Set compilers compatible with Windows
+      - export CC=i686-w64-mingw32-gcc
+      - export CXX=i686-w64-mingw32-g++
+      - export LD=i686-w64-mingw32-ld
+      - export AR=i686-w64-mingw32-ar
+      - export RANLIB=i686-w64-mingw32-ranlib
+      - export AS=i686-w64-mingw32-as
+      - chmod a+x configure
+      # Build develop build
+      - ./configure --cross=i686-w64-mingw32 || exit 1
+      - make -j $(getconf _NPROCESSORS_ONLN) || exit 1
+      - mv DerivedData/MinGW-i686/onscripter-ru.exe ciout ; cd ciout
+      - zip -qry onscripter-ru_win_r${BUILD}_dev.zip onscripter-ru.exe || exit 1
+      - rm onscripter-ru.exe ; cd ..
+      # Build release build
+      - ./configure --cross=i686-w64-mingw32 --release-build --strip-binary || exit 1
+      - make clean || exit 1
+      - make -j $(getconf _NPROCESSORS_ONLN) || exit 1
+      - mv DerivedData/MinGW-i686/onscripter-ru.exe ciout ; cd ciout
+      - zip -qry onscripter-ru_win_r${BUILD}.zip onscripter-ru.exe || exit 1
+      - rm onscripter-ru.exe ; cd ..
+
+  - os: linux
+    name: "Android build"
+    dist: xenial
+    addons:
+      apt:
+        packages:
+        - yasm
+        - libreadline-dev
+        - libasound-dev
+        - libgl1-mesa-dev
+        - libegl1-mesa-dev
+        - libxrandr-dev
+    script:
+      - BUILD=$(($(git rev-list --count --first-parent HEAD)+3500))
+      - echo "Build number ${BUILD}"
+      - chmod a+x configure
+      - mkdir -p ciout
+      # Disable compiler overrides as they cause problems
+      - unset CC ; unset CXX ; unset CC_FOR_BUILD ; unset CXX_FOR_BUILD
+      # Build develop build
+      - ./Scripts/quickdroid.tool --normal || exit 1
+      - mv DerivedData/Droid-package/onscripter-ru.apk ciout ; cd ciout
+      - zip -qry onscripter-ru_droid_r${BUILD}_dev.zip onscripter-ru.apk || exit 1
+      - rm onscripter-ru.apk ; cd ..
+      # Build release build
+      - ./Scripts/quickdroid.tool --release || exit 1
+      - mv DerivedData/Droid-package/onscripter-ru.apk ciout ; cd ciout
+      - zip -qry onscripter-ru_droid_r${BUILD}.zip onscripter-ru.apk || exit 1
+      - rm onscripter-ru.apk ; cd ..
+
+  - os: osx
+    name: "iOS build"
+    # It is important to use Xcode 9.4 as we need 32-bit support and define it below.
+    osx_image: xcode9.4
+    compiler: clang
+    script:
+      # Preparatory actions
+      - BUILD=$(($(git rev-list --count --first-parent HEAD)+3500))
+      - echo "Build number ${BUILD}"
+      - chmod a+x configure
+      - mkdir -p ciout
+      # Disable compiler overrides as they cause problems and set our own ones for onscrlib
+      - unset CC ; unset CXX ; unset CC_FOR_BUILD ; unset CXX_FOR_BUILD
+      - export ONSCRLIB_CC="/Applications/Xcode-9.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
+      - export ONSCRLIB_CXX="/Applications/Xcode-9.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"
+      # homebrew addon is just broken
+      - HOMEBREW_NO_AUTO_UPDATE=1 brew install yasm
+      # Build debug build
+      - xcodebuild -target onscripter-ru-ios -configuration Debug CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO || exit 1
+      - cd build/Debug
+      - /bin/bash ../../Scripts/ipabuild.tool "" . || exit 1
+      - cd - ; mv build/Debug/onscripter-ru-ios.ipa ciout ; cd ciout
+      - zip -qry onscripter-ru_ios_r${BUILD}_dbg.zip onscripter-ru-ios.ipa || exit 1
+      - rm -rf onscripter-ru-ios.ipa ; cd -
+      # Build release build
+      - xcodebuild -target onscripter-ru-ios -configuration Release clean || exit 1
+      - xcodebuild -target onscripter-ru-ios -configuration Release CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO || exit 1
+      - cd build/Release
+      - /bin/bash ../../Scripts/ipabuild.tool "" . || exit 1
+      - cd - ; mv build/Release/onscripter-ru-ios.ipa ciout ; cd ciout
+      - zip -qry onscripter-ru_ios_r${BUILD}.zip onscripter-ru-ios.ipa || exit 1
+      - rm -rf onscripter-ru-ios.ipa ; cd -
+
+deploy:
+  provider: releases
+  api_key:
+    secure: YdNKD0o1d7Vh6WuQzLnpyj7Se0/Hnt1aNXPvwscWV1B7+0s1ienQ6OzWSM/2dvQTPVsBAhYXT/3LIia6IxuLEXklMFj4eteGF9lSmP5Q/LpO+aXRU9Vq6RKNqLfkC/hgyeFXnCifhbLF43iMt68WLfsx2xeGFhNENjZ96lBORjtyczVoV1yxH7SF18G1kpbbIVI5oFg4twAc03O2OKd4TR3E956gRkPrXqNwldYOVtiMsNTHKB6VSzR0TQNA61DXAVLjVpOhGcKs5rOLyUEtXphIZ451S+FcRjeKdYSI9/QnhxHCs+WmbHtu8+JiwhSpovEqifABAlvsSUYnxqdCJ+TNtc++M/LIZQ6vn4Uza9DB7rJHUUyo+H/O35qR3AzChX6uUW/cUuwLYUW9yQCTEC7Layp2kwwMezWVfjtBT3GWlWhCguIvgOqKqNtbK8Xff7XEPFuDmXp5hIwIIEZgV43gW0NMoqGXB8r56dNh6D3MIXv4Fz1MoyyIz+nE2N9EZ1AIokN75tN2RfA5vZ+s5G4JqHhzXzouJL+6WoBTeei4ccPjfnQeLvooRE+FJy3GTx+THVlrrButlytVcWmqF0slGQ2YpG387LnfMkvl5n1b8nHa5CiqB+moSJGZ4O9yKxF05T1F5yPmGLF/ucbk7+9qr5oQtao8vdVOM5JBtbw=
+  file_glob: true
+  file: ciout/*.zip
+  name: "ONScripter-RU r${BUILD}"
+  on:
+    tags: false
+    repo: umineko-project/onscripter-ru
+    branch: master
