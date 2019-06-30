@@ -971,8 +971,9 @@ if $CROSS_BUILD; then
     fi
 fi
 
-# Enable boosted compilation with clang
-if [ "$(getCC)" != "gcc" ]; then
+# Enable boosted compilation with clang or anything but MINGW on Windows
+# GCC on Windows causes build failures otherwise.
+if [ "$(getCC)" != "gcc" ] || [ "$(getHost)" != "win32" ]; then
     MAKEOPTS="$MAKEOPTS -j $(getconf _NPROCESSORS_ONLN)"
 fi
 
