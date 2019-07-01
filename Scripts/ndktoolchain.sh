@@ -24,7 +24,7 @@ if [ "$PYTHON" == "" ]; then
     PYTHON="python"
 fi
 
-ndkver="r17b"
+ndkver="r20"
 ndkrel="1"
 ndkstl="libc++"
 ndkhash="invalid"
@@ -80,17 +80,17 @@ case $(uname) in
     Darwin*)
         platform="darwin"
         platformcpu="x86_64"
-        ndkhash="d21072c04ffcf8a723a4dba3837c886bd30c18c0623a4d0ddc53850e2222d27f"
+        ndkhash="2ec06c4576c6ad50a727f0a5fbd0f67563aa6e8b348cff904b029622a470f2f1"
         ;;
     MINGW*)
         platform="windows"
         platformcpu="x86"
-        ndkhash="4f6128ae1d6382a783ef6c8b836e8da94b81aa490dc83ddcd2788bfe27e40a53"
+        ndkhash="7541bacd22f5757b9947314ee71111e18fc7db852ac67b23b7dbace229b941cf"
         ;;
     Linux*)
         platform="linux"
         platformcpu="x86_64"
-        ndkhash="5dfbbdc2d3ba859fed90d0e978af87c71a91a5be1f6e1c40ba697503d48ccecd"
+        ndkhash="57435158f109162f41f2f43d5563d2164e4d5d0364783a9a6fab3ef12cb06ce0"
         ;;
 esac
 
