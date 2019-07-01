@@ -18,11 +18,7 @@ popd &>/dev/null
 
 bundle_dir="$scripts_dir/../Resources/Bundle"
 
-if [ "$1" != "" ]; then
-  SIGNCERT="$1"
-else
-  SIGNCERT="RosatriceTheGolden"
-fi
+SIGNCERT="$1"
 
 if [ "$2" != "" ]; then
   APPDIR="$2"
@@ -52,7 +48,9 @@ for f in *ios*app ; do
   cp -a $f $dir/Payload
   rm -f $dir/Payload/$f/embedded.mobileprovision
   touch $dir/Payload/$f/embedded.mobileprovision
-  codesign --deep -f -s "$SIGNCERT" $dir/Payload/$f
+  if [ "$SIGNCERT" != "" ]; then
+    codesign --deep -f -s "$SIGNCERT" $dir/Payload/$f
+  fi
   pushd $dir &>/dev/null
   zip -qry ../${dir}.ipa *
   popd &>/dev/null
