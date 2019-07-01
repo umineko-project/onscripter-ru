@@ -533,6 +533,7 @@ case "$CXX_TMP:$SYS" in
   *clang*:"Droid")
     LINK_START_GROUP="-Wl,--start-group"
     LINK_END_GROUP="-Wl,--end-group"
+    EXTRACFLAGS="$EXTRACFLAGS -fPIC"
     EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DDROID"
     EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -shared -static-libstdc++"
   ;;
