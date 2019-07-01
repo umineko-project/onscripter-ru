@@ -14,6 +14,7 @@
 #include <SDL2/SDL_gpu.h>
 
 #include <cmath>
+#include <random>
 
 ObjectFallLayer::ObjectFallLayer(uint32_t w, uint32_t h)
     : Layer(w, h) {
@@ -65,7 +66,9 @@ void ObjectFallLayer::setAmount(uint32_t dropNum) {
 	// This specifies the order of the positions along the sky axis to make the drops fall from.
 	// By having a shuffled list rather than just using a rand function to determine the position, we aim for greater "evenness" and avoid empty spots.
 	for (uint32_t i = 0; i < dropNum; i++) dropSpawnOrder.emplace_back(i);
-	std::random_shuffle(dropSpawnOrder.begin(), dropSpawnOrder.end());
+	std::random_device rng;
+	std::default_random_engine urng(rng());
+	std::shuffle(dropSpawnOrder.begin(), dropSpawnOrder.end(), urng);
 }
 
 void ObjectFallLayer::setWind(int32_t factor) {

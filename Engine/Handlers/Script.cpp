@@ -1644,7 +1644,9 @@ int ScriptHandler::findLabel(const char *label) {
 		return -1;
 
 	std::string name(label);
-	std::transform(name.begin(), name.end(), name.begin(), std::ptr_fun<int, int>(std::tolower));
+	std::transform(name.begin(), name.end(), name.begin(), [](char c) {
+		return std::tolower(c);
+	});
 
 	if (labelsByName.count(name) == 0)
 		return -1;
