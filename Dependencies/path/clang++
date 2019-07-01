@@ -1,1 +1,7 @@
-/usr/bin/clang++ "$@"
+if [ "$ONSCRLIB_CXX" = "" ]; then
+  ONSCRLIB_CXX="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"
+  if [ ! -x "$ONSCRLIB_CXX" ]; then
+    ONSCRLIB_CXX="/usr/bin/clang++"
+  fi
+fi
+$ONSCRLIB_CXX "$@"
