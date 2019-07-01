@@ -1,6 +1,6 @@
 pkgname=SDL2
 pkgver=2.0.9
-pkgrel=1
+pkgrel=2
 sources=(
     "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/SDL2-$pkgver.tar.gz"
     'SDL2-disable-libs.patch'
@@ -8,6 +8,7 @@ sources=(
     'SDL2-droid-noglctx-handle.patch'
     'SDL2-eventloop-mac.patch'
     'SDL2-force-metal-ios.patch'
+    'SDL2-sensor-ios.patch'
 )
 hashes=(
     '255186dc676ecd0c1dbf10ec8a2cc5d6869b5079d8a38194c2aecdff54b324b1'
@@ -16,6 +17,7 @@ hashes=(
     'd6aedf087de4334584c5c82af29b644d96d7c023ad7c3acffe14cc7002fb02a6'
     '8d86b718ec4ebea6cc49d7457d02cc23eef90a73ef325dadf462e03bc15673b6'
     '56c704a533320c3f4c61f334420fbc9881938e00c5fd2e5bbc98a6a7309ea9fc'
+    '39ee540876ac2bbd1d9595df186b77a174a0507a048853252e8fd60df1df5f04'
 )
 
 cflags="-O3"
@@ -67,6 +69,7 @@ prebuild() {
         darwin-iOS)
             apply_patch "${sources[4]}"
             apply_patch "${sources[5]}"
+            apply_patch "${sources[6]}"
         ;;
         darwin-macOS)
             apply_patch "${sources[4]}"

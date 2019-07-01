@@ -1,0 +1,16 @@
+diff -rupN a/configure.in b/configure.in
+--- a/configure.in	2018-10-31 18:07:22.000000000 +0300
++++ b/configure.in	2019-07-01 23:34:57.000000000 +0300
+@@ -3791,6 +3791,12 @@ AC_HELP_STRING([--enable-render-d3d], [e
+             SOURCES="$SOURCES $srcdir/src/joystick/steam/*.c"
+             have_joystick=yes
+         fi
++        # Set up files for the sensor library
++        if test x$enable_sensor = xyes; then
++            AC_DEFINE(SDL_SENSOR_COREMOTION, 1, [ ])
++            SOURCES="$SOURCES $srcdir/src/sensor/coremotion/*.m"
++            have_sensor=yes
++        fi
+         # Set up files for the haptic library
+         #if test x$enable_haptic = xyes; then
+         #    SOURCES="$SOURCES $srcdir/src/haptic/darwin/*.c"
