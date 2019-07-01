@@ -1,6 +1,6 @@
 pkgname=SDL2_gpu
 pkgver=0.12.0
-pkgrel=2
+pkgrel=3
 depends=('SDL2')
 sources=(
     'SDL2_gpu-droid-nolibm.patch'
@@ -77,7 +77,7 @@ build() {
             cmake -G "Unix Makefiles" -DSDL_gpu_USE_SYSTEM_EPOXY=ON -DCMAKE_CXX_COMPILER="$(getCXX)" -DCMAKE_C_COMPILER="$(getCC)" -DCMAKE_C_FLAGS="$lcf" -DCMAKE_CXX_FLAGS="$lcxf $cxxstd" $target &>"$logfile" || ret=$?
         ;;
         darwin-iOS)
-            cmake -G "Unix Makefiles" -DSDL_gpu_DISABLE_OPENGL=ON -DSDL_gpu_DISABLE_GLES=OFF -DCMAKE_CXX_COMPILER="$(getCXX)" -DCMAKE_C_COMPILER="$(getCC)" -DCMAKE_C_FLAGS="$lcf" -DCMAKE_CXX_FLAGS="$lcxf" $target &>"$logfile" || ret=$?
+            cmake -G "Unix Makefiles" -DCMAKE_OSX_SYSROOT="/" -DCMAKE_OSX_DEPLOYMENT_TARGET="" -DSDL_gpu_DISABLE_OPENGL=ON -DSDL_gpu_DISABLE_GLES=OFF -DCMAKE_CXX_COMPILER="$(getCXX)" -DCMAKE_C_COMPILER="$(getCC)" -DCMAKE_C_FLAGS="$lcf" -DCMAKE_CXX_FLAGS="$lcxf" $target &>"$logfile" || ret=$?
         ;;
         droid)
             apply_patch "${sources[0]}"
