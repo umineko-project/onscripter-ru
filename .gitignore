@@ -9,6 +9,7 @@ Tools/nscdec/nscdec
 Tools/nscmake/nscmake
 CMakeLists.txt
 /Makefile
+/ciout
 
 # Xcode
 DerivedData
