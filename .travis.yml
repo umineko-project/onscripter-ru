@@ -4,6 +4,9 @@ language: cpp
 git:
   depth: false
 
+# We release every commit, which creates tags, avoid building twice
+if: tag IS blank
+
 matrix:
   include:
   - os: osx
