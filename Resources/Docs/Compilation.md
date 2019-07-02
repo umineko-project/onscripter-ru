@@ -265,13 +265,13 @@ Even though all the Java-dependent files are provided in compiled form you may r
 4. Install the following packages:
     - `tools` (Android SDK Tools)
     - `platform-tools` (Android SDK Platform-tools)
-    - `build-tools;20.0.0` (Android SDK Build-tools)
-    - `platforms;android-20` (Android 4.4.2W.2 (API 20) → SDK Platform (others are not tested))
+    - `build-tools;26.0.0` (Android SDK Build-tools)
+    - `platforms;android-26` (Android 8.0 (API 26) → SDK Platform (others are not tested))
 
     On Windows run android.bat and manually uncheck everything else.  
     On Other platforms you could run the following command:
     ```
-    ./bin/sdkmanager tools platform-tools 'platforms;android-20' 'build-tools;20.0.0'
+    ./bin/sdkmanager tools platform-tools 'platforms;android-26' 'build-tools;26.0.0'
     ```
 
 5. Recompile the resources by running the following command:

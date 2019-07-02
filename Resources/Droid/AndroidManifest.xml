@@ -8,6 +8,18 @@
     <uses-sdk android:minSdkVersion="16" android:targetSdkVersion="16" />
     <!-- OpenGL ES 2.0 (due to npot) -->
     <uses-feature android:glEsVersion="0x00020000" />
+    <!-- Touchscreen support -->
+    <uses-feature
+          android:name="android.hardware.touchscreen"
+          android:required="false" />
+    <!-- Game controller support -->
+    <uses-feature
+        android:name="android.hardware.gamepad"
+        android:required="false" />
+    <!-- External mouse input events -->
+    <uses-feature
+        android:name="android.hardware.type.pc"
+        android:required="false" />
     <!-- Allow writing to external storage for game file access -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!-- Allow access to the vibrator -->
@@ -17,7 +29,8 @@
                  android:allowBackup="true"
                  android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
                  android:hardwareAccelerated="true"
-                 android:debuggable="true" >
+                 android:debuggable="true"
+                 android:resizeableActivity="false" >
         <activity android:name="ONSActivity"
                   android:label="ONScripter-RU"
                   android:configChanges="keyboardHidden|orientation|screenSize"

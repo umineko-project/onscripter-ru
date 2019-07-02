@@ -45,6 +45,10 @@ ONSACTPATH="$PKGPATH/src/ONSActivity.java"
 SDLJPATH="$PKGPATH/src/SDL.java"
 SDLAUDIOPATH="$PKGPATH/src/SDLAudioManager.java"
 SDLCTRLPATH="$PKGPATH/src/SDLControllerManager.java"
+HIDDEVPATH="$PKGPATH/src/HIDDevice.java"
+HIDBLEPATH="$PKGPATH/src/HIDDeviceBLESteamController.java"
+HIDMGRPATH="$PKGPATH/src/HIDDeviceManager.java"
+HIDUSBPATH="$PKGPATH/src/HIDDeviceUSB.java"
 LIBPATH="$PKGPATH/lib"
 BINPATH="$PKGPATH/bin"
 RESPATH="$PKGPATH/res"
@@ -122,7 +126,8 @@ compile_sources() {
   rm -rf "$OBJPATH"
   
   mkdir -p "$OBJPATH"
-  "$JAVAC" -source 1.7 -target 1.7 -classpath "$CLASSPATH" -Xlint:deprecation -d "$OBJPATH" "$SDLACTPATH" "$SDLJPATH" "$SDLAUDIOPATH" "$SDLCTRLPATH" "$ONSACTPATH"
+  "$JAVAC" -source 1.7 -target 1.7 -classpath "$CLASSPATH" -Xlint:deprecation -d "$OBJPATH" "$SDLACTPATH" "$SDLJPATH" "$SDLAUDIOPATH" "$SDLCTRLPATH" "$ONSACTPATH" "$HIDDEVPATH" "$HIDBLEPATH" "$HIDMGRPATH" "$HIDUSBPATH"
+
   if (( $? )); then
     exit 1
   fi
