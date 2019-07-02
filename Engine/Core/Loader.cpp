@@ -811,8 +811,13 @@ int main(int argc, char **argv) {
 			works = initWithPath(FileIO::getPlatformSpecificDir(), hasArchivePath);
 	}
 
-	if (!works)
+	if (!works) {
+#ifdef MACOSX
+		performTerminate("Invalid launch directory!\nTry executing xattr -cr /path/to/onscripter-ru-osx.app");
+#else
 		performTerminate("Invalid launch directory!");
+#endif
+	}
 
 	auto &opts = ons.ons_cfg_options;
 
