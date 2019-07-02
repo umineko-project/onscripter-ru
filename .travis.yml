@@ -10,7 +10,7 @@ if: tag IS blank
 matrix:
   include:
   - os: osx
-    name: "macOS build"
+    name: "macOS build debug"
     # It is important to use Xcode 9.4 as we need 32-bit support.
     osx_image: xcode9.4
     compiler: clang
@@ -44,8 +44,38 @@ matrix:
       - mv build/Debug/onscripter-ru-osx.app ciout ; cd ciout
       - zip -qry onscripter-ru_osx_r${BUILD}_dbg.zip onscripter-ru-osx.app || exit 1
       - rm -rf onscripter-ru-osx.app ; cd -
+
+  - os: osx
+    name: "macOS build release"
+    # It is important to use Xcode 9.4 as we need 32-bit support.
+    osx_image: xcode9.4
+    compiler: clang
+    script:
+      # Preparatory actions
+      - BUILD=$(($(git rev-list --count --first-parent HEAD)+3500))
+      - echo "Build number ${BUILD}"
+      - chmod a+x configure
+      - mkdir -p ciout
+      # Disable compiler overrides as they cause problems
+      - unset CC ; unset CXX ; unset CC_FOR_BUILD ; unset CXX_FOR_BUILD
+      # homebrew addon is just broken
+      - HOMEBREW_NO_AUTO_UPDATE=1 brew install yasm
+      # Copy Xcode compiler plugin and activate compatibility with Xcode.
+      - mkdir -p ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-Ins
+      - cp -r Resources/Plugins/Clang\ MacPorts.xcplugin ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-Ins/
+      - XCODEUUID=$(defaults read /Applications/Xcode-9.4.1.app/Contents/Info DVTPlugInCompatibilityUUID)
+      - defaults write ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-Ins/Clang\ MacPorts.xcplugin/Contents/Info.plist DVTPlugInCompatibilityUUIDs -array-add $XCODEUUID
+      # Bootstrap custom clang
+      - curl -OL https://releases.llvm.org/8.0.0/clang+llvm-8.0.0-x86_64-apple-darwin.tar.xz || exit 1
+      - sum=$(shasum -a 256 clang+llvm-8.0.0-x86_64-apple-darwin.tar.xz | cut -f1 -d' ')
+      - expsum="94ebeb70f17b6384e052c47fef24a6d70d3d949ab27b6c83d4ab7b298278ad6f"
+      - if [ "$sum" != "$expsum" ]; then echo "Clang hash $sum does not match $expsum" ; exit 1 ; fi
+      - tar -xf clang+llvm-8.0.0-x86_64-apple-darwin.tar.xz
+      - sudo mkdir -p /opt
+      - sudo mv clang+llvm-8.0.0-x86_64-apple-darwin /opt/clang
+      # Provide support for typeinfo on 10.6
+      - sudo perl -pi -e 'BEGIN{undef $/;} s/(_LIBCPP_AVAILABILITY_TYPEINFO_VTABLE[ ]+\\\n[^\n]+10)\.9/\1.6/;' /opt/clang/include/c++/v1/__config
       # Build release build
-      - xcodebuild -target onscripter-ru-osx -configuration Release clean || exit 1
       - xcodebuild -target onscripter-ru-osx -configuration Release || exit 1
       - mv build/Release/onscripter-ru-osx.app ciout ; cd ciout
       - zip -qry onscripter-ru_osx_r${BUILD}.zip onscripter-ru-osx.app || exit 1
