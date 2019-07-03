@@ -18,7 +18,6 @@ matrix:
       # Preparatory actions
       - BUILD=$(($(git rev-list --count --first-parent HEAD)+3500))
       - echo "Build number ${BUILD}"
-      - chmod a+x configure
       - mkdir -p ciout
       # Disable compiler overrides as they cause problems
       - unset CC ; unset CXX ; unset CC_FOR_BUILD ; unset CXX_FOR_BUILD
@@ -54,7 +53,6 @@ matrix:
       # Preparatory actions
       - BUILD=$(($(git rev-list --count --first-parent HEAD)+3500))
       - echo "Build number ${BUILD}"
-      - chmod a+x configure
       - mkdir -p ciout
       # Disable compiler overrides as they cause problems
       - unset CC ; unset CXX ; unset CC_FOR_BUILD ; unset CXX_FOR_BUILD
@@ -98,7 +96,6 @@ matrix:
     script:
       - BUILD=$(($(git rev-list --count --first-parent HEAD)+3500))
       - echo "Build number ${BUILD}"
-      - chmod a+x configure
       - mkdir -p ciout
       # Build develop build
       - ./configure || exit 1
@@ -114,21 +111,27 @@ matrix:
       - zip -qry onscripter-ru_linux64_r${BUILD}.zip onscripter-ru || exit 1
       - rm onscripter-ru ; cd ..
 
-  - os: osx
+  - os: linux
     # Should not be important here, as we target Windows
     name: "Windows build"
-    osx_image: xcode9.4
-    compiler: clang
+    dist: xenial
+    addons:
+      apt:
+        packages:
+        - yasm
+        - libreadline-dev
+        - libasound-dev
+        - libgl1-mesa-dev
+        - libegl1-mesa-dev
+        - libxrandr-dev
+        - mingw-w64
     script:
       # Preparatory actions
       - BUILD=$(($(git rev-list --count --first-parent HEAD)+3500))
       - echo "Build number ${BUILD}"
-      - chmod a+x configure
       - mkdir -p ciout
       # Disable compiler overrides as they cause problems
       - unset CC ; unset CXX ; unset CC_FOR_BUILD ; unset CXX_FOR_BUILD
-      # homebrew addon is just broken
-      - HOMEBREW_NO_AUTO_UPDATE=1 brew install yasm mingw-w64
       # Set compilers compatible with Windows
       - export CC=i686-w64-mingw32-gcc
       - export CXX=i686-w64-mingw32-g++
@@ -136,7 +139,6 @@ matrix:
       - export AR=i686-w64-mingw32-ar
       - export RANLIB=i686-w64-mingw32-ranlib
       - export AS=i686-w64-mingw32-as
-      - chmod a+x configure
       # Build develop build
       - ./configure --cross=i686-w64-mingw32 || exit 1
       - make -j $(getconf _NPROCESSORS_ONLN) || exit 1
@@ -166,7 +168,6 @@ matrix:
     script:
       - BUILD=$(($(git rev-list --count --first-parent HEAD)+3500))
       - echo "Build number ${BUILD}"
-      - chmod a+x configure
       - mkdir -p ciout
       # Disable compiler overrides as they cause problems
       - unset CC ; unset CXX ; unset CC_FOR_BUILD ; unset CXX_FOR_BUILD
@@ -190,7 +191,6 @@ matrix:
       # Preparatory actions
       - BUILD=$(($(git rev-list --count --first-parent HEAD)+3500))
       - echo "Build number ${BUILD}"
-      - chmod a+x configure
       - mkdir -p ciout
       # Disable compiler overrides as they cause problems and set our own ones for onscrlib
       - unset CC ; unset CXX ; unset CC_FOR_BUILD ; unset CXX_FOR_BUILD
