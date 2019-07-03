@@ -111,20 +111,11 @@ matrix:
       - zip -qry onscripter-ru_linux64_r${BUILD}.zip onscripter-ru || exit 1
       - rm onscripter-ru ; cd ..
 
-  - os: linux
-    # Should not be important here, as we target Windows
+  - os: osx
+    # Important, as old GCC from brew is broken.
     name: "Windows build"
-    dist: xenial
-    addons:
-      apt:
-        packages:
-        - yasm
-        - libreadline-dev
-        - libasound-dev
-        - libgl1-mesa-dev
-        - libegl1-mesa-dev
-        - libxrandr-dev
-        - mingw-w64
+    osx_image: xcode10.2
+    compiler: clang
     script:
       # Preparatory actions
       - BUILD=$(($(git rev-list --count --first-parent HEAD)+3500))
@@ -132,6 +123,8 @@ matrix:
       - mkdir -p ciout
       # Disable compiler overrides as they cause problems
       - unset CC ; unset CXX ; unset CC_FOR_BUILD ; unset CXX_FOR_BUILD
+      # homebrew addon is just broken; force update here
+      - brew install yasm mingw-w64
       # Set compilers compatible with Windows
       - export CC=i686-w64-mingw32-gcc
       - export CXX=i686-w64-mingw32-g++
