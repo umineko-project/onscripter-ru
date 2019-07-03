@@ -366,9 +366,7 @@ bool SteamController::rumble(float strength, int length) {
 		std::memcpy(&packetData[LIBUSB_CONTROL_SETUP_SIZE], dataBlob, sizeof(dataBlob));
 
 		auto transfer = libusb_alloc_transfer(0);
-		libusb_fill_control_transfer(transfer, handle, packetData, [](libusb_transfer *transfer) LIBUSB_CALL {
-			static_cast<SteamController *>(transfer->user_data)->completeRumble(transfer);
-		},
+		libusb_fill_control_transfer(transfer, handle, packetData, completeRumble,
 		                             static_cast<void *>(this), 1000);
 
 		int r = libusb_submit_transfer(transfer);
@@ -382,7 +380,7 @@ bool SteamController::rumble(float strength, int length) {
 	uint16_t power = strength * 100;
 	power          = *std::min_element(std::begin(supported), std::end(supported), [&power](const uint16_t &a, const uint16_t &b) {
 		return std::abs(power - a) < std::abs(power - b);
-    });
+	});
 
 	double period          = 1.0 / power;
 	uint16_t periodCommand = period * PeriodRatio;
@@ -465,9 +463,7 @@ bool DS3Controller::configure() {
 	std::memcpy(&packetData[LIBUSB_CONTROL_SETUP_SIZE], dataBlob, sizeof(dataBlob));
 
 	auto transfer = libusb_alloc_transfer(0);
-	libusb_fill_control_transfer(transfer, handle, packetData, [](libusb_transfer *transfer) LIBUSB_CALL {
-		static_cast<DS3Controller *>(transfer->user_data)->completeRumble(transfer);
-	},
+	libusb_fill_control_transfer(transfer, handle, packetData, completeRumble,
 	                             static_cast<void *>(this), 1000);
 
 	int r = libusb_submit_transfer(transfer);
@@ -553,9 +549,7 @@ bool DS3Controller::rumble(float strength, int length) {
 	std::memcpy(&packetData[LIBUSB_CONTROL_SETUP_SIZE], dataBlob, sizeof(dataBlob));
 
 	auto transfer = libusb_alloc_transfer(0);
-	libusb_fill_control_transfer(transfer, handle, packetData, [](libusb_transfer *transfer) LIBUSB_CALL {
-		static_cast<DS3Controller *>(transfer->user_data)->completeRumble(transfer);
-	},
+	libusb_fill_control_transfer(transfer, handle, packetData, completeRumble,
 	                             static_cast<void *>(this), 1000);
 
 	int r = libusb_submit_transfer(transfer);
@@ -566,8 +560,9 @@ bool DS3Controller::rumble(float strength, int length) {
 }
 
 void DS3Controller::completeRumble(libusb_transfer *transfer) {
-	if (last_length)
-		completion_time = SDL_GetTicks() + last_length;
+	auto self = static_cast<DS3Controller *>(transfer->user_data);
+	if (self->last_length)
+		self->completion_time = SDL_GetTicks() + self->last_length;
 	freearr(&transfer->buffer);
 	libusb_free_transfer(transfer);
 }
@@ -645,9 +640,7 @@ bool DS4Controller::rumble(float strength, int length) {
 	std::memcpy(&packetData[LIBUSB_CONTROL_SETUP_SIZE], dataBlob, sizeof(dataBlob));
 
 	auto transfer = libusb_alloc_transfer(0);
-	libusb_fill_control_transfer(transfer, handle, packetData, [](libusb_transfer *transfer) LIBUSB_CALL {
-		static_cast<DS3Controller *>(transfer->user_data)->completeRumble(transfer);
-	},
+	libusb_fill_control_transfer(transfer, handle, packetData, completeRumble,
 	                             static_cast<void *>(this), 1000);
 
 	int r = libusb_submit_transfer(transfer);
@@ -658,8 +651,9 @@ bool DS4Controller::rumble(float strength, int length) {
 }
 
 void DS4Controller::completeRumble(libusb_transfer *transfer) {
-	if (last_length)
-		completion_time = SDL_GetTicks() + last_length;
+	auto self = static_cast<DS4Controller *>(transfer->user_data);
+	if (self->last_length)
+		self->completion_time = SDL_GetTicks() + self->last_length;
 	freearr(&transfer->buffer);
 	libusb_free_transfer(transfer);
 }

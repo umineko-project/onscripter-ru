@@ -57,7 +57,7 @@ public:
 	bool init() override;
 	void deinit() override;
 	bool rumble(float strength, int length) override;
-	void completeRumble(libusb_transfer *transfer);
+	static void LIBUSB_CALL completeRumble(libusb_transfer *transfer);
 };
 
 class DS3Controller : public NativeController {
@@ -75,7 +75,7 @@ public:
 	bool init() override;
 	void deinit() override;
 	bool rumble(float strength, int length) override;
-	void completeRumble(libusb_transfer *transfer);
+	static void LIBUSB_CALL completeRumble(libusb_transfer *transfer);
 	void ping() override;
 };
 
@@ -94,7 +94,7 @@ public:
 	bool init() override;
 	void deinit() override;
 	bool rumble(float strength, int length) override;
-	void completeRumble(libusb_transfer *transfer);
+	static void LIBUSB_CALL completeRumble(libusb_transfer *transfer);
 	void ping() override;
 };
 
