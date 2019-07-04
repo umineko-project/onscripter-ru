@@ -815,6 +815,7 @@ HEADERS=(
   'Support/DirPaths.hpp'
   'Support/DirtyRect.hpp'
   'Support/Droid/DroidProfile.hpp'
+  'Support/Droid/hidapi.hpp'
   'Support/FileDefs.hpp'
   'Support/FileIO.hpp'
   'Support/KeyState.hpp'
@@ -826,7 +827,7 @@ HEADERS=(
 )
 
 if [ "$SYS" == "Droid" ]; then
-  SOURCES+=('Support/Droid/DroidProfile.cpp')
+  SOURCES+=('Support/Droid/DroidProfile.cpp' 'Support/Droid/hid.cpp')
 elif [ "$SYS" == "MinGW" ]; then
   SOURCES+=('Resources/Support/WinRes.rc.in')
 fi

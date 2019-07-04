@@ -106,7 +106,8 @@ public class HIDDeviceManager {
 
         // Make sure we have the HIDAPI library loaded with the native functions
         try {
-            SDL.loadLibrary("hidapi");
+            // We have this bundled into libmain.so
+            // SDL.loadLibrary("hidapi");
         } catch (Throwable e) {
             Log.w(TAG, "Couldn't load hidapi: " + e.toString());
 
