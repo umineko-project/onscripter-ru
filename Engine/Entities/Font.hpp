@@ -163,8 +163,8 @@ public:
                 shadow_distance[1] = props.shadow_distance[1];
             shadow_color = props.shadow_color;
             no_break     = props.no_break;
-            font_size    = props.font_size;
-
+            if (font_size != -1)
+                font_size = props.font_size;
             character_spacing = props.character_spacing;
             if (props.line_height != -1)
                 line_height = props.line_height;
