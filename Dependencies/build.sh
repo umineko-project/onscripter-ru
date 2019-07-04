@@ -331,16 +331,24 @@ download_file() {
     local url=$1
     local file=$2
 
-    local ret=0
-    if [ $USE_CURL ]; then
-        curl -L "$url" -o "$dldir/$file" || ret=$?
-    else
-        wget "$url" -O "$dldir/$file" || ret=$?
-    fi
-    if (( $ret )); then
-        rm -f "$dldir/$file"
-        error_out "Failed to download %s" "$file"
-    fi
+    # Somtimes Travis CI networking starts to fail to resolve domains
+    # out of a sudden. Retry a few more times.
+    for n in {1..5}; do
+        local ret=0
+        if [ $USE_CURL ]; then
+            curl -L "$url" -o "$dldir/$file" || ret=$?
+        else
+            wget "$url" -O "$dldir/$file" || ret=$?
+        fi
+        if (( $ret )); then
+            rm -f "$dldir/$file"
+            warn "Failed to download %s, retrying" "$file"
+            sleep 1
+        else
+            return
+        fi
+    done
+    error_out "Failed to download %s" "$file"
 }
 
 # Fetch all of the things in the $sources[@] array.  If they already exist
