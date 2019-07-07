@@ -1,6 +1,6 @@
 pkgname=SDL2_gpu
-pkgver=0.12.0
-pkgrel=3
+pkgver=0.11.0
+pkgrel=1
 depends=('SDL2')
 sources=(
     'SDL2_gpu-droid-nolibm.patch'
@@ -8,8 +8,12 @@ sources=(
 hashes=(
     'a5442a599192808d0e815a74e22458947a7b58ca2a38b451115e65058fc9b14a'
 )
+# TODO: Use modern 3D API. Currently it leads to black screen during glasssmash
+# effect, supposedly due to once again wrong matrix multiplication logic.
+# It is discussed in https://github.com/grimfang4/sdl-gpu/pull/155 (again),
+# and I simply do not want to investigate it right now for no benefit.
 giturl=https://github.com/umineko-project/sdl-gpu
-githash=b4f0a8ee49cd62fcd43287cc8b2faf3f94d860fa
+githash=255a1b5a1d3d54b2f030a88b19dec1ef85b48bb1
 
 if [ "$(getTarget)" != "darwin-iOS" ] && [ "$(getTarget)" != "droid" ]; then
     depends=(${depends[@]} 'libepoxy');
@@ -117,7 +121,7 @@ build() {
     msg "Installing"
     
     local ret=0
-    cp "lib/libSDL2_gpu.a" "$outdir/lib/libSDL2_gpu.a" || ret=1
+    cp "SDL_gpu-${pkgver}/lib/libSDL2_gpu.a" "$outdir/lib/libSDL2_gpu.a" || ret=1
     cp "include/SDL_gpu.h" "$outdir/include/SDL2/SDL_gpu.h" || ret=1
     cp "src/externals/gl2stub/gl2stub.h" "$outdir/include/gl2stub.h" || ret=1
     cp "src/externals/gl2stub/gl2stub_ext.h" "$outdir/include/gl2stub_ext.h" || ret=1
