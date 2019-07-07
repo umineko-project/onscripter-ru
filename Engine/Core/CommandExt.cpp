@@ -739,7 +739,7 @@ int ONScripter::setLogCommand() {
 	std::string logEntryIndexString = std::to_string(logEntryIndex);
 	LogEntry l;
 	l.labelIndex       = labelIndex;
-	l.choiceVectorSize = script_h.logState.acceptChoiceNextIndex; // Should be equal to the choice vector size except if we are superskipping
+	l.choiceVectorSize = script_h.choiceState.acceptChoiceNextIndex; // Should be equal to the choice vector size except if we are superskipping
 	script_h.logState.logEntries.push_back(l);
 
 	// Now append the entry to the log tree for rendering
@@ -2046,11 +2046,11 @@ int ONScripter::mainLabelCommand() {
 }
 
 int ONScripter::makeChoiceCommand() {
-	script_h.logState.acceptChoiceNextIndex++;
-	script_h.logState.choiceVector.push_back(script_h.readInt());
+	script_h.choiceState.acceptChoiceNextIndex++;
+	script_h.choiceState.choiceVector.push_back(script_h.readInt());
 	while (script_h.hasMoreArgs()) {
-		script_h.logState.acceptChoiceNextIndex++;
-		script_h.logState.choiceVector.push_back(script_h.readInt());
+		script_h.choiceState.acceptChoiceNextIndex++;
+		script_h.choiceState.choiceVector.push_back(script_h.readInt());
 	}
 	return RET_CONTINUE;
 }
@@ -2294,7 +2294,7 @@ int ONScripter::hyphenCarryCommand() {
 
 int ONScripter::getChoiceVectorSizeCommand() {
 	script_h.readVariable();
-	script_h.setInt(&script_h.current_variable, static_cast<int32_t>(script_h.logState.choiceVector.size()));
+	script_h.setInt(&script_h.current_variable, static_cast<int32_t>(script_h.choiceState.choiceVector.size()));
 	return RET_CONTINUE;
 }
 
@@ -2866,15 +2866,15 @@ int ONScripter::clearLogCommand() {
 			tree.insertionOrder.resize(firstTooLargeElement);
 			script_h.logState.logEntries.resize(firstTooLargeElement);
 		}
-		script_h.logState.choiceVector.resize(newCVS.choiceVectorSize);
+		script_h.choiceState.choiceVector.resize(newCVS.choiceVectorSize);
 	} else {
 		// Full clear
 		tree.clear();
 		script_h.logState.logEntries.clear();
-		script_h.logState.choiceVector.clear();
+		script_h.choiceState.choiceVector.clear();
 	}
-	if (script_h.logState.acceptChoiceNextIndex > script_h.logState.choiceVector.size()) {
-		script_h.logState.acceptChoiceNextIndex = static_cast<uint32_t>(script_h.logState.choiceVector.size());
+	if (script_h.choiceState.acceptChoiceNextIndex > script_h.choiceState.choiceVector.size()) {
+		script_h.choiceState.acceptChoiceNextIndex = static_cast<uint32_t>(script_h.choiceState.choiceVector.size());
 	}
 	return RET_CONTINUE;
 }
@@ -2922,9 +2922,9 @@ int ONScripter::choicesToStringCommand() {
 		errorAndExit("savechoices requires a string argument");
 	}
 	std::string ret;
-	size_t end = script_h.logState.choiceVector.size();
+	size_t end = script_h.choiceState.choiceVector.size();
 	for (size_t i = 0; i < end; i++) {
-		ret += std::to_string(script_h.logState.choiceVector[i]);
+		ret += std::to_string(script_h.choiceState.choiceVector[i]);
 		if (i != end-1) {
 			ret += ",";
 		}
@@ -2937,9 +2937,9 @@ int ONScripter::choicesFromStringCommand() {
 	const char *buf = script_h.readStr();
 	std::istringstream choices{std::string(buf)};
 	std::string choice;
-	script_h.logState.choiceVector.clear();
+	script_h.choiceState.choiceVector.clear();
 	while(std::getline(choices, choice, ',')) {
-		script_h.logState.choiceVector.push_back(std::stoi(choice));
+		script_h.choiceState.choiceVector.push_back(std::stoi(choice));
 	}
 	return RET_CONTINUE;
 }
@@ -3311,18 +3311,18 @@ int ONScripter::aliasFontCommand() {
 }
 
 int ONScripter::acceptChoiceNextIndexCommand() {
-	script_h.logState.acceptChoiceNextIndex = script_h.readInt();
+	script_h.choiceState.acceptChoiceNextIndex = script_h.readInt();
 	return RET_CONTINUE;
 }
 
 int ONScripter::acceptChoiceCommand() {
 	int branchToFollow;
-	if (script_h.logState.acceptChoiceNextIndex >= script_h.logState.choiceVector.size()) {
+	if (script_h.choiceState.acceptChoiceNextIndex >= script_h.choiceState.choiceVector.size()) {
 		// We are out of entries in the choice vector.
 		// We must terminate super skip early.
 		branchToFollow = -1;
 	} else {
-		branchToFollow = script_h.logState.choiceVector[script_h.logState.acceptChoiceNextIndex++];
+		branchToFollow = script_h.choiceState.choiceVector[script_h.choiceState.acceptChoiceNextIndex++];
 	}
 
 	script_h.readVariable();

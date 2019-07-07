@@ -79,8 +79,6 @@ struct LogState {
 
 	// Maps log entry number to log entry data (intermediate structure, to be used instead of DataTree for all purposes except rendering)
 	std::vector<LogEntry> logEntries;
-	std::vector<uint32_t> choiceVector; // temporary location -- properly speaking, this has nothing to do with log
-	uint32_t acceptChoiceNextIndex{0}; // temporary location -- properly speaking, this has nothing to do with log
 
 	std::vector<bool> readLabels;
 	std::vector<std::unordered_map<int, std::string>> tmpVoices;
@@ -100,6 +98,11 @@ struct LogState {
 	bool logEntryIndexToIsRead(int logEntryIndex) {
 		return readLabels[logEntryIndexToLabelIndex(logEntryIndex)];
 	}
+};
+
+struct ChoiceState {
+	std::vector<uint32_t> choiceVector;
+	uint32_t acceptChoiceNextIndex{0};
 };
 
 struct HashedString {
@@ -182,6 +185,7 @@ public:
 	};
 
 	LogState logState;
+	ChoiceState choiceState;
 
 	ScriptHandler();
 	ScriptHandler(const ScriptHandler &) = delete;

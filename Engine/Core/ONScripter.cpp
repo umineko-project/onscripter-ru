@@ -1914,7 +1914,7 @@ void ONScripter::executeLabel() {
 
 		if (current_label_info->start_address != nullptr) {
 
-			if ((skip_mode & SKIP_SUPERSKIP) && !superSkipData.dst_lbl.empty() && equalstr(superSkipData.dst_lbl.c_str() + 1, current_label_info->name) && script_h.logState.acceptChoiceNextIndex == script_h.logState.choiceVector.size()) {
+			if ((skip_mode & SKIP_SUPERSKIP) && !superSkipData.dst_lbl.empty() && equalstr(superSkipData.dst_lbl.c_str() + 1, current_label_info->name) && script_h.choiceState.acceptChoiceNextIndex == script_h.choiceState.choiceVector.size()) {
 				endSuperSkip();
 			} else {
 				script_h.setCurrent(current_label_info->label_header);
