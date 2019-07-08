@@ -103,6 +103,9 @@ struct LogState {
 struct ChoiceState {
 	std::vector<uint32_t> choiceVector;
 	uint32_t acceptChoiceNextIndex{0};
+	int32_t acceptChoiceVectorSize{-1};
+	// Since accept_choice can only be called in superskip,
+	// perhaps the acceptChoice variables should be part of SuperSkipData...?
 };
 
 struct HashedString {

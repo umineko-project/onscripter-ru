@@ -1021,6 +1021,11 @@ int ONScripter::superSkipCommand() {
 	std::string src(script_h.readLabel());
 	superSkipData.dst_lbl = script_h.readLabel();
 
+	if(script_h.choiceState.acceptChoiceVectorSize == -1) {
+		// If it's not set, assume we can superskip to the end of the whole choice vector.
+		script_h.choiceState.acceptChoiceVectorSize = script_h.choiceState.choiceVector.size();
+	}
+
 	enum SuperSkipFlags {
 		SUPERSKIP_FLAG_NONE          = 0,
 		SUPERSKIP_FLAG_DEFER_LOADING = 1
@@ -3310,6 +3315,12 @@ int ONScripter::aliasFontCommand() {
 	return RET_CONTINUE;
 }
 
+// Allows you to explicitly specify the choice vector size at which to stop superskip.
+int ONScripter::acceptChoiceVectorSizeCommand() {
+	script_h.choiceState.acceptChoiceVectorSize = script_h.readInt();
+	return RET_CONTINUE;
+}
+
 int ONScripter::acceptChoiceNextIndexCommand() {
 	script_h.choiceState.acceptChoiceNextIndex = script_h.readInt();
 	return RET_CONTINUE;
@@ -3317,7 +3328,7 @@ int ONScripter::acceptChoiceNextIndexCommand() {
 
 int ONScripter::acceptChoiceCommand() {
 	int branchToFollow;
-	if (script_h.choiceState.acceptChoiceNextIndex >= script_h.choiceState.choiceVector.size()) {
+	if (script_h.choiceState.acceptChoiceNextIndex >= static_cast<uint32_t>(script_h.choiceState.acceptChoiceVectorSize)) {
 		// We are out of entries in the choice vector.
 		// We must terminate super skip early.
 		branchToFollow = -1;

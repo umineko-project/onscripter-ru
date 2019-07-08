@@ -336,6 +336,7 @@ public:
 	int asyncLoadCacheCommand();
 	int apiCompatCommand();
 	int aliasFontCommand();
+	int acceptChoiceVectorSizeCommand();
 	int acceptChoiceNextIndexCommand();
 	int acceptChoiceCommand();
 	int atomicCommand();

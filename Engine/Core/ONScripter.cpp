@@ -236,6 +236,7 @@ static std::unordered_map<HashedString, CommandFunc> func_lut{
     {"api_compat", &ONScripter::apiCompatCommand},
     {"accept_choice", &ONScripter::acceptChoiceCommand},
     {"accept_choice_next_index", &ONScripter::acceptChoiceNextIndexCommand},
+    {"accept_choice_vector_size", &ONScripter::acceptChoiceVectorSizeCommand},
     {"atomic", &ONScripter::atomicCommand},
 
     //Undocumented?
@@ -1914,7 +1915,8 @@ void ONScripter::executeLabel() {
 
 		if (current_label_info->start_address != nullptr) {
 
-			if ((skip_mode & SKIP_SUPERSKIP) && !superSkipData.dst_lbl.empty() && equalstr(superSkipData.dst_lbl.c_str() + 1, current_label_info->name) && script_h.choiceState.acceptChoiceNextIndex == script_h.choiceState.choiceVector.size()) {
+			if ((skip_mode & SKIP_SUPERSKIP) && !superSkipData.dst_lbl.empty() && equalstr(superSkipData.dst_lbl.c_str() + 1, current_label_info->name) && script_h.choiceState.acceptChoiceNextIndex ==
+					                                                                                                                                               static_cast<uint32_t>(script_h.choiceState.acceptChoiceVectorSize)) {
 				endSuperSkip();
 			} else {
 				script_h.setCurrent(current_label_info->label_header);
@@ -1941,6 +1943,7 @@ void ONScripter::endSuperSkip() {
 	script_h.swapScriptStateData(superSkipData.callerState);
 	// and then throw away the superskip data?
 	superSkipData = SuperSkipData();
+	script_h.choiceState.acceptChoiceVectorSize = -1;
 	// Your script function is now required to call sskip_unset to signal to ons that it is OK to update the screen.
 }
 
