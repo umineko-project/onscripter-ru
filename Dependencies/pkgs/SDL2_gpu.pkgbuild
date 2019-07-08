@@ -1,6 +1,6 @@
 pkgname=SDL2_gpu
 pkgver=0.11.0
-pkgrel=1
+pkgrel=2
 depends=('SDL2')
 sources=(
     'SDL2_gpu-droid-nolibm.patch'
@@ -121,7 +121,11 @@ build() {
     msg "Installing"
     
     local ret=0
-    cp "SDL_gpu-${pkgver}/lib/libSDL2_gpu.a" "$outdir/lib/libSDL2_gpu.a" || ret=1
+    if [ -f "SDL_gpu-MINGW-${pkgver}/lib/libSDL2_gpu_s.a" ]; then
+        cp "SDL_gpu-MINGW-${pkgver}/lib/libSDL2_gpu_s.a" "$outdir/lib/libSDL2_gpu.a" || ret=1
+    else
+        cp "SDL_gpu-${pkgver}/lib/libSDL2_gpu.a" "$outdir/lib/libSDL2_gpu.a" || ret=1
+    fi
     cp "include/SDL_gpu.h" "$outdir/include/SDL2/SDL_gpu.h" || ret=1
     cp "src/externals/gl2stub/gl2stub.h" "$outdir/include/gl2stub.h" || ret=1
     cp "src/externals/gl2stub/gl2stub_ext.h" "$outdir/include/gl2stub_ext.h" || ret=1
