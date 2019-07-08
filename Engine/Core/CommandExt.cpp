@@ -1021,9 +1021,9 @@ int ONScripter::superSkipCommand() {
 	std::string src(script_h.readLabel());
 	superSkipData.dst_lbl = script_h.readLabel();
 
-	if(script_h.choiceState.acceptChoiceVectorSize == -1) {
+	if (script_h.choiceState.acceptChoiceVectorSize == -1) {
 		// If it's not set, assume we can superskip to the end of the whole choice vector.
-		script_h.choiceState.acceptChoiceVectorSize = script_h.choiceState.choiceVector.size();
+		script_h.choiceState.acceptChoiceVectorSize = static_cast<int32_t>(script_h.choiceState.choiceVector.size());
 	}
 
 	enum SuperSkipFlags {
