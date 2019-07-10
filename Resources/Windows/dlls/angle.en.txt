@@ -1,0 +1,40 @@
+ANGLE guidelines for ONScripter-RU
+Enables DirectX 9/DirectX 11 renderer.
+
+You must have EP5 game or newer (i.e. onscripter-ru r2846 or higher).
+
+
+Installation:
+1. Edit your ons.cfg (or default.cfg if ons.cfg is missing) file and
+add the following lines if needed.
+
+2. Enable the renderer (REQUIRED):
+prefer-renderer=ANGLE2 (or ANGLE3 for DirectX 11)
+
+3. Force rendering style (USE ONLY WITH LEGACY ANGLE):
+render-self=yes
+
+4. Set preferred shader library (USE ONLY IF GAME CRASHES AT START):
+d3dcompiler=d3dcompiler_43.dll
+
+
+Notes:
+You could use legacy libraries by copying the contents of dlls\legacy
+folder into the corresponding folder:
+dlls\6.1  for Windows 7 and higher
+dlls\5.1  for Windows XP and higher
+
+Legacy libraries should require render-self=yes but in normal cases
+should also reduce memory consumption. However, you should probably
+choose best performing variant. To do so you may use FPS reporting
+in window title. Enabled with:
+show-fps
+
+For better error logging you may use:
+use-console
+
+You could specify custom d3dcompiler library if you have it installed.
+
+You could copy newer versions of libGLESv2.dll and libEGL.dll from your
+browser folder, for example, Opera and Mozilla Firefox use them.
+You must ensure that they are 32-bit.
