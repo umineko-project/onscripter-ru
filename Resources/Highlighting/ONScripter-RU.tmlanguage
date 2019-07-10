@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>fileTypes</key>
+	<array>
+		<string>ons</string>
+	</array>
+	<key>name</key>
+	<string>ONScripter-RU</string>
+	<key>patterns</key>
+	<array>
+		<dict>
+			<key>comment</key>
+			<string>Text commands</string>
+			<key>match</key>
+			<string>(?&lt;=\[)\*(?=\])</string>
+			<key>name</key>
+			<string>keyword.source.onscripter</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Textual, decimal and array variables and gosubs</string>
+			<key>match</key>
+			<string>(\$|\%|\?|\*)+[0-9a-zA-Z_\[\]][^@\\\/\|,\s\+=\-&gt;&lt;!]*</string>
+			<key>name</key>
+			<string>keyword.source.onscripter</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Textual printable string</string>
+			<key>match</key>
+			<string>`[^\n`]+`</string>
+			<key>name</key>
+			<string>string.other.onscripter</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Textual string</string>
+			<key>match</key>
+			<string>"([^\n`"]+|\:[^\n"]+|)"</string>
+			<key>name</key>
+			<string>string.quoted.double.onscripter</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Comment string</string>
+			<key>match</key>
+			<string>;[^\n]+</string>
+			<key>name</key>
+			<string>comment.line.onscripter</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Custom Umineko API</string>
+			<key>match</key>
+			<string>(?&lt;![a-zA-Z0-9])(mask_set|me1|me1v|me2|me2v|me3|me3v|me4|me4v|me5|me5v|bgm1|bgm1v|meplay|meplay2|bgmplay|bgmplay2|se1|se2|se3|se1v|se2v|se3v|seplay|seplay2|vol_me|vol_bgm|effect_vol|voice_vol|e_|E_B|E_M1|E_M2|E_M3|E_M4|E_M5|E_M6|E_M7|E_A|E_MA|E_SA|Fede|FedeXX|vol_se|vol_mix_fade|fedexx|fede|rain_load|rain_pause|rain_resume|rain_params|skip_off|skip_on|show_whirl|new_chapter|break_glass2|break_glass|display_clock2|display_clock|cross1|cross2|dllefe|dllefe_off|trophy_open|mono|bglayer|bglayer_off|log_reset|anim|pam|lss|lbg|lcl|lv|vv|lsp_s|lsp_l|flg_set|flg_p|clock|eye1|eye2|eye11|eye12|meta_set|meta_set2|meta_set_ef|meta_set2_ef|meta_end|meta_end_ef|meta_ld|meta_cl|meta_bg|meta_cbg|mset|mset2|msetef|mset2ef|mend|mendef|mld|mcl|mbg|mcbg|mchana|mhana1|mhana2|bfly1|bfly1R|bfly2|bfly2R|cbfly|tati_x_get|set_name_window_non|set_name_window|set_window_monospace|set_window_simple|msgwnd_ama|msgwnd_bea|msgwnd_ber|msgwnd_but|msgwnd_cla|msgwnd_enj|msgwnd_ev2|msgwnd_eva|msgwnd_gap|msgwnd_gen|msgwnd_geo|msgwnd_go2|msgwnd_goa|msgwnd_goh|msgwnd_hid|msgwnd_jes|msgwnd_ka2|msgwnd_kan|msgwnd_kas|msgwnd_kaw|msgwnd_kin|msgwnd_kir|msgwnd_ku2|msgwnd_kum|msgwnd_lam|msgwnd_mar|msgwnd_na2|msgwnd_nan|msgwnd_nat|msgwnd_oko|msgwnd_pro|msgwnd_rg1|msgwnd_rg2|msgwnd_rg3|msgwnd_rg4|msgwnd_rg5|msgwnd_rg6|msgwnd_rg7|msgwnd_ron|msgwnd_ros|msgwnd_rud|msgwnd_s00|msgwnd_s41|msgwnd_s45|msgwnd_s55|msgwnd_s56|msgwnd_sak|msgwnd_sha|msgwnd_wal|msgwnd_non|flush|csp_slot|border_pad_push|border_pad_pop|ak)(?=[^a-zA-Z_]|$)</string>
+			<key>name</key>
+			<string>support.function.source.onscripter</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Default label API</string>
+			<key>match</key>
+			<string>([^a-zA-Z0-9_]|^)(z_order_override2|z_order_override|wait2|wait_on_d|waitvideo|video|union_alpha_clear|union_alpha|talsp|stopwatch|spritesetz|spriteset_enable|sprite_mask|splitstring|smart_quotes|single_move|setwindow4|quake_wait|quakex_t|quakey_t|quake_t|quake_off|preset_define|no_smart_quotes|moveable_lsp_list|moveable_lsp2_list|monocrolsp|lsph2mul|lsp2mul|loadreg|loadfromreg|cache_snd|cache_img|lips_sprites|lips_on|lips_off|lips_ld|italic_font|enable_gradients|enable_custom_cursors|displayscreenshot|debug_string|d_continue|d2|d|count_symbols|clear_cache_img|clear_cache_snd|change_font|cache_slot_img|cache_slot_snd|cache_queue_size|bold_italic_font|bold_font|blur|autotext|async_cache_snd|async_cache_img|sp_rgb_gradation|sptwait2|sptwait|enable_transitions|spt2|spt|yesnobox|wavestop|waveloop|wave|waittimer|wait|vsp2|vsp|voicevol|trap|transbtn|textspeeddefault|textspeed|textshow|texton|textoff|texthide|textexbtn|textclear|textbtnwait|textbtnstart|textbtnoff|texec|tateyoko|tal|tablegoto|systemcall|strsph|strsp|stop|spstr|spreload|split|spclclk|spbtn|skipoff|shell|sevol|setwindow3|setwindow2|setwindow|set_hotspot|seteffectspeed|setcursor|selnum|selgosub|selectbtnwait|select|savetime|savescreenshot2|savescreenshot|saveon|saveoff|savegame2|savegame|savefileexist|r_trap|rumble|rnd|rnd2|rmode|resettimer|resetmenu|reset|repaint|quakey|quakex|quake|puttext|prnumclear|prnum|print|language|playstop|playonce|play|okcancelbox|operate_config|ofscpy|ofscopy|nega|msp2|msp|mpegplay|mp3vol|mp3stop|mp3save|mp3loop|mp3fadeout|mp3fadein|mp3|movie|movemousecursor|mousemode|monocro|minimizewindow|mesbox|menu_window|menu_waveon|menu_waveoff|menu_full|menu_click_page|menu_click_def|menu_automode|lookahead|lsph2sub|lsph2add|lsph2|lsph|lsp2sub|lsp2add|lsp2|lsp|lr_trap|lrclick|loopbgmstop|loopbgm|lookbackflush|lookbackbutton|logsp2|logsp|locate|loadgame|lips_sprite|linkcolor|ld|layermessage|jumpf|jumpb|isfull|isskip|ispage|isdown|insertmenu|input|indent|humanorder|getzxc|getvoicevol|getversion|gettimer|gettextbtnstr|gettext|gettaglog|gettag|gettab|getstralias|getspsize|getspmode|getskipoff|getsevol|getscreenshot|getsavestr|getret|getreg|getpageup|getpage|getnextline|getmp3vol|getmousepos|getmouseover|getmclick|getlogtext|getlog|getinsert|getfunction|getenter|getcursorpos2|getcursorpos|getcursor|getcselstr|getcselnum|getbtntimer|getbgmvol|game|flushout|fileexist|fall|existspbtn|exec_dll|exbtn_d|exbtn|erasetextwindow|erasetextbtn|effectskip|end|dwavestop|dwaveplayloop|dwaveplay|dwaveloop|dwaveload|dwave|drawtext|drawsp3|drawsp2|drawsp|drawfill|drawclear|drawbg2|drawbg|draw|deletescreenshot|delay|definereset|csp2|csp|cselgoto|cselbtn|csel|constant_refresh|click|cl|chvol|checkpage|checkkey|cellcheckspbtn|cellcheckexbtn|cell|caption|btnwait2|btnwait|btntime2|btntime|btndown|btndef|btnarea|btn|br|blt|bgmvol|bgmstop|bgmonce|bgmfadeout|bgmfadein|bgmdownmode|bgm|bgcpy|bgcopy|bg|barclear|bar|avi|automode_time|autoclick|aspritesetpt|spritesetpt|spritesetptwait|aspt2|aspt|amsp2|amsp|allsp2resume|allspresume|allsp2hide|allsphide|agpt|gptwait|gpt|ach_prop|abssetcursor|scrollable_scroll|scrollable_cfg|scrollable_display|scrollable_get_hovered_elem|scrollable|tree_clear|tree_seta|tree_set|tree_get)([^a-zA-Z_]|$)</string>
+			<key>name</key>
+			<string>support.function.source.onscripter</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Default parser API</string>
+			<key>match</key>
+			<string>([^a-zA-Z0-9_]|^)(umode|timestamp|setdefaultspeed|movs|disablespeedbuttons|borderstyle|zenkakko|windoweffect|windowchip|windowback|versionstr|usewheel|useescspc|underline|transmode|time|textgosub|tan|sub|stralias|spi|soundpressplgin|skip|sin|shadedistance|setlayer|setkinsoku|selectvoice|selectcolor|savenumber|savename|savedir|sar|rubyon2|rubyon|rubyoff|roff|rmenu|rgosub|return|pretextgosub|pagetag|numalias|nsadir|nsa|notif|next|ns3|ns2|mul|movl|mov10|mov9|mov8|mov7|mov6|mov5|mov4|mov3|mov|mode_wave_demo|mode_saya|mode_ext|mod|mid|menusetwindow|menuselectvoice|menuselectcolor|maxkaisoupage|luasub|luacall|lookbacksp|lookbackcolor|lookbackbutton|loadgosub|linepage2|linepage|len|labellog|labelexist|kidokuskip|kidokumode|itoa2|itoa|intlimit|inc|if|humanz|hudz|windowz|humanpos|goto|gosub|globalon|getparam|game|for|filelog|errorsave|english|effectcut|effectblank|effect|dsound|div|dim|defvoicevol|defsub|defsevol|defmp3vol|defbgmvol|defaultspeed|defaultfont|dec|dec|date|cos|cmp|clickvoice|clickstr|clickskippage|btnnowindowerase|break|automode|atoi|arc|addnsadir|addkinsoku|add)([^a-zA-Z_]|$)</string>
+			<key>name</key>
+			<string>support.function.source.onscripter</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Text commands</string>
+			<key>match</key>
+			<string>(@|\\|\/|\||\![dsw][0-9d]{1,4}|\:|~|\#[0-9A-Fa-f]{6}|•|\#|\*)</string>
+			<key>name</key>
+			<string>keyword.source.onscripter</string>
+		</dict>
+	</array>
+	<key>scopeName</key>
+	<string>source.onscripter</string>
+	<key>uuid</key>
+	<string>8b55ae34-e92b-4115-a81f-d4b6c5d7cf65</string>
+</dict>
+</plist>
