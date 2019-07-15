@@ -119,7 +119,6 @@ static std::unordered_map<HashedString, CommandFunc> func_lut{
     {"if", &ScriptParser::ifCommand},
     {"humanz", &ScriptParser::humanzCommand},
     {"humanpos", &ScriptParser::humanposCommand},
-    {"goto", &ScriptParser::gotoCommand},
     {"gosub", &ScriptParser::gosubCommand},
     {"globalon", &ScriptParser::globalonCommand},
     {"getparam", &ScriptParser::getparamCommand},

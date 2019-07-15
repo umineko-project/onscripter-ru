@@ -104,6 +104,7 @@ static std::unordered_map<HashedString, CommandFunc> func_lut{
     {"gptwait", &ONScripter::globalPropertyWaitCommand},
     {"agpt", &ONScripter::globalPropertyCommand},
     {"gpt", &ONScripter::globalPropertyCommand},
+    {"goto", &ONScripter::gotoCommand},
     {"getscriptpath", &ONScripter::getScriptPathCommand},
     {"getscriptnum", &ONScripter::getScriptNumCommand},
     {"getvideovol", &ONScripter::getvideovolCommand},
@@ -1914,13 +1915,8 @@ void ONScripter::executeLabel() {
 		last_token_line    = -1;
 
 		if (current_label_info->start_address != nullptr) {
-
-			if ((skip_mode & SKIP_SUPERSKIP) && !superSkipData.dst_lbl.empty() && equalstr(superSkipData.dst_lbl.c_str() + 1, current_label_info->name) && script_h.choiceState.acceptChoiceNextIndex ==
-					                                                                                                                                               static_cast<uint32_t>(script_h.choiceState.acceptChoiceVectorSize)) {
-				endSuperSkip();
-			} else {
+			if (!tryEndSuperSkip(false))
 				script_h.setCurrent(current_label_info->label_header);
-			}
 			readToken();
 			continue;
 		}
@@ -1932,7 +1928,15 @@ void ONScripter::executeLabel() {
 	endCommand();
 }
 
-void ONScripter::endSuperSkip() {
+bool ONScripter::tryEndSuperSkip(bool force) {
+	if (!force && (!(skip_mode & SKIP_SUPERSKIP)
+		|| superSkipData.dst_lbl.empty()
+		|| !equalstr(superSkipData.dst_lbl.c_str() + 1, current_label_info->name)
+		|| script_h.choiceState.acceptChoiceNextIndex !=
+		    static_cast<uint32_t>(script_h.choiceState.acceptChoiceVectorSize))) {
+		return false;
+	}
+
 	if (superSkipData.dst_lbl.empty()) {
 		errorAndExit("Tried to end super skip with an empty dst_lbl -- maybe it wasn't even active?");
 	}
@@ -1945,6 +1949,8 @@ void ONScripter::endSuperSkip() {
 	superSkipData = SuperSkipData();
 	script_h.choiceState.acceptChoiceVectorSize = -1;
 	// Your script function is now required to call sskip_unset to signal to ons that it is OK to update the screen.
+
+	return true;
 }
 
 bool ONScripter::scriptExecutionPermitted() {

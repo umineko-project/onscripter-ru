@@ -1052,7 +1052,7 @@ int ONScripter::superSkipCommand() {
 	if (current_label_info->start_address > addr) {
 		errorAndExit("Cannot sskip backwards");
 	} else if (current_label_info->start_address == addr) {
-		endSuperSkip();
+		tryEndSuperSkip(true);
 	} else {
 		//FIXME: add all the necessary cases
 		skip_mode                 = SKIP_NORMAL | SKIP_SUPERSKIP;
@@ -2031,6 +2031,12 @@ int ONScripter::mainGotoCommand() {
 	// if you jump from a subroutine you will happen to in the main script
 	callStack.clear();
 	return gotoCommand();
+}
+
+int ONScripter::gotoCommand() {
+	setCurrentLabel(script_h.readLabel() + 1);
+	tryEndSuperSkip(false);
+	return RET_CONTINUE;
 }
 
 int ONScripter::mainLabelCommand() {
@@ -3339,7 +3345,7 @@ int ONScripter::acceptChoiceCommand() {
 	script_h.readVariable();
 	if (branchToFollow == -1) {
 		// Terminate super skip early
-		endSuperSkip(); // you better be in super skip if you're using this command :)
+		tryEndSuperSkip(true); // you better be in super skip if you're using this command :)
 	} else {
 		// Return the branch to follow into the passed variable.
 		if (script_h.current_variable.type != VariableInfo::TypeInt) {

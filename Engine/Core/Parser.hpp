@@ -147,7 +147,6 @@ public:
 	int ifCommand();
 	int humanzCommand();
 	int humanposCommand();
-	int gotoCommand();
 	int gosubCommand();
 	int globalonCommand();
 	int getparamCommand();

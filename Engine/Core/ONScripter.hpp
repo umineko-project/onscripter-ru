@@ -290,6 +290,7 @@ public:
 	int jnskipCommand();
 	int ignoreVoiceDelayCommand();
 	int hyphenCarryCommand();
+	int gotoCommand();
 	int globalPropertyWaitCommand();
 	int globalPropertyCommand();
 	int getvideovolCommand();
@@ -1213,7 +1214,7 @@ private:
 		ScriptHandler::ScriptLoanStorable callerState;
 	} superSkipData;
 
-	void endSuperSkip();
+	bool tryEndSuperSkip(bool force);
 
 	/* ---------------------------------------- */
 	/* Effect related variables */

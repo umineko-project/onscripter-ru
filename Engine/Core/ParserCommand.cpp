@@ -1120,12 +1120,6 @@ int ScriptParser::humanposCommand() {
 	return RET_CONTINUE;
 }
 
-int ScriptParser::gotoCommand() {
-	setCurrentLabel(script_h.readLabel() + 1);
-
-	return RET_CONTINUE;
-}
-
 void ScriptParser::gosubReal(const char *label, const char *next_script,
                              bool textgosub_flag) {
 	callStack.emplace_back();
