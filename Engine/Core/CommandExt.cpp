@@ -680,6 +680,11 @@ int ONScripter::snapLogCommand() {
 		}
 	}
 
+	// We found an element that is invisible onscreen, scroll to max.
+	if (curElem != -1 && scroll_max && !script_h.logState.readLabels[labelId]) {
+		curElem = -1;
+	}
+
 	if (curElem == -1) {
 		if (scroll_max)
 			snapScrollableByOffset(&sprite_info[scrollable_id], INT_MAX);
