@@ -52,6 +52,8 @@ void ObjectFallLayer::setAmplifiers(float s, float w, float h, float r, float m)
 	heightAmplifier = h;
 	randomAmplifier = r;
 	windAmplifier   = m;
+
+	assert(heightAmplifier > 0);
 }
 
 void ObjectFallLayer::setAmount(uint32_t dropNum) {

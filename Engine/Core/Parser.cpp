@@ -511,7 +511,7 @@ void ScriptParser::setSavePath(const char *path) {
 }
 
 void ScriptParser::setNsaOffset(const char *off) {
-	int offset = static_cast<int>(strtol(off, nullptr, 0));
+	int offset = static_cast<int>(std::strtol(off, nullptr, 0));
 	if (offset > 0)
 		nsa_offset = offset;
 }

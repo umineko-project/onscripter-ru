@@ -1538,7 +1538,7 @@ int ScriptParser::atoiCommand() {
 
 	const char *buf = script_h.readStr();
 
-	script_h.setInt(&script_h.pushed_variable, static_cast<int>(strtol(buf, nullptr, 10)));
+	script_h.setInt(&script_h.pushed_variable, static_cast<int>(std::strtol(buf, nullptr, 10)));
 
 	return RET_CONTINUE;
 }

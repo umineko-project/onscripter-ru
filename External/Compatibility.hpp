@@ -328,5 +328,30 @@
 		return __builtin_bswap64(v);
 	}
 
+#if defined(MACOSX) || defined(IOS)
+	#include <xlocale.h>
+	FORCE_INLINE float parsefloat(const char *str) {
+		return strtof_l(str, nullptr, _c_locale);
+	}
+#elif defined(LINUX) || defined(DROID)
+	#include <clocale>
+	FORCE_INLINE float parsefloat(const char *str) {
+		auto l = newlocale(LC_ALL, "C", nullptr);
+		auto f = strtof_l(str, nullptr, l);
+		freelocale(l);
+		return f;
+	}
+#else
+	#include <sstream>
+	#include <locale>
+	FORCE_INLINE float parsefloat(const char *str) {
+		std::istringstream iss(str);
+		iss.imbue(std::locale("C"));
+		float f;
+		iss >> f;
+		return f;
+	}
+#endif
+
 	#define HAS_HANDYC
 #endif

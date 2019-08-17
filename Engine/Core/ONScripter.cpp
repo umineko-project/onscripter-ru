@@ -882,7 +882,7 @@ void ONScripter::setUseAppIcons() {
 }
 
 void ONScripter::setPreferredWidth(const char *widthstr) {
-	int width = static_cast<int>(strtol(widthstr, nullptr, 0));
+	int width = static_cast<int>(std::strtol(widthstr, nullptr, 0));
 	//minimum preferred window width of 160 (gets ridiculous if smaller)
 	if (width > 160)
 		preferred_width = width;
@@ -895,24 +895,24 @@ void ONScripter::enableButtonShortCut() {
 }
 
 void ONScripter::setPreferredAutomodeTime(const char *timestr) {
-	int32_t time = static_cast<int>(strtol(timestr, nullptr, 0));
+	int32_t time = static_cast<int>(std::strtol(timestr, nullptr, 0));
 	sendToLog(LogLevel::Info, "setting preferred automode time to %d\n", time);
 	preferred_automode_time_set = true;
 	automode_time = preferred_automode_time = time;
 }
 
 void ONScripter::setVoiceDelayTime(const char *timestr) {
-	voicedelay_time = static_cast<int>(strtol(timestr, nullptr, 0));
+	voicedelay_time = static_cast<int>(std::strtol(timestr, nullptr, 0));
 	sendToLog(LogLevel::Info, "setting voicedelay time to %d\n", voicedelay_time);
 }
 
 void ONScripter::setVoiceWaitTime(const char *timestr) {
-	voicewait_time = static_cast<int>(strtol(timestr, nullptr, 0));
+	voicewait_time = static_cast<int>(std::strtol(timestr, nullptr, 0));
 	sendToLog(LogLevel::Info, "setting voicewait time to %d\n", voicewait_time);
 }
 
 void ONScripter::setFinalVoiceDelayTime(const char *timestr) {
-	final_voicedelay_time = static_cast<int>(strtol(timestr, nullptr, 0));
+	final_voicedelay_time = static_cast<int>(std::strtol(timestr, nullptr, 0));
 	sendToLog(LogLevel::Info, "setting final voicedelay time to %d\n", final_voicedelay_time);
 }
 

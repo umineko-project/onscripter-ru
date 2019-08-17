@@ -1238,7 +1238,7 @@ int ONScripter::skipModeCommand() {
 }
 
 int ONScripter::setVoiceWaitMulCommand() {
-	voicewait_multiplier = strtof(script_h.readStr(), nullptr);
+	voicewait_multiplier = parsefloat(script_h.readStr());
 	return RET_CONTINUE;
 }
 
@@ -1272,8 +1272,8 @@ int ONScripter::setHotspotCommand() {
 	dirtySpriteRect(&si);
 
 	si.has_hotspot = true;
-	si.hotspot.x   = strtof(script_h.readStr(), nullptr);
-	si.hotspot.y   = strtof(script_h.readStr(), nullptr);
+	si.hotspot.x   = parsefloat(script_h.readStr());
+	si.hotspot.y   = parsefloat(script_h.readStr());
 
 	//sendToLog(LogLevel::Info, "hotspot x,y: %f,%f\n", si.hotspot.x, si.hotspot.y);
 
@@ -2522,11 +2522,11 @@ int ONScripter::fallCommand() {
 			errorAndExit("Invalid fall blend mode");
 		layer->setBlend(mode);
 	} else if (amps) {
-		float s = strtof(script_h.readStr(), nullptr);
-		float w = strtof(script_h.readStr(), nullptr);
-		float h = strtof(script_h.readStr(), nullptr);
-		float r = script_h.hasMoreArgs() ? strtof(script_h.readStr(), nullptr) : 0;
-		float m = script_h.hasMoreArgs() ? strtof(script_h.readStr(), nullptr) : 1;
+		float s = parsefloat(script_h.readStr());
+		float w = parsefloat(script_h.readStr());
+		float h = parsefloat(script_h.readStr());
+		float r = script_h.hasMoreArgs() ? parsefloat(script_h.readStr()) : 0;
+		float m = script_h.hasMoreArgs() ? parsefloat(script_h.readStr()) : 1;
 		layer->setAmplifiers(s, w, h, r, m);
 	} else if (cover) {
 		layer->coverScreen();

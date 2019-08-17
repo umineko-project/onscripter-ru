@@ -1296,7 +1296,7 @@ int ONScripter::playCommand() {
 	const char *buf = script_h.readStr();
 	if (buf[0] == '*') {
 		cd_play_loop_flag = loop_flag;
-		int new_cd_track  = static_cast<int>(strtol(buf + 1, nullptr, 0));
+		int new_cd_track  = static_cast<int>(std::strtol(buf + 1, nullptr, 0));
 		if (current_cd_track != new_cd_track) {
 			stopBGM(false);
 			current_cd_track = new_cd_track;
