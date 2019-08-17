@@ -2959,8 +2959,10 @@ int ONScripter::cspCommand() {
 		if (sp.exists && sp.visible) {
 			dirtySpriteRect(sp.id, csp2_flag);
 		}
-		if (!csp2_flag)
+		if (!csp2_flag) {
 			root_button_link.removeSprite(sp.id);
+			previouslyHoveredButtonLink = nullptr;
+		}
 		sp.remove();
 	};
 
