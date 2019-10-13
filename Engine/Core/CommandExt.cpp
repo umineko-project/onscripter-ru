@@ -2025,8 +2025,25 @@ int ONScripter::markReadCommand() {
 	if (!callStack.empty())
 		label = callStack.front().label;
 
-	auto id                          = script_h.getLabelIndex(label);
+	auto id = script_h.getLabelIndex(label);
 	script_h.logState.readLabels[id] = true;
+
+	return RET_CONTINUE;
+}
+
+int ONScripter::markAllReadCommand() {
+	LabelInfo *label = current_label_info;
+	if (!callStack.empty())
+		label = callStack.front().label;
+
+	auto id = script_h.getLabelIndex(label);
+
+	for (auto &thisLogEntry : script_h.logState.logEntries) {
+		// Read all before current as we may not have clicked past it.
+		if (thisLogEntry.labelIndex == id && thisLogEntry.choiceVectorSize == script_h.choiceState.choiceVector.size())
+			break;
+		script_h.logState.readLabels[thisLogEntry.labelIndex] = true;
+	}
 
 	return RET_CONTINUE;
 }

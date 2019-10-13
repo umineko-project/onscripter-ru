@@ -268,6 +268,7 @@ public:
 	int makeChoiceCommand();
 	int markRangeReadCommand();
 	int markReadCommand();
+	int markAllReadCommand();
 	int mainGotoCommand();
 	int mainLabelCommand();
 	int mixChannelPropertyWaitCommand();
