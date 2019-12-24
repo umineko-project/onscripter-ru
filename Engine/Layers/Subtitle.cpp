@@ -105,6 +105,8 @@ bool SubtitleLayer::update(bool /*old*/) {
 
 	//CHECKME: may it deadlock here on quit?
 	while (decoded_timestamp < decode_rate || decoded_timestamp - decode_rate < display_timestamp) {
+		if (frameQueue.size() == frameQueueMaxSize)
+			break;
 		SDL_UnlockMutex(frameQueueMutex);
 		SDL_Delay(1); //TODO: replace by semaphores
 		SDL_LockMutex(frameQueueMutex);

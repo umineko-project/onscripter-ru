@@ -2,7 +2,7 @@
 
 #define NTEXTURES 8 /* Maximum amount of textures */
 #define IMG_W 2048.0
-#define IMG_H 128.0
+#define IMG_H 256.0
 
 uniform int ntextures; /* Number of sub textures we're drawing */
 uniform sampler2D subTex; /* Subtitle textures, only alpha for each pixel */

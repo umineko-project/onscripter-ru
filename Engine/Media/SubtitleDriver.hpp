@@ -37,7 +37,7 @@ struct SubtitleImage {
 class SubtitleDriver {
 public:
 	static constexpr size_t NIMGS_MAX = 8; /* NTEXTURES in renderSubtitles.frag */
-	static constexpr int IMG_W = 2048, IMG_H = 128;
+	static constexpr int IMG_W = 2048, IMG_H = 256;
 
 	bool init(int width, int height, const char *ass_sub_file, BaseReader *reader, AVCodecContext *sub_codec_ctx);
 	void process(char *data, size_t length);
