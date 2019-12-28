@@ -2334,6 +2334,10 @@ int ONScripter::getChoiceVectorSizeCommand() {
 int ONScripter::getLogDataCommand() {
 	// Returns the jump label and choice vector size for a given log entry index.
 	int logEntryIndex    = script_h.readInt();
+
+	if  (logEntryIndex < 0)
+		logEntryIndex = static_cast<int32_t>(script_h.logState.logEntries.size() - 1);
+
 	int choiceVectorSize = script_h.logState.logEntries[logEntryIndex].choiceVectorSize;
 
 	script_h.readVariable();
@@ -2372,7 +2376,7 @@ int ONScripter::getUniqueLogEntryIndexCommand() {
 		}
 	}
 
-	errorAndExit("get_unique_log_entry_index provided label not found");
+	script_h.setInt(&script_h.pushed_variable, -1);
 	return RET_CONTINUE;
 }
 
