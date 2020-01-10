@@ -853,7 +853,7 @@ DialoguePiece DialogueController::layoutPiece(TextRenderingState &state, std::u1
 	auto y = fontInfo.y();
 
 	// Do the layout
-	bool fittedSomething = addFittingChars(p, layoutPieceTmpFreshText, text, rubyPieces);
+	bool fittedSomething = addFittingChars(p, layoutPieceTmpFreshText, text, rubyPieces, !(state.dst.target));
 
 	// If nothing fits, we will need to newline and retry.
 	if (!fittedSomething) {
@@ -865,7 +865,7 @@ DialoguePiece DialogueController::layoutPiece(TextRenderingState &state, std::u1
 		x                       = fontInfo.x();
 		y                       = fontInfo.y();
 		layoutPieceTmpFreshText = text;
-		fittedSomething         = addFittingChars(p, layoutPieceTmpFreshText, text, rubyPieces);
+		fittedSomething         = addFittingChars(p, layoutPieceTmpFreshText, text, rubyPieces, !(state.dst.target));
 		// If it STILL doesn't fit, we are screwed.
 		if (!fittedSomething) {
 			ons.errorAndExit("Failed to render not fitting part of a text segment!");
@@ -897,7 +897,7 @@ DialoguePiece DialogueController::layoutPiece(TextRenderingState &state, std::u1
 	return p;
 }
 
-void DialogueController::layoutRubyPiece(DialoguePiece &mainPiece, DialoguePiece &rubyPiece, size_t rubyStartPosition, float xFinish) {
+void DialogueController::layoutRubyPiece(DialoguePiece &mainPiece, DialoguePiece &rubyPiece, size_t rubyStartPosition, float xFinish, bool measure) {
 	auto &preFontInfo = rubyPiece.getPreFontInfo();
 	auto xStart       = preFontInfo.x();
 	//auto xFinish = rubyPiece.getPostFontInfo().x();
@@ -907,7 +907,7 @@ void DialogueController::layoutRubyPiece(DialoguePiece &mainPiece, DialoguePiece
 	rubyPiece.borderPadding              = preFontInfo.borderPadding;
 	preFontInfo.changeStyle().wrap_limit = 99999; // don't wrap.
 	auto text                            = rubyPiece.text;
-	addFittingChars(rubyPiece, text, rubyPiece.text);
+	addFittingChars(rubyPiece, text, rubyPiece.text, nullptr, measure);
 
 	float raise{0};
 	for (auto it = mainPiece.charRenderBuffer.begin() + rubyStartPosition; it != mainPiece.charRenderBuffer.end(); ++it) {
@@ -1058,7 +1058,7 @@ void DialogueController::advanceDialogueRendering(uint64_t ns) {
  * Text layouting is full of edge cases that are difficult to detect without playing through the entire game.
  * It would be very useful if we had tests to ensure nothing changes with the way dialogues are currently laid out, but unfortunately, we currently do not.
  */
-bool DialogueController::addFittingChars(DialoguePiece &piece, std::u16string &rhs, const std::u16string &original, std::deque<DialoguePiece> *rubyPieces) {
+bool DialogueController::addFittingChars(DialoguePiece &piece, std::u16string &rhs, const std::u16string &original, std::deque<DialoguePiece> *rubyPieces, bool measure) {
 	// Initialize "last safe break point" state variables (these are what we rewind to).
 	// Ruby uses a separate buffer so as not to overwrite the original one with the base text.
 	auto &thisAddFittingChars      = !rubyPieces ? addRubyFittingCharsTmpLastSafeBreakRHS : addFittingCharsTmpLastSafeBreakRHS;
@@ -1118,7 +1118,7 @@ bool DialogueController::addFittingChars(DialoguePiece &piece, std::u16string &r
 		if (withinRubySpan && workingStyle.ruby_text.empty()) {
 			// just exited a ruby span.
 			withinRubySpan = false;
-			layoutRubyPiece(piece, rubyPiece.get(), rubyPieceStartPosition, workingFontinfo.x());
+			layoutRubyPiece(piece, rubyPiece.get(), rubyPieceStartPosition, workingFontinfo.x(), measure);
 			rubyPieces->push_back(rubyPiece.get());
 			rubyPiece.unset();
 		}
@@ -1169,8 +1169,8 @@ bool DialogueController::addFittingChars(DialoguePiece &piece, std::u16string &r
 				 */
 				uint32_t pre_codepoint = workingFontinfo.layoutData.last_printed_codepoint;
 				if ((this_codepoint < NumBegin || this_codepoint > NumEnd || pre_codepoint < NumBegin || pre_codepoint > NumEnd) &&
-					std::find(std::begin(NotLineEnd), std::end(NotLineEnd), pre_codepoint) == std::end(NotLineEnd) &&
-					std::find(std::begin(NotLineBegin), std::end(NotLineBegin), this_codepoint) == std::end(NotLineBegin)) {
+				    std::find(std::begin(NotLineEnd), std::end(NotLineEnd), pre_codepoint) == std::end(NotLineEnd) &&
+				    std::find(std::begin(NotLineBegin), std::end(NotLineBegin), this_codepoint) == std::end(NotLineBegin)) {
 					updateLastSafeData();
 				}
 			}
@@ -1196,7 +1196,7 @@ bool DialogueController::addFittingChars(DialoguePiece &piece, std::u16string &r
 			else if (render == ClosingCurlyBrace)
 				render = '}';
 			// It's a renderable character, so we add it to the chars-to-be-rendered.
-			addCharToRenderBuffer(piece, render, workingFontinfo);
+			addCharToRenderBuffer(piece, render, workingFontinfo, measure);
 			// If we ran out of room, exit the loop, and we will save the layouting data up to our last safe break.
 			// Cannot run out of room if layouting in fit-to-width mode (this allows us to resize text to fit it into a certain area --
 			// we allow the text to get as long as it wants here, then resize it to fit in layoutLines).
@@ -1266,7 +1266,7 @@ bool DialogueController::addFittingChars(DialoguePiece &piece, std::u16string &r
 		piece.charRenderBuffer.resize(lastSafeRenderBufferCount);
 		if (!thisAddFittingChars.empty() || lastNewLine) {
 			if (lastSafeLayoutData.newLineBehavior.terminator && !lastSafeLayoutData.newLineBehavior.terminatorAlreadyIncludedOnFirstLine) {
-				addCharToRenderBuffer(piece, lastSafeLayoutData.newLineBehavior.terminator, workingFontinfo);
+				addCharToRenderBuffer(piece, lastSafeLayoutData.newLineBehavior.terminator, workingFontinfo, measure);
 			}
 			rhs = NewLine;
 			if (lastSafeLayoutData.newLineBehavior.duplicatingTerminator()) {
@@ -1294,8 +1294,8 @@ bool DialogueController::addFittingChars(DialoguePiece &piece, std::u16string &r
 }
 
 // builds up charRenderBuffer and modifies fontInfo.layoutData.last_printed_codepoint and fontInfo.layoutData.xPxLeft (moving the "pen" to the right)
-void DialogueController::addCharToRenderBuffer(DialoguePiece &piece, char16_t codepoint, Fontinfo &fontInfo) {
-	const GlyphValues *glyph = fontInfo.renderUnicodeGlyph(codepoint);
+void DialogueController::addCharToRenderBuffer(DialoguePiece &piece, char16_t codepoint, Fontinfo &fontInfo, bool measure) {
+	const GlyphValues *glyph = fontInfo.renderUnicodeGlyph(codepoint, measure);
 	float plus{0}, aboveBase{glyph->maxy}, belowBase{-glyph->miny}, faceAscender{glyph->faceAscender}, faceDescender{glyph->faceDescender};
 
 	piece.charRenderBuffer.emplace_back();

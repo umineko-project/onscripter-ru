@@ -65,10 +65,14 @@ GlyphParams Fontinfo::getGlyphParams() {
 }
 
 // Helper method since GlyphParams is used this way pretty often
-const GlyphValues *Fontinfo::renderUnicodeGlyph(uint32_t codepoint) {
+const GlyphValues *Fontinfo::renderUnicodeGlyph(uint32_t codepoint, bool measure) {
 	GlyphParams p = getGlyphParams();
 	p.unicode     = codepoint;
-	return ons.renderUnicodeGlyph(my_font(), &p);
+	if (measure) {
+		return ons.measureUnicodeGlyph(my_font(), &p);
+	} else {
+		return ons.renderUnicodeGlyph(my_font(), &p);
+	}
 }
 
 bool Fontinfo::aliasFont(FontAlias type, int from, int to) {
@@ -190,6 +194,53 @@ const char *Fontinfo::getFontPath(unsigned int i) {
 
 // Font code
 
+GlyphValues *Font::measureGlyph(GlyphParams *key) {
+	//    ons.printClock("measureGlyph");
+	GlyphValues *rv = new GlyphValues;
+
+	// load the glyph for this font and unicode, and store the ft char index in Cache (output param) for later use
+	FT_GlyphSlot glyph = loadGlyph(key->unicode, rv->ftCharIndexCache);
+
+	if (err) {
+		//sendToLog(LogLevel::Warn, "loadGlyph unsuccessful in renderGlyph\n");
+		return rv;
+	}
+
+	FT_Glyph actual_glyph;
+
+	err = FT_Get_Glyph(glyph, &actual_glyph);
+	if (err) {
+		//sendToLog(LogLevel::Warn, "FT_Get_Glyph unsuccessful in renderGlyph\n");
+		return rv;
+	}
+
+	FT_BBox bbox;
+	FT_Glyph_Get_CBox(actual_glyph, FT_GLYPH_BBOX_PIXELS, &bbox);
+
+	if (border_width > 0 && (bbox.xMin != bbox.xMax)) {
+		rv->border_bitmap_offset.x = -lround(border_width / 64.0);
+		rv->border_bitmap_offset.y = lround(border_width / 64.0);
+	}
+	/* ------------------------- */
+
+	rv->minx          = bbox.xMin;
+	rv->maxy          = bbox.yMax;
+	rv->miny          = bbox.yMin;
+	rv->maxx          = bbox.xMax;
+	rv->advance       = (actual_glyph->advance.x / 65536.0);
+	rv->faceAscender  = (face->size->metrics.ascender / 64.0);
+	rv->faceDescender = -(face->size->metrics.descender / 64.0); // make both positive
+
+	FT_Done_Glyph(actual_glyph);
+
+	//sendToLog(LogLevel::Info, "renderGlyph bitmap w,h:{%d,%d} border_bitmap w,h:{%d,%d}\n", rv.bitmap->w, rv.bitmap->h, rv.border_bitmap->w, rv.border_bitmap->h);
+
+	// glyph->bitmap.buffer ... present? not sure if we remove it....
+	//sendToLog(LogLevel::Info, "Finished creating rv.bitmap\n");
+	//    ons.printClock("measureGlyph end");
+	return rv;
+}
+
 GlyphValues *Font::renderGlyph(GlyphParams *key, SDL_Color fg, SDL_Color bg) {
 	GlyphValues *rv = new GlyphValues;
 
@@ -212,25 +263,26 @@ GlyphValues *Font::renderGlyph(GlyphParams *key, SDL_Color fg, SDL_Color bg) {
 
 	SDL_Surface *glyph_border = nullptr;
 	if (key->border_width > 0) {
+		FT_Glyph border_glyph;
+		FT_Glyph_Copy(actual_glyph, &border_glyph);
 		// Turn it into bordered version.
 		//sendToLog(LogLevel::Error, "Somehow we are in border for %c\n",key->unicode);
 		int border_w = key->border_width * fonts.getMultiplier(key->font_number, key->preset_id);
-		drawBorder(&actual_glyph, border_w);
+		drawBorder(&border_glyph, border_w);
 		/* Convert glyph to surface */
-		if (actual_glyph->format != FT_GLYPH_FORMAT_BITMAP) {
-			err = FT_Glyph_To_Bitmap(&actual_glyph, FT_RENDER_MODE_NORMAL, nullptr, 1);
+
+		if (border_glyph->format != FT_GLYPH_FORMAT_BITMAP) {
+			err = FT_Glyph_To_Bitmap(&border_glyph, FT_RENDER_MODE_NORMAL, nullptr, 1);
 			if (err) {
 				//sendToLog(LogLevel::Error, "Crashing and burning in renderGlyph! Couldn't convert glyph to bitmap\n");
 				//sendToLog(LogLevel::Error, "Bus number: 0x%X\n", err);
 			}
 		}
-		bmp_glyph                  = reinterpret_cast<FT_BitmapGlyph>(actual_glyph);
+		bmp_glyph                  = reinterpret_cast<FT_BitmapGlyph>(border_glyph);
 		glyph_border               = freetypeToSDLSurface(&bmp_glyph->bitmap, fg, bg); // temporary fixed color for outlines
 		rv->border_bitmap_offset.x = bmp_glyph->left;
 		rv->border_bitmap_offset.y = bmp_glyph->top;
-		FT_Done_Glyph(actual_glyph);
-		// Get a new copy of the glyph.
-		FT_Get_Glyph(glyph, &actual_glyph);
+		FT_Done_Glyph(border_glyph);
 	}
 
 	/* Convert glyph to surface */

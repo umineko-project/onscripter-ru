@@ -69,6 +69,7 @@ public:
 
 	SDL_Surface *freetypeToSDLSurface(FT_Bitmap *ft_bmp, SDL_Color fg, SDL_Color bg);
 	GlyphValues *renderGlyph(GlyphParams *key, SDL_Color fg, SDL_Color bg);
+	GlyphValues *measureGlyph(GlyphParams *key);
 
 	FT_GlyphSlot loadGlyph(uint32_t unicode, unsigned int &charIndex) {
 		charIndex = FT_Get_Char_Index(face, unicode);
