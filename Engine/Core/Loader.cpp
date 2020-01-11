@@ -705,9 +705,13 @@ enum {
 };
 
 static int crashReporterError = CRASHREPORTER_NO_RUN;
-
+void terminateCallback () {
+    std::cerr << "terminate handler called\n";
+}
 CONSTRUCTOR setupCrashReporter() {
-
+#ifdef __GNUC__
+    std::set_terminate(terminateCallback);
+#endif // ifdef __GNUC__
 #ifdef WIN32
 	// On Windows check the DEBUG environment variable to show early reports.
 	if (std::getenv("DEBUG")) {

@@ -1201,8 +1201,10 @@ bool DialogueController::addFittingChars(DialoguePiece &piece, std::u16string &r
 			// Cannot run out of room if layouting in fit-to-width mode (this allows us to resize text to fit it into a certain area --
 			// we allow the text to get as long as it wants here, then resize it to fit in layoutLines).
 			if (!piece.inlineOverrides.is_fitted.get(workingStyle.is_fitted)) {
-				if (workingFontinfo.isNoRoomFor(workingFontinfo.layoutData.newLineBehavior.terminatorAdvance))
+				if (workingFontinfo.isNoRoomFor(workingFontinfo.layoutData.newLineBehavior.terminatorAdvance)) {
+					updateLastSafeData();
 					break;
+				}
 			}
 		}
 
