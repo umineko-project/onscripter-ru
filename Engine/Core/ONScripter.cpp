@@ -809,6 +809,7 @@ void ONScripter::openAudio(const SDL_AudioSpec &spec) {
 ONScripter::ONScripter()
     : ScriptParser(this),
       glyphCache(NUM_GLYPH_CACHE),
+      glyphMeasureCache(NUM_GLYPH_CACHE),
       glyphAtlas(GLYPH_ATLAS_W, GLYPH_ATLAS_H) {
 	//first initialize *everything* (static) to base values
 

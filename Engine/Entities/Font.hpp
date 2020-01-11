@@ -40,11 +40,11 @@ const uint32_t JpEnd{u'\x31FF'};
 const uint32_t NumBegin{u'\x0030'};
 const uint32_t NumEnd{u'\x0039'};
 //!,.:;?}·―’”′″∶、。〉》」』！％＇），．：；？｝～
-static const uint32_t NotLineBegin[]{u'\x0021',u'\x002C',u'\x002E',u'\x003A',u'\x003B',u'\x003F',u'\x007D',u'\x00B7',u'\x2015',u'\x2019', u'\x201D',u'\x2032',u'\x2033',u'\x2236',u'\x3001',u'\x3002',u'\x3009',u'\x300B',u'\x300D',u'\x300F',u'\xFF01',u'\xFF05',u'\xFF07',
-	u'\xFF09',u'\xFF0C',u'\xFF0E',u'\xFF1A',u'\xFF1B',u'\xFF1F',u'\xFF5D',u'\xFF5E'};
+static const uint32_t NotLineBegin[]{u'\x0021', u'\x002C', u'\x002E', u'\x003A', u'\x003B', u'\x003F', u'\x007D', u'\x00B7', u'\x2015', u'\x2019', u'\x201D', u'\x2032', u'\x2033', u'\x2236', u'\x3001', u'\x3002', u'\x3009', u'\x300B', u'\x300D', u'\x300F', u'\xFF01', u'\xFF05', u'\xFF07',
+                                     u'\xFF09', u'\xFF0C', u'\xFF0E', u'\xFF1A', u'\xFF1B', u'\xFF1F', u'\xFF5D', u'\xFF5E'};
 //([{·‘“《「『＄（．｛
-static const uint32_t NotLineEnd[]{u'\x0028',u'\x005B',u'\x007B',u'\x00B7',u'\x2018',u'\x201C',u'\x300A',u'\x300C',u'\x300E',
-	u'\xFF04',u'\xFF08',u'\xFF0E',u'\xFF5B'};
+static const uint32_t NotLineEnd[]{u'\x0028', u'\x005B', u'\x007B', u'\x00B7', u'\x2018', u'\x201C', u'\x300A', u'\x300C', u'\x300E',
+                                   u'\xFF04', u'\xFF08', u'\xFF0E', u'\xFF5B'};
 
 class Font;
 
@@ -192,7 +192,7 @@ public:
 	}
 
 	GlyphParams getGlyphParams();
-	const GlyphValues *renderUnicodeGlyph(uint32_t codepoint);
+	const GlyphValues *renderUnicodeGlyph(uint32_t codepoint, bool measure = false);
 
 	uint32_t opening_single_quote{'\''};
 	uint32_t closing_single_quote{'\''};

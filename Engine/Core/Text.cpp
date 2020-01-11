@@ -609,6 +609,18 @@ const GlyphValues *ONScripter::renderUnicodeGlyph(Font *font, GlyphParams *key) 
 	return glyph;
 }
 
+const GlyphValues *ONScripter::measureUnicodeGlyph(Font *font, GlyphParams *key) {
+	GlyphParams k = *key;
+	GlyphValues *glyph;
+	try {
+		glyph = glyphMeasureCache.get(k);
+	} catch (int) {
+		glyph = font->measureGlyph(&k);
+		glyphMeasureCache.set(k, glyph);
+	}
+	return glyph;
+}
+
 void ONScripter::enterTextDisplayMode() {
 	if (saveon_flag && internal_saveon_flag) {
 		saveSaveFile(-1);
@@ -922,7 +934,7 @@ int ONScripter::getCharacterPreDisplayDelay(char16_t /*codepoint*/, int /*speed*
 }
 
 int ONScripter::getCharacterPostDisplayDelay(char16_t codepoint, int speed) {
-	int base = 20;
+	int base             = 20;
 	uint32_t codepoint_u = codepoint;
 	if (codepoint == u'⅓')
 		base = 13; // special character indicating the delay for a terminating punctuation which will be followed by another

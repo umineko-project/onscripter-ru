@@ -384,12 +384,12 @@ private:
 
 	void layoutSegment(TextRenderingState &state, std::u16string text, Fontinfo &fi);
 	DialoguePiece layoutPiece(TextRenderingState &state, std::u16string &text, Fontinfo &fontInfo, std::deque<DialoguePiece> *rubyPieces);
-	void layoutRubyPiece(DialoguePiece &mainPiece, DialoguePiece &rubyPiece, size_t rubyStartPosition, float xFinish);
+	void layoutRubyPiece(DialoguePiece &mainPiece, DialoguePiece &rubyPiece, size_t rubyStartPosition, float xFinish, bool measure = false);
 	void layoutLines(TextRenderingState &state);
 	void renderPiece(TextRenderingState &state, DialoguePiece &piece);
 
-	bool addFittingChars(DialoguePiece &piece, std::u16string &rhs, const std::u16string &original, std::deque<DialoguePiece> *rubyPieces = nullptr);
-	void addCharToRenderBuffer(DialoguePiece &piece, char16_t codepoint, Fontinfo &fontInfo);
+	bool addFittingChars(DialoguePiece &piece, std::u16string &rhs, const std::u16string &original, std::deque<DialoguePiece> *rubyPieces = nullptr, bool measure = false);
+	void addCharToRenderBuffer(DialoguePiece &piece, char16_t codepoint, Fontinfo &fontInfo, bool measure = false);
 	void renderAddedChars(TextRenderingState &state, DialoguePiece &p, bool renderBorder = false, bool renderShadow = false);
 
 	// temps with preallocated buffers

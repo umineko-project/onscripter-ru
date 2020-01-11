@@ -732,7 +732,7 @@ private:
 	int32_t final_voicedelay_time{0};
 	bool ignore_voicedelay{false};
 	int32_t autoclick_time;
-	bool reduce_motion {false};
+	bool reduce_motion{false};
 
 	bool btnasync_active{false};
 	bool btnasync_draw_required{false};
@@ -815,7 +815,6 @@ private:
 	GPU_Image *effect_src_gpu{nullptr}, *hud_effect_src_gpu{nullptr};
 	GPU_Image *effect_dst_gpu{nullptr}, *hud_effect_dst_gpu{nullptr};
 	GPU_Image *onion_alpha_gpu{nullptr};
-
 
 public:
 #ifdef IOS
@@ -1165,6 +1164,7 @@ public: // DialogueController wants access to this
 	void resetGlyphCache();
 	void renderGlyphValues(const GlyphValues &values, GPU_Rect *dst_clip, TextRenderingState::TextRenderingDst dst, float x, float y, float r, bool render_border, int alpha);
 	const GlyphValues *renderUnicodeGlyph(Font *font, GlyphParams *key);
+	const GlyphValues *measureUnicodeGlyph(Font *font, GlyphParams *key);
 	bool isAlphanumeric(char16_t codepoint);
 	void processSpecialCharacters(std::u16string &text, Fontinfo &info, Fontinfo::InlineOverrides &io);
 	bool processTransformedCharacterSequence(std::u16string &string, Fontinfo &info);
@@ -1547,6 +1547,7 @@ private:
 	/* ---------------------------------------- */
 	/* Our caches :) */
 	LRUCache<GlyphParams, GlyphValues *, std::unordered_map, GlyphParamsHash, GlyphParamsEqual> glyphCache;
+	LRUCache<GlyphParams, GlyphValues *, std::unordered_map, GlyphParamsHash, GlyphParamsEqual> glyphMeasureCache;
 	GlyphAtlasController glyphAtlas;
 
 	ImageCacheController imageCache;
@@ -1624,7 +1625,6 @@ private:
 	int getTotalButtonCount() const;
 
 	int buttonNumberToLinkIndex(int buttonNo);
-
 };
 
 extern ONScripter ons;
