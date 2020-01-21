@@ -33,16 +33,16 @@ const uint32_t EmDash{u'—'};
 const uint32_t HyphenMinus{u'-'};
 const uint32_t NewLine{u'\n'};
 const uint32_t NormalQuote{u'"'};
-inline bool IsEnLetter(uint32_t ch) {
+inline bool isEnLetter(uint32_t ch) {
 	return (ch >= u'a' && ch <= 'z') || (ch >= u'A' && ch <= u'Z');
 }
-inline bool IsNumber(uint32_t ch) {
+inline bool isNumber(uint32_t ch) {
 	return (ch >= '0' && ch <= u'9');
 }
-inline bool IsNumberOrLetter(uint32_t ch) {
-	return IsNumber(ch) || IsEnLetter(ch);
+inline bool isNumberOrLetter(uint32_t ch) {
+	return isNumber(ch) || isEnLetter(ch);
 }
-inline bool IsCJKChar(uint32_t ch) {
+inline bool isCJKChar(uint32_t ch) {
 	return (ch >= u'\x4E00' && ch <= u'\x9FFF') || (ch >= u'\x3040' && ch <= u'\x31FF') || ch == u'\x3007';
 }
 
