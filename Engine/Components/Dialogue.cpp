@@ -1170,9 +1170,9 @@ bool DialogueController::addFittingChars(DialoguePiece &piece, std::u16string &r
 				 */
 
 				if (
-				    (isCJKChar(this_codepoint) && isNumberOrLetter(pre_codepoint)) ||
-				    (isCJKChar(pre_codepoint) && isNumberOrLetter(this_codepoint)) || // It's OK to break a line while CJK-EN mixing
-				    (!isNumberOrLetter(this_codepoint) && !isNumberOrLetter(pre_codepoint) && // no line breaking in an English words and numbers
+				    (isCJKChar(this_codepoint) && isNumberOrEnLetter(pre_codepoint)) ||
+				    (isCJKChar(pre_codepoint) && isNumberOrEnLetter(this_codepoint)) || // It's OK to break a line while CJK-EN mixing
+				    (!isNumberOrEnLetter(this_codepoint) && !isNumberOrEnLetter(pre_codepoint) && // no line breaking in an English words and numbers
 				     std::find(std::begin(NotLineEnd), std::end(NotLineEnd), pre_codepoint) == std::end(NotLineEnd) &&
 				     std::find(std::begin(NotLineBegin), std::end(NotLineBegin), this_codepoint) == std::end(NotLineBegin))// CJK line breaking rules
 				     ) {

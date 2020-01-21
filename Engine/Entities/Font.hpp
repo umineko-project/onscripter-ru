@@ -39,7 +39,7 @@ inline bool isEnLetter(uint32_t ch) {
 inline bool isNumber(uint32_t ch) {
 	return (ch >= '0' && ch <= u'9');
 }
-inline bool isNumberOrLetter(uint32_t ch) {
+inline bool isNumberOrEnLetter(uint32_t ch) {
 	return isNumber(ch) || isEnLetter(ch);
 }
 inline bool isCJKChar(uint32_t ch) {
