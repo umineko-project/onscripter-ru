@@ -1160,10 +1160,10 @@ bool DialogueController::addFittingChars(DialoguePiece &piece, std::u16string &r
 			if (this_codepoint == ' ') {
 				updateLastSafeData();
 			}
-			// It's OK to break a line while CJK-EN mixing
-			else if (isCJKChar(this_codepoint) && isNumberOrLetter(pre_codepoint)) {
+			// It's OK to break a line while CJK/nonCJK mixing
+			else if (isCJKChar(this_codepoint) && !isCJKChar(pre_codepoint)) {
 				updateLastSafeData();
-			} else if (isCJKChar(pre_codepoint) && isNumberOrLetter(this_codepoint)) {
+			} else if (isCJKChar(pre_codepoint) && !isCJKChar(this_codepoint)) {
 				updateLastSafeData();
 			} else if (ons.script_language == ScriptLanguage::Japanese) {
 				/* If we are in Chinese mode updateLastSafeData on any this_codepoint (indicating it is safe to break here), as long as:
