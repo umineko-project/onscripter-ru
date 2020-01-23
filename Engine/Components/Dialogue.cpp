@@ -1153,12 +1153,13 @@ bool DialogueController::addFittingChars(DialoguePiece &piece, std::u16string &r
 		}
 
 		if (!withinRubySpan && !workingStyle.no_break) {
-			if (ons.script_language == ScriptLanguage::English) {
-				// It's OK to break a line BEFORE the following characters
-				// Except that there's no breaking allowed during the no_break tag ({nobr:}) or the base text of a ruby span.
-				if (this_codepoint == ' ')
-					updateLastSafeData();
-			} else {
+			uint32_t pre_codepoint = workingFontinfo.layoutData.last_printed_codepoint;
+
+			// It's OK to break a line BEFORE the following characters
+			// Except that there's no breaking allowed during the no_break tag ({nobr:}) or the base text of a ruby span.
+			if (this_codepoint == ' ') {
+				updateLastSafeData();
+			} else if (ons.script_language == ScriptLanguage::Japanese) {
 				/* If we are in Chinese mode updateLastSafeData on any this_codepoint (indicating it is safe to break here), as long as:
 				 * 1) this_codepoint can begin a line (requires some list of characters that cannot begin a line, see:
 				 *    https://en.wikipedia.org/wiki/Line_breaking_rules_in_East_Asian_languages)
@@ -1167,15 +1168,18 @@ bool DialogueController::addFittingChars(DialoguePiece &piece, std::u16string &r
 				 * 4) Standard checks for no_break ({nobr:} tag) and ruby as performed elsewhere in this function.
 				 * Glyph spacing is to be adjusted later in layoutLines, prior to actual rendering.
 				 */
-				uint32_t pre_codepoint = workingFontinfo.layoutData.last_printed_codepoint;
-				if ((this_codepoint < NumBegin || this_codepoint > NumEnd || pre_codepoint < NumBegin || pre_codepoint > NumEnd) &&
-				    std::find(std::begin(NotLineEnd), std::end(NotLineEnd), pre_codepoint) == std::end(NotLineEnd) &&
-				    std::find(std::begin(NotLineBegin), std::end(NotLineBegin), this_codepoint) == std::end(NotLineBegin)) {
+
+				if (
+				    (isCJKChar(this_codepoint) && isNumberOrEnLetter(pre_codepoint)) ||
+				    (isCJKChar(pre_codepoint) && isNumberOrEnLetter(this_codepoint)) || // It's OK to break a line while CJK-EN mixing
+				    (!isNumberOrEnLetter(this_codepoint) && !isNumberOrEnLetter(pre_codepoint) && // no line breaking in an English words and numbers
+				     std::find(std::begin(NotLineEnd), std::end(NotLineEnd), pre_codepoint) == std::end(NotLineEnd) &&
+				     std::find(std::begin(NotLineBegin), std::end(NotLineBegin), this_codepoint) == std::end(NotLineBegin))// CJK line breaking rules
+				     ) {
 					updateLastSafeData();
 				}
 			}
 		}
-
 		// If we hit a newline, consume it and break (we don't cross newlines here, that job belongs to one of our callers)
 		if (this_codepoint == NewLine) {
 			rhs.erase(0, 1);

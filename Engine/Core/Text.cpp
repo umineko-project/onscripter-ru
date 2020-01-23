@@ -944,9 +944,7 @@ int ONScripter::getCharacterPostDisplayDelay(char16_t codepoint, int speed) {
 		base = 145;
 	else if (codepoint == '.' || codepoint == '?' || codepoint == '!')
 		base = 170;
-	else if (codepoint_u >= CnBegin && codepoint_u <= CnEnd)
-		base = 60;
-	else if (codepoint_u >= JpBegin && codepoint_u <= JpEnd)
+	else if (isCJKChar(codepoint_u))
 		base = 60;
 	return base - (base * speed) / 10;
 }
