@@ -1170,7 +1170,7 @@ bool DialogueController::addFittingChars(DialoguePiece &piece, std::u16string &r
 				 */
 				if (this_codepoint != pre_codepoint) {
 					punctuationRepeatCount = 0;
-				} else if (std::find(std::begin(NotLineBegin), std::end(NotLineBegin), this_codepoint)) {
+				} else if (std::find(std::begin(NotLineBegin), std::end(NotLineBegin), this_codepoint) != std::end(NotLineBegin)) {
 					punctuationRepeatCount++;
 				}
 				if (punctuationRepeatCount >= 3 || // if a punctuation repeated 3 or more times, it can safely wrap because they are used for stress
