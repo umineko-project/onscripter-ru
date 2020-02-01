@@ -1067,7 +1067,7 @@ bool DialogueController::addFittingChars(DialoguePiece &piece, std::u16string &r
 	long lastSafeFontinfoIndex     = 0;
 	size_t lastSafeRubyPiecesSize  = rubyPieces ? rubyPieces->size() : 0; // I think this might be nonzero sometimes?? Unsure
 	auto lastSafeVerticalSize      = piece.verticalSize;
-
+	short punctuationRepeatCount   = 0;
 	// Get the font styling info that applies at the start of the text we've been given to render.
 	Fontinfo &fontInfo = piece.getPreFontInfo();
 	bool startOfLine   = fontInfo.layoutData.xPxLeft == 0;
@@ -1168,14 +1168,18 @@ bool DialogueController::addFittingChars(DialoguePiece &piece, std::u16string &r
 				 * 4) Standard checks for no_break ({nobr:} tag) and ruby as performed elsewhere in this function.
 				 * Glyph spacing is to be adjusted later in layoutLines, prior to actual rendering.
 				 */
-
-				if (
+				if (this_codepoint != pre_codepoint) {
+					punctuationRepeatCount = 0;
+				} else if (std::find(std::begin(NotLineBegin), std::end(NotLineBegin), this_codepoint)) {
+					punctuationRepeatCount++;
+				}
+				if (punctuationRepeatCount >= 3 || // if a punctuation repeated 3 or more times, it can safely wrap because they are used for stress
 				    (isCJKChar(this_codepoint) && isNumberOrEnLetter(pre_codepoint)) ||
-				    (isCJKChar(pre_codepoint) && isNumberOrEnLetter(this_codepoint)) || // It's OK to break a line while CJK-EN mixing
+				    (isCJKChar(pre_codepoint) && isNumberOrEnLetter(this_codepoint)) ||           // It's OK to break a line while CJK-EN mixing
 				    (!isNumberOrEnLetter(this_codepoint) && !isNumberOrEnLetter(pre_codepoint) && // no line breaking in an English words and numbers
 				     std::find(std::begin(NotLineEnd), std::end(NotLineEnd), pre_codepoint) == std::end(NotLineEnd) &&
-				     std::find(std::begin(NotLineBegin), std::end(NotLineBegin), this_codepoint) == std::end(NotLineBegin))// CJK line breaking rules
-				     ) {
+				     std::find(std::begin(NotLineBegin), std::end(NotLineBegin), this_codepoint) == std::end(NotLineBegin)) // CJK line breaking rules
+				) {
 					updateLastSafeData();
 				}
 			}
