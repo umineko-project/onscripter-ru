@@ -2040,7 +2040,10 @@ int ONScripter::markAllReadCommand() {
 
 	for (auto &thisLogEntry : script_h.logState.logEntries) {
 		// Read all before current as we may not have clicked past it.
-		if (thisLogEntry.labelIndex == id && thisLogEntry.choiceVectorSize == script_h.choiceState.choiceVector.size())
+		// This may get called from places before any log entries are present, e.g. at *start, in this case
+		// we should not mark any log entries as read. Failing to do so will result in all episode messages to become
+		// read after exiting via right-click menu. See: https://forum.umineko-project.org/viewtopic.php?f=6&t=339.
+		if (thisLogEntry.labelIndex >= id && thisLogEntry.choiceVectorSize == script_h.choiceState.choiceVector.size())
 			break;
 		script_h.logState.readLabels[thisLogEntry.labelIndex] = true;
 	}
