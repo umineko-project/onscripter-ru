@@ -1,0 +1,12 @@
+pkgname=expat
+pkgver=2.2.9
+pkgrel=1
+depends=()
+sources=("https://github.com/libexpat/libexpat/releases/download/R_2_2_9/expat-2.2.9.tar.gz")
+hashes=('4456e0aa72ecc7e1d4b3368cd545a5eec7f9de5133a8dc37fdb1efa6174c4947')
+
+configopts=(
+    "--prefix=$outdir"
+    "--libdir=$outdir/lib"
+     '--disable-shared'
+)

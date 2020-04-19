@@ -1,0 +1,28 @@
+pkgname=fontconfig
+pkgver=2.13.92
+pkgrel=1
+depends=('harfbuzz' 'fribidi' 'freetype' 'expat')
+sources=("https://www.freedesktop.org/software/fontconfig/release/fontconfig-2.13.92.tar.gz")
+hashes=('3406a05b83a42231e3df68d02bc0a0cf47b3f2e8f11c8ede62267daf5f130016')
+cflags_win32="-mtune=generic"
+configopts=(
+    "--prefix=$outdir"
+    "--libdir=$outdir/lib"
+     '--disable-shared'
+     '--disable-nls'
+     '--disable-docs'
+     "EXPAT_CFLAGS=-I$outdir/include"
+     "EXPAT_LIBS=-L$outdir/lib"
+     "--with-expat-includes=$outdir/include"
+     "--with-expat-lib=$outdir/lib"
+)
+prebuild() {
+    pushd "$pkgname-$pkgver" &>/dev/null
+    export FREETYPE_LIBS="-L$outdir/lib  -lfreetype -lharfbuzz"
+    export FREETYPE_CFLAGS="-I$outdir/include/freetype2"
+
+}
+postbuild() {
+    unset FREETYPE_LIBS
+    popd &>/dev/null
+}

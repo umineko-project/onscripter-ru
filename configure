@@ -629,6 +629,8 @@ genlink ass
 genlink fribidi
 genlink freetype
 genlink harfbuzz
+genlink fontconfig
+genlink expat
 
 if [ "$SYS" == "Droid" ]; then
   if [ "$ARCH" == "aarch64" ]; then
@@ -967,7 +969,7 @@ LIBS = \$(EXTRAOSLDFLAGS) -L\$(EXTLIB)/lib $LINK_START_GROUP \\
 	$LINKSDL2_mixer $LINKogg $LINKvorbis $LINKvorbisfile \\
 	$LINKSDL2_gpu $LINKepoxy $LINKbz2 \\
 	$LINKavutil $LINKavformat $LINKavcodec $LINKswscale $LINKswresample \\
-	$LINKass $LINKusb $LINKfribidi $LINKharfbuzz $LINKunwind $LINK_END_GROUP
+	$LINKass $LINKusb $LINKfribidi $LINKharfbuzz $LINKfontconfig $LINKexpat $LINKunwind $LINK_END_GROUP
 
 .SUFFIXES:
 .SUFFIXES: $OBJ .cpp .h .c

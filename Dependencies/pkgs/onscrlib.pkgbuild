@@ -19,6 +19,8 @@ depends=(
     'SDL2_mixer'
     'SDL2_gpu'
     'fribidi'
+    'expat'
+    'fontconfig'
     'libass'
 )
 

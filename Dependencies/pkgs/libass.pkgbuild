@@ -1,7 +1,7 @@
 pkgname=libass
 pkgver=0.14.0
 pkgrel=1
-depends=('harfbuzz' 'fribidi')
+depends=('harfbuzz' 'fribidi' 'fontconfig')
 
 sources=(
     "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/$pkgname-$pkgver.tar.xz"
@@ -17,7 +17,6 @@ hashes=(
 
 configopts=(
     '--disable-shared'
-    '--disable-fontconfig'
     '--disable-dependency-tracking'
     '--disable-require-system-font-provider'
     "--libdir=$outdir/lib"
@@ -28,7 +27,9 @@ configopts=(
     "ENCA_CFLAGS=-I$outdir/include"
     "ENCA_LIBS=-L$outdir/lib"
     "HARFBUZZ_CFLAGS=-I$outdir/include/harfbuzz"
-    "HARFBUZZ_LIBS=-L$outdir/lib"    
+    "HARFBUZZ_LIBS=-L$outdir/lib"
+    "FONTCONFIG_CFLAGS=-I$outdir/include/fontconfig"
+    "FONTCONFIG_LIBS=-L$outdir/lib"
 )
 
 configopts_win32=(

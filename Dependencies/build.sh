@@ -402,30 +402,49 @@ extract_sources() {
         local ext=${file##*.}
         local cmd=''
         local cmd_flags=''
-
-        case "$filetype" in
-            *application/x-tar*)
-                cmd='tar -xf';;
-            *application/x-zip*|*application/zip*)
-                cmd='unzip -q';;
+        case $(getTarget) in
+            win32)
+                    case "$ext" in
+                        gz|tar)
+                            # should look one more level in, to see if tar is there...
+                            cmd="tar -xf $file";;
+                        bz2)     # some Windows env will hangs on .tar.bz2 files, https://github.com/msys2/MSYS2-packages/issues/1548 
+                            cmd="bunzip2 -c $file | tar -x --file=-";;
+                        xz)
+                            # some Windows env will hangs on .tar.xz files, https://github.com/msys2/MSYS2-packages/issues/1548 
+                            cmd="xz --decompress --stdout $file | tar -x --file=-";;
+                        zip)
+                            # should look one more level in, to see if tar is there...
+                            cmd="unzip -q $file";;
+                        *)
+                            continue;;
+                    esac;;
             *)
-                # MinGW32 has broken mime types in 'file' command, fall back on the
-                # extension to work around
-                case "$ext" in
-                    bz2|gz|tar|xz)
-                        # should look one more level in, to see if tar is there...
-                        cmd='tar -xf';;
-                    zip)
-                        # should look one more level in, to see if tar is there...
-                        cmd='unzip -q';;
-                    *)
-                        continue;;
-                esac;;
-        esac
+                case "$filetype" in
+                *application/x-tar*)
+                    cmd="tar -xf $file";;
+                *application/x-zip*|*application/zip*)
+                    cmd="unzip -q $file";;
+                *)
+                    # MinGW32 has broken mime types in 'file' command, fall back on the
+                    # extension to work around
+                    case "$ext" in
+                        bz2|gz|tar|xz)
+                            # should look one more level in, to see if tar is there...
+                            cmd="tar -xf $file";;
+                        zip)
+                            # should look one more level in, to see if tar is there...
+                            cmd="unzip -q $file";;
+                        *)
+                            continue;;
+                    esac;;
+                esac
+        esac 
+
 
         local ret=0
         msg2 "Extracting %s with %s" "$file" "$cmd"
-        $cmd "$file" || ret=$?
+        eval $cmd  || ret=$?
 
         if (( ret )); then
             error_out "Failed to extract %s" "$file"
