@@ -1178,7 +1178,7 @@ public: // DialogueController wants access to this
 	int getCharacterPostDisplayDelay(char16_t codepoint, int speed);
 	int unpackInlineCall(const char *cmd, int &val);
 	const char *getFontPath(int i, bool fallback = true);
-    const char *getFontDir();
+	const char *getFontDir();
 
 private:
 	void enterTextDisplayMode();
