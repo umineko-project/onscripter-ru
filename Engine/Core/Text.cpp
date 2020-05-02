@@ -12,7 +12,9 @@
 #include "Engine/Components/Fonts.hpp"
 #include "Engine/Graphics/Common.hpp"
 #include "Support/Unicode.hpp"
-
+#ifdef WIN32
+#include "windows.system.h"
+#endif
 // Should probably use regex
 bool ONScripter::isAlphanumeric(char16_t codepoint) {
 	if (codepoint >= u'a' && codepoint <= u'z')
@@ -1006,6 +1008,19 @@ const char *ONScripter::getFontPath(int i, bool /*fallback*/) {
 	if (!path)
 		path = sentence_font.getFontPath(0);
 	return path;
+}
+
+const char *ONScripter::getFontDir() {
+#ifdef WIN32
+	//libass doesn't support unicode path, convert it to ANSI on Windows.
+	auto wpath = decodeUTF8StringWide(fonts.fontdir) + L'\0';
+	int len = WideCharToMultiByte(CP_ACP, 0, wpath.c_str(), -1, NULL, 0, NULL, NULL);
+	char *ansipath = static_cast<char *>(malloc(len));
+	WideCharToMultiByte(CP_ACP, 0, wpath.c_str(), -1, ansipath, len, NULL, NULL);
+	return ansipath;
+#else
+	return fonts.fontdir;
+#endif
 }
 
 void ONScripter::addTextWindowClip(DirtyRect &rect) {
