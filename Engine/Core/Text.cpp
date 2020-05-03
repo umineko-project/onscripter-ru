@@ -1008,6 +1008,10 @@ const char *ONScripter::getFontPath(int i, bool /*fallback*/) {
 	return path;
 }
 
+const char *ONScripter::getFontDir() {
+	return fonts.fontdir;
+}
+
 void ONScripter::addTextWindowClip(DirtyRect &rect) {
 	if (wndCtrl.usingDynamicTextWindow) {
 		// This represents the whole text window, when it is current and active
