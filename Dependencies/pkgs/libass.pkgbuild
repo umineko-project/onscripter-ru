@@ -7,7 +7,7 @@ sources=(
     "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/$pkgname-$pkgver.tar.xz"
     'libass-ignore-iconv.patch'
     'libass-unicode-font-path-win.patch'
-    'libass-unicode-fontfdir-path-win.patch'
+    'libass-unicode-fontdir-path-win.patch'
 )
 
 hashes=(
