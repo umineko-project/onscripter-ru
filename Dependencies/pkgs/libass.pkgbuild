@@ -7,14 +7,14 @@ sources=(
     "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/$pkgname-$pkgver.tar.xz"
     'libass-ignore-iconv.patch'
     'libass-unicode-font-path-win.patch'
-    'libass-unicode-fontdir-path-win.patch'
+    'libass-unicode-fontfdir-path-win.patch'
 )
 
 hashes=(
     '881f2382af48aead75b7a0e02e65d88c5ebd369fe46bc77d9270a94aa8fd38a2'
     '2482308db0690ec34248cc12d5a7ca3d9e9c7cb8db4273e61a205637d7dfc6fd'
     '71e38cb4c8ec7e4bc62af64f0c5a6576e7cf2fc750ca43bac725198f2c214fa0'
-    'c5651f794b67aad7b3a078d3149d9d95d11b723476ccc59cdfc90f6ec628e5f6'
+    '45988f43b494f4e512b5a3d0b23906edc8ff2a8a8d0b6717656080c5be7c5cbf'
 )
 
 configopts=(

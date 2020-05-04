@@ -225,7 +225,7 @@ bool SubtitleDriver::init(int width, int height, const char *ass_sub_file, BaseR
 			ass_library = nullptr;
 			sendToLog(LogLevel::Error, "ass_renderer_init failed!\n");
 		} else {
-			ass_set_fonts_dir(ass_library, ons.getFontDir());
+			ass_set_fonts_dir(ass_library, ons.getSubtitleFontDir());
 			ass_set_frame_size(ass_renderer, width, height);
 			ass_set_fonts(ass_renderer, ons.getFontPath(currentFontID, true), "Sans", ASS_FONTPROVIDER_NONE, nullptr, 0);
 			bool subs_ok{false};
