@@ -1008,6 +1008,12 @@ const char *ONScripter::getFontPath(int i, bool /*fallback*/) {
 	return path;
 }
 
+const char *ONScripter::getSubtitleFontDir() {
+	char *path = static_cast<char *>(malloc(PATH_MAX));
+	std::snprintf(path, PATH_MAX, "%s%c%s", fonts.fontdir, DELIMITER, "subfonts");
+	return path;
+}
+
 void ONScripter::addTextWindowClip(DirtyRect &rect) {
 	if (wndCtrl.usingDynamicTextWindow) {
 		// This represents the whole text window, when it is current and active
