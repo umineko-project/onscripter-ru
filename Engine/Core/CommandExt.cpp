@@ -2855,6 +2855,13 @@ int ONScripter::colorModCommand() {
 	}
 	backupState(anim);
 
+	if (anim->layer_no >= 0) {
+		auto *layer = getLayer<ObjectFallLayer>(anim->layer_no, false);
+		if (layer != nullptr) {
+			layer->setBlend(BlendModeId::NORMAL);
+		}
+	}
+
 	if (matched_string) {
 		if (matched_string == str_off) {
 			anim->spriteTransforms.sepia     = false;
