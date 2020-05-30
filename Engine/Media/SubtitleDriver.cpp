@@ -341,29 +341,29 @@ bool SubtitleDriver::extractFrame(std::vector<SubtitleImage> &images, uint64_t t
 		img = ass_render_frame(ass_renderer, ass_track, timestamp, &changed);
 	}
 
-	bool fits;
-	size_t num = countImages(img, fits);
-
+	size_t num = countImages(img);
+	bool fits  = tryFitImages(img);
 	if (!fits || num > NIMGS_MAX)
 		throw img;
 
 	images.reserve(num);
 
 	while (img) {
-		SubtitleImage subImg;
+		if (img->w > 0 && img->h > 0) {
+			SubtitleImage subImg;
 
-		subImg.w        = img->w;
-		subImg.h        = img->h;
-		subImg.linesize = img->stride;
-		subImg.x        = img->dst_x;
-		subImg.y        = img->dst_y;
-		subImg.color    = img->color;
+			subImg.w        = img->w;
+			subImg.h        = img->h;
+			subImg.linesize = img->stride;
+			subImg.x        = img->dst_x;
+			subImg.y        = img->dst_y;
+			subImg.color    = img->color;
 
-		subImg.buffer = std::make_unique<uint8_t[]>(img->h * img->stride);
-		std::memcpy(subImg.buffer.get(), img->bitmap, img->h * img->stride);
+			subImg.buffer = std::make_unique<uint8_t[]>(img->h * img->stride);
+			std::memcpy(subImg.buffer.get(), img->bitmap, img->h * img->stride);
 
-		images.emplace_back(std::move(subImg));
-
+			images.emplace_back(std::move(subImg));
+		}
 		img = img->next;
 	}
 
@@ -389,4 +389,26 @@ void SubtitleDriver::deinit() {
 
 void SubtitleDriver::setFont(unsigned int id) {
 	currentFontID = id;
+}
+
+bool SubtitleDriver::tryFitImages(ASS_Image *img) {
+	ASS_Image *current_img = img;
+	size_t x               = 0;
+	size_t y               = 0;
+	size_t next_y          = 0;
+	while (current_img) {
+		if (y + current_img->h > IMG_H) {
+			return false; //if image higher than texture,
+		}
+		if (x + current_img->w <= IMG_W) {
+			x += current_img->w; //place right of last image
+			next_y = std::max(y + current_img->h, next_y);
+		} else {
+			x = current_img->w; //place to next line
+			y = next_y;
+			next_y += y + current_img->h;
+		}
+		current_img = current_img->next;
+	}
+	return true;
 }

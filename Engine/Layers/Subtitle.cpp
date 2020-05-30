@@ -44,11 +44,14 @@ SubtitleLayer::SubtitleLayer(unsigned int w, unsigned int h, BaseReader **br, un
 
 		std::snprintf(nameBuf, sizeof(nameBuf), "subColors[%zu]", i);
 		subColorsHandles[i] = gpu.getUniformLoc(nameBuf);
+
+		std::snprintf(nameBuf, sizeof(nameBuf), "subTexDims[%zu]", i);
+		subTexDimsHandles[i] = gpu.getUniformLoc(nameBuf);
 	}
 	gpu.unsetShaderProgram();
 
 	/* Prepare images */
-	subImages = gpu.createImage(SubtitleDriver::IMG_W, SubtitleDriver::IMG_H * SubtitleDriver::NIMGS_MAX, 1);
+	subImages = gpu.createImage(SubtitleDriver::IMG_W, SubtitleDriver::IMG_H, 1);
 	GPU_SetBlending(subImages, false);
 }
 
@@ -167,10 +170,30 @@ bool SubtitleLayer::update(bool /*old*/) {
 /* Private Subtitle wrapper */
 
 void SubtitleLayer::renderImageSet(std::vector<SubtitleImage> &imgs) {
+
+	float x      = 0;
+	float y      = 0;
+	float next_y = 0;
+	float subTexPos[imgs.size()][2];
 	for (size_t i = 0; i < imgs.size(); i++) {
 		GPU_Rect rect;
-		rect.x = 0;
-		rect.y = i * SubtitleDriver::IMG_H;
+		if (x + imgs[i].w <= SubtitleDriver::IMG_W) {
+			subTexPos[i][0] = static_cast<float>(x);
+			subTexPos[i][1] = static_cast<float>(y);
+			rect.x          = x;
+			rect.y          = y;
+			x += imgs[i].w;
+			next_y = std::max(y + imgs[i].h, next_y);
+		} else {
+			subTexPos[i][0] = static_cast<float>(0);
+			subTexPos[i][1] = static_cast<float>(next_y);
+			rect.x          = 0;
+			rect.y          = next_y;
+			x               = imgs[i].w;
+			y               = next_y;
+			next_y += y + imgs[i].h;
+		}
+
 		rect.h = imgs[i].h;
 		rect.w = imgs[i].w;
 
@@ -179,13 +202,9 @@ void SubtitleLayer::renderImageSet(std::vector<SubtitleImage> &imgs) {
 
 	gpu.setShaderProgram("renderSubtitles.frag");
 
-	GPU_SetUniformi(ntexturesHandle, static_cast<int>(imgs.size()));
-	float dstDims[]{static_cast<float>(current_frame->w), static_cast<float>(current_frame->h)};
-	GPU_SetUniformfv(dstDimsHandle, 2, 1, dstDims);
-
-	GPU_SetShaderImage(subImages, texHandle, 1);
-
 	for (size_t i = 0; i < imgs.size(); i++) {
+		GPU_SetUniformfv(subTexDimsHandles[i], 2, 1, subTexPos[i]);
+
 		float subDims[]{static_cast<float>(imgs[i].w), static_cast<float>(imgs[i].h)};
 		GPU_SetUniformfv(subDimsHandles[i], 2, 1, subDims);
 
@@ -199,6 +218,11 @@ void SubtitleLayer::renderImageSet(std::vector<SubtitleImage> &imgs) {
 		GPU_SetUniformfv(subColorsHandles[i], 4, 1, subColors);
 	}
 
+	GPU_SetUniformi(ntexturesHandle, static_cast<int>(imgs.size()));
+	float dstDims[]{static_cast<float>(current_frame->w), static_cast<float>(current_frame->h)};
+	GPU_SetUniformfv(dstDimsHandle, 2, 1, dstDims);
+
+	GPU_SetShaderImage(subImages, texHandle, 1);
 	// This is fine and does not need gpu.render_to_self guard because we do not read/write
 	// current_frame pixels simultaneously.
 	GPU_SetBlending(current_frame, false);

@@ -36,20 +36,17 @@ struct SubtitleImage {
 
 class SubtitleDriver {
 public:
-	static constexpr size_t NIMGS_MAX = 8; /* NTEXTURES in renderSubtitles.frag */
-	static constexpr int IMG_W = 2048, IMG_H = 256;
+	static constexpr size_t NIMGS_MAX = 255; /* NTEXTURES in renderSubtitles.frag */
+	static constexpr int IMG_W = 2048, IMG_H = 2048;
 
 	bool init(int width, int height, const char *ass_sub_file, BaseReader *reader, AVCodecContext *sub_codec_ctx);
 	void process(char *data, size_t length);
 	void deinit();
 	void setFont(unsigned int id);
-	size_t countImages(ASS_Image *img, bool &fits, size_t n = 0) {
-		if (n == 0)
-			fits = true;
-		if (img && (img->w > IMG_W || img->h > IMG_H))
-			fits = false;
-		return !img ? n : countImages(img->next, fits, n + 1);
+	size_t countImages(ASS_Image *img, size_t n = 0) {
+		return !img ? n : countImages(img->next, n + 1);
 	}
+	bool tryFitImages(ASS_Image *img);
 	bool blendOn(SDL_Surface *surface, uint64_t timestamp);
 	bool blendOn(uint8_t *planes[4], size_t planesCnt, AVPixelFormat format, int linesize[AV_NUM_DATA_POINTERS], int height, uint64_t timestamp);
 	bool blendInNeed(SDL_Surface *surface, uint64_t timestamp);

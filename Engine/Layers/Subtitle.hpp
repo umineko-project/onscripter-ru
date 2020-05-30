@@ -35,6 +35,7 @@ class SubtitleLayer : public Layer {
 	int subDimsHandles[SubtitleDriver::NIMGS_MAX];
 	int subCoordsHandles[SubtitleDriver::NIMGS_MAX];
 	int subColorsHandles[SubtitleDriver::NIMGS_MAX];
+	int subTexDimsHandles[SubtitleDriver::NIMGS_MAX];
 
 	GPU_Image *subImages{nullptr};
 

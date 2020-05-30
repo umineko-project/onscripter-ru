@@ -1,8 +1,8 @@
 #version 120
 
-#define NTEXTURES 8 /* Maximum amount of textures */
+#define NTEXTURES 255 /* Maximum amount of textures */
 #define IMG_W 2048.0
-#define IMG_H 256.0
+#define IMG_H 2048.0
 
 uniform int ntextures; /* Number of sub textures we're drawing */
 uniform sampler2D subTex; /* Subtitle textures, only alpha for each pixel */
@@ -10,6 +10,7 @@ uniform vec2 subDims[NTEXTURES]; /* Dimensions of sub textures */
 uniform vec2 subCoords[NTEXTURES]; /* Absolute coords of sub textures */
 uniform vec4 subColors[NTEXTURES]; /* RGB colors of sub textures */
 uniform vec2 dstDims; /* Absolute dimensions of target image */
+uniform vec2 subTexDims[NTEXTURES]; /* Dimensions of sub textures in target image */
 
 varying /* PRAGMA: ONS_RU highprecision */ vec2 texCoord;
 
@@ -22,7 +23,7 @@ void main() {
 		if (i == ntextures) break;
 		if (all(greaterThanEqual(texCoordAbs, subCoords[i])) &&
 			all(lessThanEqual(texCoordAbs, subCoords[i] + subDims[i]))) {
-			float alpha = texture2D(subTex, (texCoordAbs - subCoords[i] + vec2(0.0, float(i)*IMG_H)) / vec2(IMG_W, IMG_H*float(NTEXTURES))).r * subColors[i].a;
+			float alpha = texture2D(subTex, (texCoordAbs - subCoords[i] + subTexDims[i]) / vec2(IMG_W, IMG_H)).r * subColors[i].a;
 			vec4 col = vec4(alpha * subColors[i].rgb, alpha);
 			res = col + res * (1.0 - col.a);
 		}
