@@ -53,8 +53,8 @@ public:
 	bool blendOn(SDL_Surface *surface, uint64_t timestamp);
 	bool blendOn(uint8_t *planes[4], size_t planesCnt, AVPixelFormat format, int linesize[AV_NUM_DATA_POINTERS], int height, uint64_t timestamp);
 	bool blendInNeed(SDL_Surface *surface, uint64_t timestamp);
-	bool blendBufInNeed(float *buffer, size_t width, size_t height, int format, uint64_t timestamp, ASS_Image *img = nullptr);
-	bool extractFrame(std::vector<SubtitleImage> &images, uint64_t timestamp); /* Extracts all Ass_Image`s for this timestamp */
+	void blendBufInNeed(uint8_t *buffer, size_t width, int format, ASS_Image *img);
+	int extractFrame(std::vector<SubtitleImage> &images, uint64_t timestamp, ASS_Image **imgptr); /* Extracts all Ass_Image`s for this timestamp */
 private:
 	ASS_Library *ass_library{nullptr};   // libass library (handle)
 	ASS_Renderer *ass_renderer{nullptr}; // libass renderer

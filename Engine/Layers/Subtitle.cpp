@@ -234,36 +234,15 @@ void SubtitleLayer::doDecoding() {
 		SubtitleFrame frame;
 		frame.start_timestamp = decoded_timestamp;
 
-		try {
-			if (subtitleDriver.extractFrame(frame.imgs, decoded_timestamp / 1000000)) {
-				frameReady = true;
-			}
-		} catch (ASS_Image *img) {
-			sendToLog(LogLevel::Warn, "Falling back to software renderer, this will be slow\n");
-
+		ASS_Image *img;
+		int changed = subtitleDriver.extractFrame(frame.imgs, decoded_timestamp / 1000000, &img);
+		if (changed >= 0) {
+			frameReady = changed > 0;
+		} else {
 			const size_t frame_size  = width * height * 4;
-			auto premultiplied_frame = std::make_unique<float[]>(frame_size);
-
-			// Use surface if needed
-			if (subtitleDriver.blendBufInNeed(premultiplied_frame.get(), width, height, current_frame_format, decoded_timestamp / 1000000, img)) {
-				auto byte_frame   = std::make_unique<uint8_t[]>(frame_size);
-				float *float_ptr  = premultiplied_frame.get();
-				uint8_t *byte_ptr = byte_frame.get();
-
-				for (unsigned int y = 0; y < height; y++) {
-					ptrdiff_t line = 4 * y * width;
-					for (unsigned int x = 0; x < width; x++) {
-						ptrdiff_t pos     = line + 4 * x;
-						byte_ptr[pos + 0] = float_ptr[pos + 0] * 255;
-						byte_ptr[pos + 1] = float_ptr[pos + 1] * 255;
-						byte_ptr[pos + 2] = float_ptr[pos + 2] * 255;
-						byte_ptr[pos + 3] = float_ptr[pos + 3] * 255;
-					}
-				}
-
-				frame.sw_buffer = std::move(byte_frame);
-				frameReady      = true;
-			}
+			frame.sw_buffer = std::make_unique<uint8_t[]>(frame_size);
+			subtitleDriver.blendBufInNeed(frame.sw_buffer.get(), width, current_frame_format, img);
+			frameReady = true;
 		}
 
 		if (frameReady) {

@@ -154,7 +154,7 @@ static void ass_yuv_blend(uint8_t *planes[4], size_t planesCnt, AVPixelFormat fo
 	}
 }
 
-static void ass_pregpu_blend(float *frame, size_t linesize, int format, ASS_Image *img) {
+static void ass_pregpu_blend(uint8_t *frame, size_t linesize, int format, ASS_Image *img) {
 	//int cnt = 0;
 
 	off_t r_off = 2;
@@ -168,14 +168,14 @@ static void ass_pregpu_blend(float *frame, size_t linesize, int format, ASS_Imag
 		ons.errorAndExit("Unsupported texture foramt");
 
 	while (img) {
-		float opacity     = (255 - ((img->color) & 0xFF)) / 65025.0f;
-		float r           = (img->color >> 24) / 255.0f;
-		float g           = ((img->color >> 16) & 0xFF) / 255.0f;
-		float b           = ((img->color >> 8) & 0xFF) / 255.0f;
+		uint8_t opacity     = (255 - ((img->color) & 0xFF));
+		uint8_t r           = (img->color >> 24);
+		uint8_t g           = ((img->color >> 16) & 0xFF);
+		uint8_t b           = ((img->color >> 8) & 0xFF);
 		const int32_t Bpp = 4;
 
 		uint8_t *src;
-		float *dst;
+		uint8_t *dst;
 
 		src = img->bitmap;
 		dst = frame + img->dst_y * linesize * Bpp + img->dst_x * Bpp;
@@ -186,20 +186,28 @@ static void ass_pregpu_blend(float *frame, size_t linesize, int format, ASS_Imag
 
 				// GPU_FUNC_ONE, GPU_FUNC_ONE_MINUS_SRC_ALPHA
 
-				float a_ = src[x] * opacity;
-				float r_ = r * a_;
-				float g_ = g * a_;
-				float b_ = b * a_;
+				uint8_t front[4];
+				front[a_off] = static_cast<uint32_t>(src[x]) * opacity / 255;
+				front[r_off] = static_cast<uint32_t>(r) * front[a_off] / 255;
+				front[g_off] = static_cast<uint32_t>(g) * front[a_off] / 255;
+				front[b_off] = static_cast<uint32_t>(b) * front[a_off] / 255;
 
-				dst[x * Bpp + r_off] *= 1 - a_;
-				dst[x * Bpp + b_off] *= 1 - a_;
-				dst[x * Bpp + g_off] *= 1 - a_;
-				dst[x * Bpp + a_off] *= 1 - a_;
+				uint8_t *back = &dst[x * Bpp];
 
-				dst[x * Bpp + r_off] += r_;
-				dst[x * Bpp + b_off] += b_;
-				dst[x * Bpp + g_off] += g_;
-				dst[x * Bpp + a_off] += a_;
+				if (front[a_off] == 0xFF) {
+					memcpy(back, front, sizeof (front));
+					continue;
+				}
+
+				auto blend = [](uint8_t back, uint8_t front, uint8_t inv_front_opacity) {
+					return front + (inv_front_opacity * back) / 0xFF;
+				};
+
+				back[r_off] = blend(back[r_off], front[r_off], (0xFF - front[a_off]));
+				back[g_off] = blend(back[g_off], front[g_off], (0xFF - front[a_off]));
+				back[b_off] = blend(back[b_off], front[b_off], (0xFF - front[b_off]));
+				if (back[a_off] != 0xFF)
+					back[a_off] = blend (back[a_off], front[a_off], (0xFF - front[a_off]));
 			}
 			src += img->stride;
 			dst += linesize * Bpp;
@@ -314,25 +322,11 @@ bool SubtitleDriver::blendInNeed(SDL_Surface *surface, uint64_t timestamp) {
 	return changed;
 }
 
-bool SubtitleDriver::blendBufInNeed(float *buffer, size_t width, size_t /*height*/, int format, uint64_t timestamp, ASS_Image *img) {
-	int changed{0};
-
-	if (!img) {
-		Lock lock(ass_track);
-		img = ass_render_frame(ass_renderer, ass_track, timestamp, &changed);
-	} else {
-		changed = 1;
-	}
-
-	if (changed && img && img->w > 0 && img->h > 0) {
-		ass_pregpu_blend(buffer, width, format, img);
-		return true;
-	}
-
-	return changed >= 1;
+void SubtitleDriver::blendBufInNeed(uint8_t *buffer, size_t width, int format, ASS_Image *img) {
+	ass_pregpu_blend(buffer, width, format, img);
 }
 
-bool SubtitleDriver::extractFrame(std::vector<SubtitleImage> &images, uint64_t timestamp) {
+int SubtitleDriver::extractFrame(std::vector<SubtitleImage> &images, uint64_t timestamp, ASS_Image **imgptr) {
 	ASS_Image *img{nullptr};
 	int changed{0};
 
@@ -341,11 +335,16 @@ bool SubtitleDriver::extractFrame(std::vector<SubtitleImage> &images, uint64_t t
 		img = ass_render_frame(ass_renderer, ass_track, timestamp, &changed);
 	}
 
+	if (changed == 0)
+		return 0;
+
 	bool fits;
 	size_t num = countImages(img, fits);
 
-	if (!fits || num > NIMGS_MAX)
-		throw img;
+	if (!fits || num > NIMGS_MAX) {
+		*imgptr = img;
+		return -1;
+	}
 
 	images.reserve(num);
 
