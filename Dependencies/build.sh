@@ -745,7 +745,7 @@ case $(getHost) in
             IOS_SDK=""
 
             for i in {8..15}; do
-                for j in {0..5}; do
+                for j in {0..6}; do
                     if [ -d "${IOS_SDK_PATH}/iPhoneOS${i}.${j}.sdk" ]; then
                         IOS_SDK="${i}.${j}"
                     fi
