@@ -108,7 +108,7 @@ list_packages() {
 
 DEBUG=false
 MMAC_VER_MIN=10.6
-MAC_SDK=10.10
+MAC_SDK=
 MAC_MIN_VER=1060
 APPLE_ARCH=()
 MIOS_VER_MIN=8.0
@@ -730,10 +730,6 @@ case $(getHost) in
             fi
 
             #msg "Search succeeded with ${MAC_SDK} SDK"
-        fi
-
-        if [ "${MAC_SDK}" == "" ]; then
-            error_out "No installed MacOSX SDK found, cannot continue"
         fi
 
         if [ "${MAC_SDK}" == "10.6" ]; then
