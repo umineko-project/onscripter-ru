@@ -62,6 +62,8 @@ class WindowController : public BaseController {
 	bool fullscreen_reduce_clip{false};
 	// Fullscreen offsets (for image centering) (in the script_width coordinate system)
 	int fullscript_offset_x{0}, fullscript_offset_y{0};
+	// Offset to compensate for system-forced offset, x->left, y->top
+	int system_offset_x{0}, system_offset_y{0};
 	// Native screen resolution (in the script_width coordinate system)
 	int fullscript_width{0}, fullscript_height{0};
 	// Actual size of the window. (Current.)

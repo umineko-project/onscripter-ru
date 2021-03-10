@@ -172,6 +172,8 @@ void *__wrap_SDL_LoadObject(const char *sofile) {
 	printf("     --font-multiplier            provides custom font scaling interface\n");
 	printf("     --lang-dir                   provides language-specific game directory\n");
 	printf("     --font-dir                   provides language-specific font directory\n");
+	printf("     --system-offset-x            left offset to compensate for system forced offset\n");
+	printf("     --system-offset-y            top offset to compensate for system forced offset\n");
 	printf(" -h, --help                       show this help and exit\n");
 	printf(" -v, --version                    show the version information and exit\n");
 	FileIO::waitConsole();
@@ -486,6 +488,14 @@ static void parseOptions(int argc, char **argv, bool &hasArchivePath) {
 				// Ignore macOS debugger shit.
 				argc--;
 				argv++;
+			} else if (!std::strcmp(argv[0] + 1, "-system-offset-x")) {
+				argc--;
+				argv++;
+				ons.ons_cfg_options["system-offset-x"] = argv[0];
+			} else if (!std::strcmp(argv[0] + 1, "-system-offset-y")) {
+				argc--;
+				argv++;
+				ons.ons_cfg_options["system-offset-y"] = argv[0];
 			} else {
 				char errstr[256];
 				std::snprintf(errstr, sizeof(errstr), "unknown option %s", argv[0]);

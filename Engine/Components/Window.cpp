@@ -26,6 +26,13 @@
 WindowController window;
 
 int WindowController::ownInit() {
+	auto system_offset_x_str = ons.ons_cfg_options.find("system-offset-x");
+	if (system_offset_x_str != ons.ons_cfg_options.end())
+		system_offset_x = std::stoi(system_offset_x_str->second);
+
+	auto system_offset_y_str = ons.ons_cfg_options.find("system-offset-y");
+	if (system_offset_y_str != ons.ons_cfg_options.end())
+		system_offset_y = std::stoi(system_offset_y_str->second);
 
 	if (ons.ons_cfg_options.count("scale"))
 		scaled_flag = true;
@@ -243,8 +250,8 @@ bool WindowController::updateDisplayData(bool getpos) {
 	if (displayData.fullscreenDisplay) {
 		fullscript_width    = script_width * displayData.fullscreenDisplay->native_width / static_cast<float>(fullscreen_width);
 		fullscript_height   = script_height * displayData.fullscreenDisplay->native_height / static_cast<float>(fullscreen_height);
-		fullscript_offset_x = (fullscript_width - script_width) / 2;
-		fullscript_offset_y = (fullscript_height - script_height) / 2;
+		fullscript_offset_x = (fullscript_width - script_width) / 2 - system_offset_x;
+		fullscript_offset_y = (fullscript_height - script_height) / 2 - system_offset_y;
 		// A hack for some resolutions to solve scaling issues like random stripes
 		// e. g. 1366x768
 		// bg white,1
