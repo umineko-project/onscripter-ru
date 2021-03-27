@@ -919,14 +919,14 @@ void DialogueController::layoutRubyPiece(DialoguePiece &mainPiece, DialoguePiece
 			raise = r.gv->maxy;
 	}
 	raise *= 1.2; // position ruby's baseline slightly higher than the topmost max-y of the spanned glyphs
-	raise += rubyPiece.verticalSize.usedSpaceBelowBaseline;
+	raise += rubyPiece.verticalSize.maxDescend;
 
 	rubyPiece.xPxRight   = rubyPiece.getPostFontInfo().layoutData.xPxRight;
 	rubyPiece.baseline   = rubyPiece.verticalSize.usedSpaceAboveBaseline;
 	rubyPiece.position.y = y - rubyPiece.baseline - raise;
 	rubyPiece.position.w = (rubyPiece.xPxRight - rubyPiece.xPxLeft) + rubyPiece.borderPadding * 2;
 	rubyPiece.position.x = xStart - ((rubyPiece.xPxRight - rubyPiece.xPxLeft) - (xFinish - xStart)) / 2; // center it
-	rubyPiece.position.h = rubyPiece.verticalSize.usedSpaceAboveBaseline + rubyPiece.verticalSize.usedSpaceBelowBaseline + rubyPiece.borderPadding * 2;
+	rubyPiece.position.h = rubyPiece.verticalSize.usedSpaceAboveBaseline + rubyPiece.verticalSize.maxDescend + rubyPiece.borderPadding * 2;
 
 	// update main piece's "usedSpaceAboveBaseline" and "maxAscend" to take account of the space used by ruby
 	if (rubyPiece.verticalSize.usedSpaceAboveBaseline + raise > mainPiece.verticalSize.maxAscend)
