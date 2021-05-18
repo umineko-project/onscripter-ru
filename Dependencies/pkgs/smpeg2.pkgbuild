@@ -49,6 +49,10 @@ prebuild() {
     apply_patch "${sources[4]}"
     apply_patch "${sources[5]}"
 
+    if [ "$(getTarget)" == "linux-like" ] && [ "$(getTargetCPU)" == "aarch64" ]; then
+        apply_patch "${sources[6]}"
+    fi
+    
     if [ "$(getTarget)" == "droid" ]; then
         apply_patch "${sources[6]}"
         apply_patch "${sources[7]}"
