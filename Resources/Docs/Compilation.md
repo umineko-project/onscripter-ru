@@ -307,6 +307,14 @@ chmod +x configure Scripts/* Dependencies/build.sh
 
 _Unlike macOS (manual architecture specification) and Windows (untested 64-bit binary), the executable architecture on Linux depends on the default compiler architecture. On 32-bit systems 32-bit binaries are normally produced and on 64-bit systems — 64-bit binaries._
 
+#### arm64 Debian
+
+Same as above but you will need to add `--prefer-clang` to the configure script when you proceed using the generic method of compilation at the beginning of these instructions. Not before installing the required clang packages however:
+
+```
+apt-get install clang libclang-dev
+```
+
 #### Linux OpenSUSE
 
 1. You will need a number of packages (similarly to Debian). Install them with YaST or whatever you like:

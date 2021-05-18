@@ -652,6 +652,8 @@ getTargetCPU() {
         linux-like)
             if [ "$(uname -m)" == "x86_64" ]; then
                 echo "x86_64"
+            elif [ "$(uname -m)" == "aarch64" ]; then
+                echo "aarch64"
             else
                 echo "i686"
             fi
