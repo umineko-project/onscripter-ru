@@ -2361,7 +2361,7 @@ int ONScripter::getLogDataCommand() {
 	return RET_CONTINUE;
 }
 
-int ONScripter::setdiscordRPCCommand() {
+int ONScripter::setDiscordRPCCommand() {
 	sendToLog(LogLevel::Info, script_h.readStr());
 	sendToLog(LogLevel::Info, script_h.readStr());
 	sendToLog(LogLevel::Info, script_h.readStr());
