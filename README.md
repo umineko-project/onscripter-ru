@@ -12,3 +12,6 @@ For the list of available platforms and compilation instructions please proceed 
 - "Uncle" Mion Sonozaki
 - Umineko Project
 - All third-party library authors
+
+
+MAY NOT WORK ON MACOS
