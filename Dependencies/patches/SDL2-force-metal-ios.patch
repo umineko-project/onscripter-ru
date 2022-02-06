@@ -1,23 +1,19 @@
-diff -rupN a/configure.in b/configure.in
---- a/configure.in	2018-06-27 08:15:24.000000000 +0300
-+++ b/configure.in	2018-06-27 08:28:25.000000000 +0300
-@@ -2075,19 +2075,7 @@ AC_HELP_STRING([--enable-render-metal], 
+--- a/configure.ac	2022-01-10 06:28:24.000000000 +1100
++++ b/configure.ac	2022-02-07 02:36:40.102300300 +1100
+@@ -2198,16 +2198,6 @@ CheckMETAL()
          dnl Work around that we don't have Objective-C support in autoconf
          CFLAGS="$CFLAGS -x objective-c"
          AC_MSG_CHECKING(for Metal framework)
 -        have_metal=no
--        AC_TRY_COMPILE([
+-        AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 -          #import <Cocoa/Cocoa.h>
 -          #import <Metal/Metal.h>
 -          #import <QuartzCore/CAMetalLayer.h>
 -
--          #if !TARGET_CPU_X86_64
+-          #if TARGET_CPU_X86
 -          #error Metal doesn't work on this configuration
 -          #endif
--        ],[
--        ],[
-         have_metal=yes
--        ])
+-        ]],[])], [have_metal=yes],[])
          CFLAGS="$save_CFLAGS"
          AC_MSG_RESULT($have_metal)
          if test x$have_metal = xyes; then

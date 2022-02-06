@@ -8,7 +8,7 @@
  */
 
 #include "Engine/Core/ONScripter.hpp"
-
+#include <limits>
 bool ONScripter::LipsAnimationAction::expired() {
 	if (ons.skipLipsAction)
 		return false; // can't expire if we're told not even to do anything

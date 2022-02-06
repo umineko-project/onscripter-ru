@@ -2361,6 +2361,14 @@ int ONScripter::getLogDataCommand() {
 	return RET_CONTINUE;
 }
 
+int ONScripter::discordRPCCommand() {
+	sendToLog(LogLevel::Info, script_h.readStr());
+	sendToLog(LogLevel::Info, script_h.readStr());
+	sendToLog(LogLevel::Info, script_h.readStr());
+	sendToLog(LogLevel::Info, script_h.readStr());
+	return RET_CONTINUE;
+}
+
 int ONScripter::getUniqueLogEntryIndexCommand() {
 	// Gets the log entry index for a label. Only to be used for labels that appear just once in the log!
 	script_h.readVariable();

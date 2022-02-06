@@ -462,6 +462,7 @@ static std::unordered_map<HashedString, CommandFunc> func_lut{
     {"cellcheckexbtn", &ONScripter::exbtnCommand},
     {"cell", &ONScripter::cellCommand},
     {"caption", &ONScripter::captionCommand},
+	{"discordrpc", &ONScripter::discordRPCCommand},
     {"btnwait2", &ONScripter::btnwaitCommand},
     {"btnwait", &ONScripter::btnwaitCommand},
     {"btntime2", &ONScripter::btntimeCommand},

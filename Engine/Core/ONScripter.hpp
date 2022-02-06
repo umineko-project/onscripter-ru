@@ -55,7 +55,7 @@
 
 #include <cmath>
 #include <cstring>
-
+#include <limits.h> // fixes lint error
 const int MAX_SPRITE_NUM = 1000;
 const int MAX_TEXT_TREES = 50;
 const int MAX_PARAM_NUM  = 100;
@@ -511,6 +511,7 @@ public:
 	int checkkeyCommand();
 	int cellCommand();
 	int captionCommand();
+	int discordRPCCommand();
 	int btnwaitCommand();
 	int btntimeCommand();
 	int btndownCommand();
