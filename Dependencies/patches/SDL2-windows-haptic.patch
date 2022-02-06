@@ -1,4 +1,4 @@
-diff -rupN configure.ac ../../../../../stuff/configure.ac
+diff -rupN a/configure.ac b/configure.ac
 --- a/configure.ac	2022-01-10 06:28:24.000000000 +1100
 +++ b/configure.ac	2022-02-03 16:46:01.906472800 +1100
 @@ -4034,7 +4034,7 @@ case "$host" in
