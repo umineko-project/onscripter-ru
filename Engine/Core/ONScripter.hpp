@@ -498,6 +498,7 @@ public:
 	int drawbg2Command();
 	int drawbgCommand();
 	int drawCommand();
+	int discordRPCCommand();
 	int deletescreenshotCommand();
 	int delayCommand();
 	int defineresetCommand();
@@ -511,7 +512,6 @@ public:
 	int checkkeyCommand();
 	int cellCommand();
 	int captionCommand();
-	int discordRPCCommand();
 	int btnwaitCommand();
 	int btntimeCommand();
 	int btndownCommand();
