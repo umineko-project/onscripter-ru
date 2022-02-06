@@ -498,7 +498,7 @@ public:
 	int drawbg2Command();
 	int drawbgCommand();
 	int drawCommand();
-	int discordRPCCommand();
+	int setdiscordRPCCommand();
 	int deletescreenshotCommand();
 	int delayCommand();
 	int defineresetCommand();
