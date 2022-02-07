@@ -15,3 +15,4 @@ For the list of available platforms and compilation instructions please proceed 
 
 
 MAY NOT WORK ON MACOS
+youll need a patched version of some of the script too
