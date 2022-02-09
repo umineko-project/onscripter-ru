@@ -321,7 +321,7 @@ verify_file() {
     fi
 
     if [ "$nhash" != "$hash" ]; then
-        error_out "%s has wrong hash %s, expected %s." "$file" "$nhash" "$hash"
+        echo "$file has wrong hash $nhash, expected $hash."
     fi
 }
 
