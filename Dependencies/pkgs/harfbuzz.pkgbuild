@@ -1,9 +1,9 @@
 pkgname=harfbuzz
-pkgver=2.5.2
+pkgver=3.3.2
 pkgrel=1
 depends=('freetype')
 sources=(
-    "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/harfbuzz-${pkgver}.tar.xz"
+    "https://github.com/harfbuzz/harfbuzz/releases/download/3.3.2/harfbuzz-3.3.2.tar.xz"
     'harfbuzz-multithread-mingw.patch'
 )
 hashes=(

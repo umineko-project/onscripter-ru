@@ -6,7 +6,9 @@ sources=(
     'SDL2-disable-libs.patch'
     'SDL2-windows-haptic.patch'
     'SDL2-droid-noglctx-handle.patch'
+    'SDL2-eventloop-mac.patch'
     'SDL2-force-metal-ios.patch'
+    'SDL2-sensor-ios.patch'
 )
 hashes=(
     'c56aba1d7b5b0e7e999e4a7698c70b63a3394ff9704b5f6e1c57e0c16f04dd06'
@@ -64,6 +66,8 @@ prebuild() {
     case $(getTarget) in
         darwin-iOS)
             apply_patch "${sources[4]}"
+	    apply_patch "${sources[5]}"
+            apply_patch "${sources[6]}"
         ;;
         darwin-macOS)
             apply_patch "${sources[4]}"

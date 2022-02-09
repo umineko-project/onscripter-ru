@@ -1,9 +1,9 @@
-pkgname=SDL2_image
-pkgver=2.0.4
+pkgname=SDL_image-release-2.0.5
+pkgver=2.0.5
 pkgrel=1
 depends=('SDL2' 'jpeg' 'libpng')
 sources=(
-    "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/$pkgname-$pkgver.tar.gz"
+    "https://github.com/libsdl-org/SDL_image/archive/refs/tags/release-2.0.5.tar.gz"
     'SDL2_image-no-programs.patch'
 )
 hashes=(
@@ -43,8 +43,9 @@ configopts_ios_extra=(
 
 prebuild() {
     pushd "$pkgname-$pkgver" &>/dev/null
-
-    apply_patch "${sources[1]}"
+    
+    #prepatched
+    #apply_patch "${sources[1]}"
 
     export LIBPNG_LIBS="-L$outdir/lib -lpng"
     export LIBPNG_CFLAGS="-I$outdir/include/libpng16"

@@ -1,8 +1,8 @@
 pkgname=bzip2
-pkgver=1.0.6
+pkgver=1.0.8
 pkgrel=1
 sources=(
-    "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/bzip2-1.0.6.tar.gz"
+    "https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz"
     'bzip2-cflags.patch'
     'bzip2-install.patch'
     'bzip2-clang.patch'
@@ -35,7 +35,8 @@ build() {
     fi
     
     apply_patch "${sources[4]}"
-    apply_patch "${sources[6]}"
+    #fixed by 53f3d0d71c3c445bc4ac413d42c4386381e47b49
+    #apply_patch "${sources[6]}"
 
     msg "Compiling %s" "$pkgname"
     export CFLAGS="$CFLAGS ${cflags[@]}"

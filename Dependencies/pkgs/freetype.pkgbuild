@@ -1,7 +1,7 @@
 pkgname=freetype
-pkgver=2.10.0
+pkgver=2.11.1
 pkgrel=2
-sources=("https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/freetype-$pkgver.tar.bz2")
+sources=("https://download.savannah.gnu.org/releases/freetype/freetype-2.11.1.tar.gz")
 hashes=('fccc62928c65192fff6c98847233b28eb7ce05f12d2fea3f6cc90e8b4e5fbe06')
 
 if [ -e "$outdir/.pkgs/harfbuzz" ]; then
