@@ -1,5 +1,5 @@
 pkgname=libepoxy
-pkgver=1.4.3
+pkgver=1.5.9
 pkgrel=1
 # TODO: Upgrade libepoxy in some future, but this will require patches:
 # 1.5.x branch till 1.5.3 is pretty much broken:
@@ -9,7 +9,7 @@ pkgrel=1
 # As they switched to meson, upgrading to 1.5.3 will require supporting meson
 # in onscrlib rather than attempting to work around no longer supported autotools.
 sources=(
-    "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/$pkgname-$pkgver.tar.xz"
+    https://github.com/anholt/libepoxy/releases/download/1.5.9/libepoxy-1.5.9.tar.xz
 )
 hashes=(
     '0b808a06c9685a62fca34b680abb8bc7fb2fda074478e329b063c1f872b826f6'
