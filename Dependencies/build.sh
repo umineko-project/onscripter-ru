@@ -468,6 +468,23 @@ prebuild() {
     pushd "$pkgname-$pkgver" &>/dev/null
 }
 
+meson_compile() {
+    msg2 "Using meson to compile"
+    local logfile="$logdir/$pkgname.meson.log"
+    local ninjalogfile="$logdir/$pkgname.ninja.log"
+    local ninjainstalllogfile="$logdir/$pkgname.ninjainstall.log"
+    local ret=0
+    mkdir _build && cd _build
+    meson -Dprefix="$outdir" >"$logfile" || ret=$?
+    ninja >"$ninjalogfile" || ret=$?
+    ninja install >"$ninjainstalllogfile" || ret=$?
+    if (( $ret )); then
+        tail -n 20 "$logfile"
+        error "Meson build failed"
+        exit 1
+    fi
+}
+
 # Run a script called "autogen.sh" in the source directory, logging the
 # output and trapping failure.
 

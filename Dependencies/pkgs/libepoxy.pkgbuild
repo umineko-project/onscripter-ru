@@ -19,4 +19,21 @@ configopts=(
     '--disable-shared'
 )
 
+prebuild() {
+    pushd "$pkgname-$pkgver" &>/dev/null
+
+    meson_compile
+}
+
+configure () {
+   echo disabled
+}
+
+compile () {
+   echo disabled
+}
+
+copy () {
+   echo disabled
+}
 # vim: set syntax=sh:
