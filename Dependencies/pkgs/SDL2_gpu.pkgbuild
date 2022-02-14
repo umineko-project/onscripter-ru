@@ -12,7 +12,7 @@ hashes=(
 # effect, supposedly due to once again wrong matrix multiplication logic.
 # It is discussed in https://github.com/grimfang4/sdl-gpu/pull/155 (again),
 # and I simply do not want to investigate it right now for no benefit.
-giturl=https://github.com/m3t4f1v3/sdl-gpu
+giturl=https://github.com/umineko-project/sdl-gpu
 githash=255a1b5a1d3d54b2f030a88b19dec1ef85b48bb1
 
 if [ "$(getTarget)" != "darwin-iOS" ] && [ "$(getTarget)" != "droid" ]; then
