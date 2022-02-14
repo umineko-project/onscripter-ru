@@ -12,7 +12,7 @@ depends=(
     'bzip2'
 )
 sources=(
-    "https://ffmpeg.org/releases/ffmpeg-5.0.tar.gz"
+    "https://ffmpeg.org/releases/ffmpeg-${pkgver}.tar.gz"
     'ffmpeg-compact-unwind.patch'
     'ffmpeg-droid-noebp.patch'
     'ffmpeg-alloc-warning.patch'
@@ -257,7 +257,7 @@ if $CROSS_BUILD; then
 fi
 
 prebuild() {
-    pushd "$pkgname-$pkgver" &>/dev/null
+    pushd "$pkgname-${pkgver}" &>/dev/null
     
     case $(getTarget) in
     darwin*)

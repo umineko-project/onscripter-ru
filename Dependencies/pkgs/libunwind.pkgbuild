@@ -31,14 +31,14 @@ prebuild() {
     local logfile="$logdir/$pkgname.gitclone.log"
     msg2 "Cloning %s from GIT" "$pkgname"
     local ret=0
-    git clone "$giturl" "$pkgname-$pkgver" &>"$logfile" || ret=$?
+    git clone "$giturl" "$pkgname-${pkgver}" &>"$logfile" || ret=$?
     if (( $ret )); then
         tail -n 20 "$logfile"
         error "GIT clone failed"
         exit 1
     fi
 
-    pushd "$pkgname-$pkgver" &>/dev/null
+    pushd "$pkgname-${pkgver}" &>/dev/null
 
     local logfile="$logdir/$pkgname.version.log"
     msg2 "Switching to %s commit" "$githash"
@@ -76,7 +76,7 @@ build() {
 
     # Do not build tests
     popd &>/dev/null
-    pushd "$pkgname-$pkgver/src" &>/dev/null
+    pushd "$pkgname-${pkgver}/src" &>/dev/null
 
     msg "Compiling %s" "$pkgname"
     compile

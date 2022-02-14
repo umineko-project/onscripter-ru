@@ -2,7 +2,7 @@ pkgname=bzip2
 pkgver=1.0.8
 pkgrel=1
 sources=(
-    "https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz"
+    "https://sourceware.org/pub/bzip2/bzip2-${pkgver}.tar.gz"
     'bzip2-cflags.patch'
     'bzip2-install.patch'
     'bzip2-clang.patch'

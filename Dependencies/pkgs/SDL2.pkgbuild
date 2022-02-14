@@ -2,7 +2,7 @@ pkgname=SDL2
 pkgver=2.0.20
 pkgrel=2
 sources=(
-    "https://github.com/libsdl-org/SDL/releases/download/release-2.0.20/SDL2-2.0.20.tar.gz"
+    "https://github.com/libsdl-org/SDL/releases/download/release-${pkgver}/SDL2-${pkgver}.tar.gz"
     'SDL2-disable-libs.patch'
     'SDL2-windows-haptic.patch'
     'SDL2-droid-noglctx-handle.patch'
@@ -58,7 +58,7 @@ configopts_droid=(
 )
 
 prebuild() {
-    pushd "$pkgname-$pkgver" &>/dev/null
+    pushd "$pkgname-${pkgver}" &>/dev/null
 
     apply_patch "${sources[1]}"
     apply_patch "${sources[2]}"

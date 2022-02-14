@@ -3,7 +3,7 @@ pkgver=3.3.2
 pkgrel=1
 depends=('freetype')
 sources=(
-    "https://github.com/harfbuzz/harfbuzz/releases/download/3.3.2/harfbuzz-3.3.2.tar.xz"
+    "https://github.com/harfbuzz/harfbuzz/releases/download/${pkgver}/harfbuzz-${pkgver}.tar.xz"
     'harfbuzz-multithread-mingw.patch'
 )
 hashes=(
@@ -30,7 +30,7 @@ if [ "$MMAC_VER_MIN" != "10.6" ]; then
 fi
 
 prebuild() {
-    pushd "$pkgname-$pkgver" &>/dev/null
+    pushd "$pkgname-${pkgver}" &>/dev/null
     apply_patch "${sources[1]}"
 
     # harfbuzz requires insisting on our architecture, all configure options, cflags and ldflags are ignored 

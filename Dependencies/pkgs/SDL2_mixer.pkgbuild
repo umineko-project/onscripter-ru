@@ -7,7 +7,7 @@ depends=('SDL2' 'libogg' 'libvorbis' 'smpeg2')
 # 2.0.4 dropped smpeg (mp3) support in favour of smpeg123,
 #       which we do not have in dependencies (yet).
 sources=(
-    "https://www.libsdl.org/projects/SDL_mixer/release/$pkgname-$pkgver.tar.gz"
+    "https://www.libsdl.org/projects/SDL_mixer/release/$pkgname-${pkgver}.tar.gz"
     'SDL2_mixer-no-programs.patch'
     'SDL2_mixer-no-locks.patch'
 )
@@ -52,7 +52,7 @@ configopts=(
 )
 
 prebuild() {
-    pushd "$pkgname-$pkgver" &>/dev/null
+    pushd "$pkgname-${pkgver}" &>/dev/null
 
     autogen
 

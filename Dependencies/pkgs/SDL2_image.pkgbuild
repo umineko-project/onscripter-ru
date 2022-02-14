@@ -3,7 +3,7 @@ pkgver=2.0.5
 pkgrel=1
 depends=('SDL2' 'jpeg' 'libpng')
 sources=(
-    "https://libsdl.org/projects/SDL_image/release/$pkgname-$pkgver.tar.gz"
+    "https://libsdl.org/projects/SDL_image/release/$pkgname-${pkgver}.tar.gz"
     'SDL2_image-no-programs.patch'
 )
 hashes=(
@@ -42,7 +42,7 @@ configopts_ios_extra=(
 )
 
 prebuild() {
-    pushd "$pkgname-$pkgver" &>/dev/null
+    pushd "$pkgname-${pkgver}" &>/dev/null
    
     apply_patch "${sources[1]}"
 

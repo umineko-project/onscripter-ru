@@ -41,7 +41,7 @@ if [ "$MMAC_VER_MIN" != "10.6" ]; then
 fi
 
 prebuild() {
-    pushd "$pkgname-$pkgver" &>/dev/null
+    pushd "$pkgname-${pkgver}" &>/dev/null
     
     apply_patch "${sources[1]}"
     apply_patch "${sources[2]}"

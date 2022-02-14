@@ -2,7 +2,7 @@ pkgname=libusb
 pkgver=1.0.25
 pkgrel=2
 sources=(
-    "https://github.com/libusb/libusb/releases/download/v1.0.25/libusb-1.0.25.tar.bz2"
+    "https://github.com/libusb/libusb/releases/download/v${pkgver}/libusb-${pkgver}.tar.bz2"
     'libusb-guid-mingw.patch'
 )
 hashes=(
@@ -20,7 +20,7 @@ configopts_linux=(
 )
 
 prebuild() {
-    pushd "$pkgname-$pkgver" &>/dev/null
+    pushd "$pkgname-${pkgver}" &>/dev/null
     # fixed by 9cb2e5c111a7fc1eec13dcf73667187b06f68628
     #apply_patch "${sources[1]}"
 }
