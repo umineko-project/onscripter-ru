@@ -19,17 +19,11 @@
 MediaProcController media;
 
 int MediaProcController::ownInit() {
-	av_register_all();
 	av_log_set_level(AV_LOG_QUIET);
 	av_log_set_callback(logLine);
 	HardwareDecoderIFace::reg();
-	int error = av_lockmgr_register(lockManager);
-	if (!error) {
-		audioSpec = AudioSpec();
-		error     = audioSpec.init(ons.audio_format);
-	} else {
-		sendToLog(LogLevel::Error, "Failed to init media thread safety\n");
-	}
+	audioSpec = AudioSpec();
+	int error     = audioSpec.init(ons.audio_format);
 
 	return error;
 }
@@ -85,18 +79,18 @@ int MediaProcController::AudioSpec::init(const SDL_AudioSpec &spec) {
 	return 0;
 }
 
-int MediaProcController::lockManager(void **mutex, AVLockOp op) {
+int MediaProcController::lockManager(void **mutex, int op) {
 	switch (op) {
-		case AV_LOCK_CREATE:
+		case 0:
 			*mutex = SDL_CreateMutex();
 			if (!*mutex)
 				return 1;
 			return 0;
-		case AV_LOCK_OBTAIN:
+		case 1:
 			return SDL_LockMutex(static_cast<SDL_mutex *>(*mutex)) != 0;
-		case AV_LOCK_RELEASE:
+		case 2:
 			return SDL_UnlockMutex(static_cast<SDL_mutex *>(*mutex)) != 0;
-		case AV_LOCK_DESTROY:
+		case 3:
 			SDL_DestroyMutex(static_cast<SDL_mutex *>(*mutex));
 			return 0;
 	}
