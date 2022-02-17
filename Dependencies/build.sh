@@ -468,19 +468,47 @@ prebuild() {
     pushd "$pkgname-$pkgver" &>/dev/null
 }
 
-meson_compile() {
-    msg2 "Using meson to compile"
+meson_configure() {
+    msg2 "Using meson to configure"
     local logfile="$logdir/$pkgname.meson.log"
-    local ninjalogfile="$logdir/$pkgname.ninja.log"
-    local ninjainstalllogfile="$logdir/$pkgname.ninjainstall.log"
+    
     local ret=0
     mkdir _build && cd _build
-    meson -Dprefix="$outdir" >"$logfile" || ret=$?
-    ninja >"$ninjalogfile" || ret=$?
-    ninja install >"$ninjainstalllogfile" || ret=$?
+    meson ${meson_command} ${meson_options} -Dprefix="$outdir" >"$logfile" || ret=$?
+    
     if (( $ret )); then
         tail -n 20 "$logfile"
-        error "Meson build failed"
+        error "Meson configure and or build failed"
+        exit 1
+    fi
+}
+
+meson_compile() {
+    msg2 "Using meson to compile"
+    local logfile="$logdir/$pkgname.mesoncompile.log"
+    local ret=0
+    
+    cd _build
+    meson -C compile -Dprefix="$outdir" >"$logfile" || ret=$?
+    
+    if (( $ret )); then
+        tail -n 20 "$logfile"
+        error "Meson compile failed"
+        exit 1
+    fi
+
+}
+
+ninja_install() {
+    local logfile="$logdir/$pkgname.ninja.log"
+    local ret=0
+
+    cd _build
+    ninja >"$logfile" || ret=$?
+    ninja install >>"$logfile" || ret=$?
+    if (( $ret )); then
+        tail -n 20 "$logfile"
+        error "Ninja failed"
         exit 1
     fi
 }

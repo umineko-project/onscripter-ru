@@ -22,7 +22,8 @@ configopts=(
 prebuild() {
     pushd "$pkgname-${pkgver}" &>/dev/null
 
-    meson_compile
+    meson_configure
+    ninja_install
 }
 
 configure () {
