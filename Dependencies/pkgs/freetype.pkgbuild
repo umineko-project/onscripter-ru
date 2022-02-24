@@ -9,16 +9,19 @@ if [ -e "$outdir/.pkgs/harfbuzz" ]; then
         '--disable-shared'
         "--libdir=$outdir/lib"
         '--enable-freetype-config'
+	'--without-brotli'
         "HARFBUZZ_CFLAGS=-I$outdir/include/harfbuzz"
         "HARFBUZZ_LIBS=-L$outdir/lib"
         "LIBPNG_CFLAGS=-I$outdir/include/libpng16"
         "LIBPNG_LIBS=-L$outdir/lib"
+        
     )
 elif [ $(( $PKGBUILD_RECURSION_DEPTH )) -ge 1 ]; then
     configopts=(
         '--disable-shared'
         "--libdir=$outdir/lib"
         '--without-harfbuzz'
+	'--without-brotli'
         '--enable-freetype-config'
         "LIBPNG_CFLAGS=-I$outdir/include/libpng16"
         "LIBPNG_LIBS=-L$outdir/lib"

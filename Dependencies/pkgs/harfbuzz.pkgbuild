@@ -30,10 +30,24 @@ if [ "$MMAC_VER_MIN" != "10.6" ]; then
 fi
 
 prebuild() {
-    pushd "$pkgname-${pkgver}" &>/dev/null
+    pushd "$pkgname-$pkgver" &>/dev/null
     apply_patch "${sources[1]}"
-    meson_configure
-    meson_build
+
+    # harfbuzz requires insisting on our architecture, all configure options, cflags and ldflags are ignored 
+    case $(getTarget) in
+    darwin*)
+        export CC="$(getCC) $APPLE_CPU_FLAG"
+        export CXX="$(getCXX) $APPLE_CPU_FLAG"
+    ;;
+    droid)
+        export CC="$(getCC)"
+        export CXX="$(getCXX)"
+    ;;
+    win32)
+        autoconf
+    ;;
+    esac
+    
     cppflags="${cppflags[@]} ${cflags[@]}"
 }
 
@@ -45,19 +59,11 @@ postbuild() {
     ;;
     esac
     
+    # Freetype needs to be rebuilt with Harfbuzz support now
+    rm -f "$outdir/.pkgs/freetype"
+    rm -rf $(dirname "$outdir")/src/freetype*
+    
     popd &>/dev/null
-}
-
-configure () {
-   echo disabled
-}
-
-compile () {
-   echo disabled
-}
-
-copy () {
-   echo disabled
 }
 
 # vim: set syntax=sh:

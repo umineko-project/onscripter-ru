@@ -470,33 +470,21 @@ prebuild() {
 
 meson_configure() {
     msg2 "Using meson to configure"
-    local logfile="$logdir/$pkgname.meson.log"
-    
+    local logfile="$logdir/$pkgname.meson.configure.log"
+
+    if [ -z $meson_command ]; then
+    	mkdir _build
+    	cd _build
+    fi
+
     local ret=0
-    mkdir _build && cd _build
-    meson ${meson_command} ${meson_options} -Dprefix="$outdir" >"$logfile" || ret=$?
-    
+    meson --default-library static --prefix="$outdir" $meson_extra_flags $meson_command >"$logfile" || ret=$?
+    cd ..
     if (( $ret )); then
         tail -n 20 "$logfile"
         error "Meson configure and or build failed"
         exit 1
     fi
-}
-
-meson_compile() {
-    msg2 "Using meson to compile"
-    local logfile="$logdir/$pkgname.mesoncompile.log"
-    local ret=0
-    
-    cd _build
-    meson -C compile -Dprefix="$outdir" >"$logfile" || ret=$?
-    
-    if (( $ret )); then
-        tail -n 20 "$logfile"
-        error "Meson compile failed"
-        exit 1
-    fi
-
 }
 
 ninja_install() {
@@ -506,9 +494,24 @@ ninja_install() {
     cd _build
     ninja >"$logfile" || ret=$?
     ninja install >>"$logfile" || ret=$?
+    cd ..
+
     if (( $ret )); then
         tail -n 20 "$logfile"
         error "Ninja failed"
+        exit 1
+    fi
+}
+
+meson_install() {
+    local logfile="$logdir/$pkgname.meson.install.log"
+    local ret=0
+
+    meson install -C build
+
+    if (( $ret )); then
+        tail -n 20 "$logfile"
+        error "Meson install failed"
         exit 1
     fi
 }

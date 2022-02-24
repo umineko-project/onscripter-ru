@@ -15,26 +15,14 @@ hashes=(
     '0b808a06c9685a62fca34b680abb8bc7fb2fda074478e329b063c1f872b826f6'
 )
 
-configopts=(
-    '--disable-shared'
-)
 
-prebuild() {
-    pushd "$pkgname-${pkgver}" &>/dev/null
 
+build() {
+    prebuild
+    meson_extra_flags=-Dx11=false
     meson_configure
     ninja_install
+    postbuild
 }
 
-configure () {
-   echo disabled
-}
-
-compile () {
-   echo disabled
-}
-
-copy () {
-   echo disabled
-}
 # vim: set syntax=sh:
