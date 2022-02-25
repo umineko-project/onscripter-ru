@@ -99,8 +99,9 @@ cflags_win32="-D__STDC_CONSTANT_MACROS -m32 -march=i686"
 
 configopts=(
     #static build
-    '--enable-static'
-    '--disable-shared'
+    '--enable-shared'
+    '--disable-static'
+    '--enable-pic'
     #optimise size
     '--enable-small'
     #'--disable-logging'
@@ -229,8 +230,6 @@ if [ "$(getTarget)" == "win32" ] && [ "$(getCC)" != "gcc" ]; then
 fi
 
 configopts_linux=(
-    '--extra-libs=-static'
-    '--extra-cflags=--static'
     '--disable-hwaccels'
     '--disable-decoders'
 )

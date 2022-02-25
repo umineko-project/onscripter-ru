@@ -26,8 +26,8 @@ hashes=(
 cflags="-O3"
 
 configopts=(
-    '--disable-shared'
-    '--enable-static'
+    '--disable-static'
+    '--enable-shared'
     '--disable-debug'
     '--disable-dependency-tracking'
     '--enable-mmx'

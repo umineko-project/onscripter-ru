@@ -17,7 +17,8 @@ cppflags_win32="-I$outdir/include -I$outdir/include/SDL2"
 
 configopts=(
     '--disable-dependency-tracking'
-    '--disable-shared'
+    '--disable-static'
+    '--enable-shared'
     '--disable-lbm'
     '--disable-pcx'
     '--disable-pnm'
@@ -26,8 +27,8 @@ configopts=(
     '--disable-xcf'
     '--disable-xv'
     '--disable-webp'
-    '--disable-jpg-shared'
-    '--disable-png-shared'
+    '--disable-jpg-static'
+    '--disable-png-static'
     '--disable-sdltest'
     "--libdir=$outdir/lib"
     "--with-sdl-prefix=$outdir"

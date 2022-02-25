@@ -33,10 +33,10 @@ build() {
     
     case $(getTarget) in
         darwin*)
-            ./configure --prefix="$outdir" --static --archs="$(getArch)" &>"$logfile" || ret=$?
+            ./configure --prefix="$outdir" --archs="$(getArch)" &>"$logfile" || ret=$?
         ;;
         *)
-            ./configure --prefix="$outdir" --static &>"$logfile" || ret=$?
+            ./configure --prefix="$outdir" &>"$logfile" || ret=$?
         ;;
     esac
     
