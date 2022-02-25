@@ -306,7 +306,7 @@ private:
 #endif
 	static constexpr size_t AudioPacketBufferSize = VideoPacketBufferSize * 2;
 
-	static int lockManager(void **mutex, AVLockOp op);
+	static int lockManager(void **mutex, int op);
 	static void logLine(void *inst, int level, const char *fmt, va_list args);
 
 	std::unique_ptr<Decoder> findDecoder(AVMediaType type, unsigned streamNumber = 1, AVCodecID restrictCodecId = AV_CODEC_ID_NONE);

@@ -79,18 +79,18 @@ int MediaProcController::AudioSpec::init(const SDL_AudioSpec &spec) {
 	return 0;
 }
 
-int MediaProcController::lockManager(void **mutex, AVLockOp op) {
+int MediaProcController::lockManager(void **mutex, int op) {
 	switch (op) {
-		case AV_LOCK_CREATE:
+		case 0:
 			*mutex = SDL_CreateMutex();
 			if (!*mutex)
 				return 1;
 			return 0;
-		case AV_LOCK_OBTAIN:
+		case 1:
 			return SDL_LockMutex(static_cast<SDL_mutex *>(*mutex)) != 0;
-		case AV_LOCK_RELEASE:
+		case 2:
 			return SDL_UnlockMutex(static_cast<SDL_mutex *>(*mutex)) != 0;
-		case AV_LOCK_DESTROY:
+		case 3:
 			SDL_DestroyMutex(static_cast<SDL_mutex *>(*mutex));
 			return 0;
 	}

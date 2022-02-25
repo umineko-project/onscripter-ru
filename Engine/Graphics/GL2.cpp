@@ -31,8 +31,11 @@ int GPUController::getImageFormatGL2(GPU_Image *image) {
 }
 
 void GPUController::printBlitBufferStateGL2() {
-	
-	sendToLog(LogLevel::Warn, "This is deprecated!");
+	auto cdata = static_cast<GPU_CONTEXT_DATA *>(GPU_GetCurrentRenderer()->current_context_target->context->data);
+	if (cdata->blit_buffer_num_vertices > 0 && cdata->last_target && cdata->last_image)
+		sendToLog(LogLevel::Info, "Blit buffer size: %u\n", cdata->blit_buffer_num_vertices);
+	else
+		sendToLog(LogLevel::Info, "Blit buffer empty.\n");
 }
 
 void GPUController::syncRendererStateGL2() {
