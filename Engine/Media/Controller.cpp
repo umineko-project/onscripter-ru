@@ -19,17 +19,11 @@
 MediaProcController media;
 
 int MediaProcController::ownInit() {
-	av_register_all();
 	av_log_set_level(AV_LOG_QUIET);
 	av_log_set_callback(logLine);
 	HardwareDecoderIFace::reg();
-	int error = av_lockmgr_register(lockManager);
-	if (!error) {
-		audioSpec = AudioSpec();
-		error     = audioSpec.init(ons.audio_format);
-	} else {
-		sendToLog(LogLevel::Error, "Failed to init media thread safety\n");
-	}
+	audioSpec = AudioSpec();
+	int error     = audioSpec.init(ons.audio_format);
 
 	return error;
 }
