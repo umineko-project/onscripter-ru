@@ -345,10 +345,10 @@ void GPUController::bindImageToSlot(GPU_Image *image, int slot_number) {
 }
 
 void GPUController::enter3dMode() {
-	GPU_MatrixMode(GPU_MODELVIEW);
+	GPU_MatrixMode(0, GPU_MODEL);
 	GPU_PushMatrix();
 	GPU_LoadIdentity();
-	GPU_MatrixMode(GPU_PROJECTION);
+	GPU_MatrixMode(0, GPU_PROJECTION);
 	GPU_PushMatrix();
 	GPU_LoadIdentity();
 
@@ -361,9 +361,9 @@ void GPUController::enter3dMode() {
 }
 
 void GPUController::exit3dMode() {
-	GPU_MatrixMode(GPU_MODELVIEW);
+	GPU_MatrixMode(0, GPU_MODEL);
 	GPU_PopMatrix();
-	GPU_MatrixMode(GPU_PROJECTION);
+	GPU_MatrixMode(0, GPU_PROJECTION);
 	GPU_PopMatrix();
 }
 
