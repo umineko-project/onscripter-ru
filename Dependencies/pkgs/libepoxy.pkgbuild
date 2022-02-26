@@ -19,7 +19,6 @@ hashes=(
 
 build() {
     prebuild
-    meson_extra_flags=-Dx11=false
     meson_configure
     ninja_install
     postbuild
