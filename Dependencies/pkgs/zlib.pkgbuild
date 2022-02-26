@@ -10,7 +10,11 @@ hashes=(
     '4ff941449631ace0d4d203e3483be9dbc9da454084111f97ea0a2114e19bf066'
     'dd46ca3e05fece429a4f32953a7a444439356648a61ee9ac4ac6c1afc22f7b17'
 )
-
+configopts=(
+    '--disable-static'
+    '--enable-shared'
+    "--libdir=$outdir/lib"
+)
 build() {
     pushd "$pkgname-${pkgver}" &>/dev/null
     if [ "$(getHost)" == "win32" ]; then
