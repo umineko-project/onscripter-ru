@@ -39,15 +39,17 @@ build() {
     #apply_patch "${sources[6]}"
 
     msg "Compiling %s" "$pkgname"
-    export CFLAGS="$CFLAGS ${cflags[@]}"
+    export CFLAGS="$CFLAGS ${cflags[@]} -fPIC"
     export LDFLAGS="$LDFLAGS ${ldflags[@]}"
     compile
 
     msg "Installing %s" "$pkgname"
     local ret=0
     local logfile="$logdir/$pkgname.install.log"
-    make $MAKEOPTS install PREFIX="$outdir" &>"$logfile" || ret=$?
-   
+    make $MAKEOPTS -f Makefile-libbz2_so PREFIX="$outdir" &>"$logfile" || ret=$?
+    cp bzip2-shared $outdir/bin/
+    mkdir $outdir/lib/
+    cp libbz2.so.${pkgver} $outdir/lib/libbz2.so
     if (( $ret )); then
         tail -n 20 "$logfile"
         error "Installing %s failed" "$pkgname"
