@@ -526,7 +526,7 @@ case "$CXX_TMP:$SYS" in
   *clang*:"MinGW")
     LINK_START_GROUP="-Wl,--start-group"
     LINK_END_GROUP="-Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic -Wl,--end-group"
-    EXTRALDFLAGS="$EXTRALDFLAGS -static-libgcc"
+    EXTRALDFLAGS="$EXTRALDFLAGS -shared-libgcc"
     EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DWIN32 -DPTW32_STATIC_LIB"
     EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -lwinmm -lshlwapi -lws2_32 -lglu32 -lopengl32 -Wl,--wrap=SDL_LoadObject -Wl,--large-address-aware"
   ;;
@@ -535,19 +535,19 @@ case "$CXX_TMP:$SYS" in
     LINK_END_GROUP="-Wl,--end-group"
     EXTRACFLAGS="$EXTRACFLAGS -fPIC"
     EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DDROID"
-    EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -shared -static-libstdc++"
+    EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -shared -shared-libstdc++"
   ;;
   *g++*:"MinGW")
     LINK_START_GROUP="-Wl,--start-group"
     LINK_END_GROUP="-Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic -Wl,--end-group"
-    EXTRALDFLAGS="$EXTRALDFLAGS -static-libgcc -static-libstdc++ -mthreads"
+    EXTRALDFLAGS="$EXTRALDFLAGS -shared-libgcc -shared-libstdc++ -mthreads"
     EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DWIN32 -DPTW32_STATIC_LIB -mthreads"
     EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -lwinmm -lshlwapi -lws2_32 -lglu32 -lopengl32 -Wl,--wrap=SDL_LoadObject -Wl,--large-address-aware"
   ;;
   g++*:"Posix" | *clang*:"Posix")
     LINK_START_GROUP="-Wl,--start-group"
     LINK_END_GROUP="-Wl,--end-group"
-    EXTRALDFLAGS="$EXTRALDFLAGS -static-libgcc -static-libstdc++"
+    EXTRALDFLAGS="$EXTRALDFLAGS -shared-libgcc -shared-libstdc++"
     #FIXME: Passing -DLINUX is roughly a hack, we should properly handle BSD.
     EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DLINUX -D__STDC_CONSTANT_MACROS"
     #FIXME: These flags originate from ONScripter project and need to be updated.
@@ -961,7 +961,7 @@ INCS = -I\$(PROJECT) -I\$(EXTLIB)/include \\
 	\$(shell $FREETYPE_CONFIG --cflags)
 
 LIBS = \$(EXTRAOSLDFLAGS) -L\$(EXTLIB)/lib $LINK_START_GROUP \\
-	\$(shell \$(SDL_CONFIG) --static-libs) \$(filter-out \$(shell \$(SDL_CONFIG) --libs),\$(shell $SMPEG_CONFIG --libs)) \\
+	\$(shell \$(SDL_CONFIG) --libs) \$(filter-out \$(shell \$(SDL_CONFIG) --libs),\$(shell $SMPEG_CONFIG --libs)) \\
 	\$(shell $FREETYPE_CONFIG --libs) \\
 	$LINKSDL2_image $LINKjpeg $LINKpng $LINKz \\
 	$LINKSDL2_mixer $LINKogg $LINKvorbis $LINKvorbisfile \\
