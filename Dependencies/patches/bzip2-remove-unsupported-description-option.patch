@@ -1,0 +1,8 @@
+--- bzip2-1.0.6.orig/libbz2.def	Wed Jan  3 02:00:55 2007
++++ bzip2-1.0.6/libbz2.def	Sat Jan 24 20:38:03 2015
+@@ -1,5 +1,4 @@
+ LIBRARY			LIBBZ2
+-DESCRIPTION		"libbzip2: library for data compression"
+ EXPORTS
+ 	BZ2_bzCompressInit
+ 	BZ2_bzCompress

@@ -1,0 +1,54 @@
+--- bzip2-1.0.6.orig/makefile.msc	Sat Jan 24 19:51:36 2015
++++ bzip2-1.0.6/makefile.msc	Sun Jan 25 17:18:22 2015
+@@ -5,6 +5,7 @@
+ 
+ CC=cl
+ CFLAGS= -DWIN32 -MD -Ox -D_FILE_OFFSET_BITS=64 -nologo
++RC=rc
+ 
+ OBJS= blocksort.obj  \
+       huffman.obj    \
+@@ -16,16 +17,25 @@ OBJS= blocksort.obj  \
+ 
+ all: dll lib bzip2 test
+ 
+-bzip2: dll
+-	$(CC) $(CFLAGS) /Febzip2 bzip2.c libbz2.lib setargv.obj
+-	$(CC) $(CFLAGS) /Febzip2recover bzip2recover.c
++bzip2: dll bzip2.res bzip2recover.res
++	$(CC) $(CFLAGS) /Febzip2 bzip2.c libbz2.lib setargv.obj bzip2.res
++	$(CC) $(CFLAGS) /Febzip2recover bzip2recover.c bzip2recover.res
+ 
+-dll: $(OBJS) libbz2.def
+-	link /dll /implib:libbz2.lib /out:libbz2.dll /def:libbz2.def $(OBJS)
++dll: $(OBJS) libbz2.def libbz2.res
++	link /dll /implib:libbz2.lib /out:libbz2.dll /def:libbz2.def $(OBJS) libbz2.res
+ 
+ lib: $(OBJS)
+ 	lib /out:libbz2-static.lib $(OBJS)
+ 
++bzip2.res:
++	$(RC) /fobzip2.res /d BZIP2 version.rc
++
++bzip2recover.res:
++	$(RC) /fobzip2recover.res /d BZIP2RECOVER version.rc
++
++libbz2.res:
++	$(RC) /folibbz2.res /d LIBBZ2 version.rc
++
+ test: bzip2
+ 	type words1
+ 	.\\bzip2 -1  < sample1.ref > sample1.rb2
+@@ -54,9 +64,12 @@ clean:
+ 	del libbz2.lib 
+ 	del libbz2.dll
+ 	del libbz2.exp
++	del libbz2.res
+ 	del libbz2-static.lib
+ 	del bzip2.exe
++	del bzip2.res
+ 	del bzip2recover.exe
++	del bzip2recover.res
+ 	del sample1.rb2 
+ 	del sample2.rb2 
+ 	del sample3.rb2

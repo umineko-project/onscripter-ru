@@ -41,8 +41,7 @@ else
 fi
 
 configopts=(
-    '--disable-static'
-    '--enable-shared'
+    "--disable-$sharedstatic"
     '--disable-nas'
     '--enable-sse2' 
     '--enable-haptic'
