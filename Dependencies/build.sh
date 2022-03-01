@@ -454,7 +454,7 @@ apply_patch() {
         local logfile="$logdir/$pkgname.$(get_filename "$patchfile").log"
         msg2 "Applying %s" "$patchfile"
         local ret=0
-        patch -p1 < "$patchpath" >$logfile || ret=$?
+        patch --binary -p1 < "$patchpath" >$logfile || ret=$?
         if (( $ret )); then
             error "Failed to apply %s" "$patchfile"
             exit 1

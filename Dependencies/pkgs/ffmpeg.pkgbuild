@@ -98,9 +98,7 @@ cflags_linux="-D__STDC_CONSTANT_MACROS"
 cflags_win32="-D__STDC_CONSTANT_MACROS -m32 -march=i686"
 
 configopts=(
-    #static build
     '--enable-shared'
-    '--disable-static'
     '--enable-pic'
     #optimise size
     '--enable-small'
@@ -226,7 +224,7 @@ configopts_win32=(
 )
 
 if [ "$(getTarget)" == "win32" ] && [ "$(getCC)" != "gcc" ]; then
-    configopts_win32+=('--cc=ccreal')
+    configopts_win32+=('--cc=gcc')
 fi
 
 configopts_linux=(
@@ -256,6 +254,7 @@ if $CROSS_BUILD; then
 fi
 
 prebuild() {
+    echo ${configopts[@]}
     pushd "$pkgname-${pkgver}" &>/dev/null
     
     case $(getTarget) in

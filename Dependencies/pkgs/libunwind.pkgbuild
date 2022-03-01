@@ -14,7 +14,7 @@ hashes=(
 
 configopts=(
     '--disable-dependency-tracking'
-    '--disable-static'
+    
     '--enable-shared'
     '--disable-coredump'
     '--enable-ptrace'

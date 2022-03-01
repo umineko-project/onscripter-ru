@@ -41,6 +41,9 @@ build() {
     fi
     if [ "$(getTarget)" == "win32" ]; then
 	apply_patch "${sources[7]}"
+	apply_patch "${sources[8]}"
+	apply_patch "${sources[9]}"
+	apply_patch "${sources[10]}"
     fi 
     apply_patch "${sources[4]}"
     #fixed by 53f3d0d71c3c445bc4ac413d42c4386381e47b49
@@ -54,10 +57,14 @@ build() {
     msg "Installing %s" "$pkgname"
     local ret=0
     local logfile="$logdir/$pkgname.install.log"
-    make $MAKEOPTS -f Makefile-libbz2_so PREFIX="$outdir" &>"$logfile" || ret=$?
-    cp bzip2-shared $outdir/bin/
     mkdir $outdir/lib/
-    cp libbz2.so.${pkgver} $outdir/lib/libbz2.so
+    if (( $shared )); then
+	make $MAKEOPTS -f Makefile-libbz2_so PREFIX="$outdir" &>"$logfile" || ret=$?
+	cp bzip2-shared $outdir/bin/
+        cp libbz2.so.${pkgver} $outdir/lib/libbz2.so
+    else
+	make $MAKEOPTS install PREFIX="$outdir" &>"$logfile" || ret=$?
+    fi
     if (( $ret )); then
         tail -n 20 "$logfile"
         error "Installing %s failed" "$pkgname"

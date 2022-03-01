@@ -6,7 +6,7 @@ hashes=('4f3fc6178a533d392064f14776b23c397ed4b9f48f5de297aba73b643f955c08')
 
 configopts=(
     '--disable-dependency-tracking'
-    '--disable-static'
+    
     '--enable-shared'
     "--libdir=$outdir/lib"
 )

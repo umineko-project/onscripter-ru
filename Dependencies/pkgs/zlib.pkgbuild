@@ -34,11 +34,14 @@ build() {
         darwin*)
             ./configure --enable-shared --prefix="$outdir" --archs="$(getArch)" &>"$logfile" || ret=$?
         ;;
-        *)
+        win32)
+            ./configure --enable-shared --prefix="$outdir" --static &>"$logfile" || ret=$?
+	;;
+	*)
             ./configure --enable-shared --prefix="$outdir" &>"$logfile" || ret=$?
         ;;
     esac
-    
+        
     if (( $ret )); then
         tail -n 20 "$logfile"
         error "Configuring %s failed" "$pkgname"

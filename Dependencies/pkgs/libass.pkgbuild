@@ -18,7 +18,7 @@ hashes=(
 )
 
 configopts=(
-    '--disable-static'
+    
     '--enable-shared'
     '--disable-fontconfig'
     '--disable-dependency-tracking'
