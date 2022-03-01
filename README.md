@@ -16,3 +16,7 @@ For the list of available platforms and compilation instructions please proceed 
 
 MAY NOT WORK ON MACOS
 youll need a patched version of some of the script too
+
+
+I unforked to try to make some features work
+original source [here](https://github.com/umineko-project/onscripter-ru)
