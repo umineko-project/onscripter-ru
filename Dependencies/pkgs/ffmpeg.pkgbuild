@@ -98,6 +98,7 @@ cflags_linux="-D__STDC_CONSTANT_MACROS"
 cflags_win32="-D__STDC_CONSTANT_MACROS -m32 -march=i686"
 
 configopts=(
+    '--enable-static'
     '--enable-shared'
     '--enable-pic'
     #optimise size

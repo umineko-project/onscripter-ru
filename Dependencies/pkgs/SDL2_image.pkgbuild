@@ -17,8 +17,8 @@ cppflags_win32="-I$outdir/include -I$outdir/include/SDL2"
 
 configopts=(
     '--disable-dependency-tracking'
-    
-    '--enable-shared'
+    '--enable-static'
+    '--disable-shared'
     '--disable-lbm'
     '--disable-pcx'
     '--disable-pnm'

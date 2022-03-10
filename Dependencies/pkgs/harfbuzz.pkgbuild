@@ -13,7 +13,7 @@ hashes=(
 
 configopts=(
     '--disable-dependency-tracking'
-    
+    '--enable-static'
     '--enable-shared'
     '--with-glib=no'
     '--with-cairo=no'

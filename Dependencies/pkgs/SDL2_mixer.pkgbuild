@@ -30,8 +30,8 @@ fi
 
 configopts=(
     '--disable-dependency-tracking'
-    
-    '--enable-shared'
+    '--enable-static'
+    '--disable-shared'
     '--disable-music-cmd'
     '--disable-music-mod'
     '--disable-music-mod-modplug'

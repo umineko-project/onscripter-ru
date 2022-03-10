@@ -495,7 +495,7 @@ fi
 echo -n "Deciding on flags...      "
 
 case "$SYS" in
-Posix)  EXE=     ; OBJ=.o ; LIB=.so ; W32= ;;
+Posix)  EXE=     ; OBJ=.o ; LIB=.a ; W32= ;;
 MacOSX) EXE=     ; OBJ=.o ; LIB=.a ; W32= ;;
 MinGW)  EXE=.exe ; OBJ=.o ; LIB=.a ; W32=true ;;
 Droid)  EXE=     ; OBJ=.o ; LIB=.a ; W32= ;;

@@ -1,6 +1,7 @@
 pkgname=libepoxy
 pkgver=1.5.9
 pkgrel=1
+depends=('libX11')
 # TODO: Upgrade libepoxy in some future, but this will require patches:
 # 1.5.x branch till 1.5.3 is pretty much broken:
 # - https://github.com/anholt/libepoxy/issues/160
@@ -15,8 +16,9 @@ hashes=(
     '0b808a06c9685a62fca34b680abb8bc7fb2fda074478e329b063c1f872b826f6'
 )
 
-configopt=(
-    '-dX11=true'
+meson_extra_flags=(
+    '-Ddefault_library=static'
+    '--libdir=$outdir/lib'
 )
 
 build() {

@@ -478,7 +478,7 @@ meson_configure() {
     fi
 
     local ret=0
-    meson ${configopts[@]} --prefix="$outdir" --libdir="$outdir"/lib/ $meson_extra_flags $meson_command >"$logfile" || ret=$?
+    meson --prefix="$outdir" --libdir="$outdir"/lib/ $meson_extra_flags $meson_command >"$logfile" || ret=$?
     cd ..
     if (( $ret )); then
         tail -n 20 "$logfile"
