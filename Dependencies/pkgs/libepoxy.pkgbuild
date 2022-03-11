@@ -20,7 +20,7 @@ hashes=(
 )
 
 meson_extra_flags=(
-    '-Ddefault_library=static'
+    '--default-library=static'
     '--libdir=$outdir/lib'
 )
 
