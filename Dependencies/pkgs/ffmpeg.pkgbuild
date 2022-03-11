@@ -255,7 +255,6 @@ if $CROSS_BUILD; then
 fi
 
 prebuild() {
-    echo ${configopts[@]}
     pushd "$pkgname-${pkgver}" &>/dev/null
     
     case $(getTarget) in

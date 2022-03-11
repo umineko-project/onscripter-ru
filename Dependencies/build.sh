@@ -405,7 +405,8 @@ extract_sources() {
 
         case "$filetype" in
             *application/x-tar*)
-                cmd='tar -xf';;
+                cmd="tar"
+                cmd_flags=('--strip-components=1' "--one-top-level=$pkgname-$pkgver" '-xf');;
             *application/x-zip*|*application/zip*)
                 cmd='unzip -q';;
             *)
@@ -414,7 +415,8 @@ extract_sources() {
                 case "$ext" in
                     bz2|gz|tar|xz)
                         # should look one more level in, to see if tar is there...
-                        cmd='tar -xf';;
+                        cmd='tar'
+                        cmd_flags=('--strip-components=1' "--one-top-level=$pkgname-$pkgver" '-xf');;
                     zip)
                         # should look one more level in, to see if tar is there...
                         cmd='unzip -q';;
@@ -424,8 +426,8 @@ extract_sources() {
         esac
 
         local ret=0
-        msg2 "Extracting %s with %s" "$file" "$cmd"
-        $cmd "$file" || ret=$?
+        echo Extracting $file with "$cmd" "${cmd_flags[@]}"
+        $cmd "${cmd_flags[@]}" "$file" || ret=$?
 
         if (( ret )); then
             error_out "Failed to extract %s" "$file"
@@ -478,7 +480,7 @@ meson_configure() {
     fi
 
     local ret=0
-    meson --prefix="$outdir" --libdir="$outdir"/lib/ $meson_extra_flags $meson_command >"$logfile" || ret=$?
+    meson --prefix="$outdir" --libdir=lib $meson_extra_flags $meson_command >"$logfile" || ret=$?
     cd ..
     if (( $ret )); then
         tail -n 20 "$logfile"
@@ -488,6 +490,7 @@ meson_configure() {
 }
 
 ninja_install() {
+    msg2 "Using ninja to compile"
     local logfile="$logdir/$pkgname.ninja.log"
     local ret=0
 

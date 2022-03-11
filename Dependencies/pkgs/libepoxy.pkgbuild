@@ -1,7 +1,10 @@
 pkgname=libepoxy
 pkgver=1.5.9
 pkgrel=1
-depends=('libX11')
+depends=(
+    'libX11'
+    'libglvnd'
+)
 # TODO: Upgrade libepoxy in some future, but this will require patches:
 # 1.5.x branch till 1.5.3 is pretty much broken:
 # - https://github.com/anholt/libepoxy/issues/160
