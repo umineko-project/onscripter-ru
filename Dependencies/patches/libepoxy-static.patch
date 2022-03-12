@@ -1,0 +1,51 @@
+--- a/meson.build	2021-08-14 23:55:37.833696000 +1000
++++ b/meson.build	2022-03-12 12:53:05.788629600 +1100
+@@ -162,38 +162,38 @@ if host_system == 'windows'
+ endif
+ 
+ # Dependencies
+-dl_dep = cc.find_library('dl', required: false)
+-gl_dep = dependency('gl', required: false)
+-egl_dep = dependency('egl', required: false)
++dl_dep = cc.find_library('dl', required: false, static: true)
++gl_dep = dependency('gl', required: false, static: true)
++egl_dep = dependency('egl', required: false, static: true)
+ 
+ # Optional dependencies for tests
+-x11_dep = dependency('x11', required: false)
++x11_dep = dependency('x11', required: false, static: true)
+ 
+ # GLES v2 and v1 may have pkg-config files, courtesy of downstream
+ # packagers; let's check those first, and fall back to find_library()
+ # if we fail
+-gles2_dep = dependency('glesv2', required: false)
++gles2_dep = dependency('glesv2', required: false, static: true)
+ if not gles2_dep.found()
+-  gles2_dep = cc.find_library('libGLESv2', required: false)
++  gles2_dep = cc.find_library('libGLESv2', required: false, static: true)
+ endif
+ 
+-gles1_dep = dependency('glesv1_cm', required: false)
++gles1_dep = dependency('glesv1_cm', required: false, static: true)
+ if not gles1_dep.found()
+-  gles1_dep = cc.find_library('libGLESv1_CM', required: false)
++  gles1_dep = cc.find_library('libGLESv1_CM', required: false, static: true)
+ endif
+ 
+ # On windows, the DLL has to have all of its functions
+ # resolved at link time, so we have to link directly against
+ # opengl32.  But that's the only GL provider, anyway.
+ if host_system == 'windows'
+-  opengl32_dep = cc.find_library('opengl32', required: true)
++  opengl32_dep = cc.find_library('opengl32', required: true, static: true)
+ 
+   # When building against static libraries, we need to control
+   # the order of the dependencies, and gdi32 provides symbols
+   # needed when using opengl32, like SetPixelFormat and
+   # ChoosePixelFormat. This is mostly a workaround for older
+   # versions of Meson.
+-  gdi32_dep = cc.find_library('gdi32', required: true)
++  gdi32_dep = cc.find_library('gdi32', required: true, static: true)
+ endif
+ 
+ # Generates the dispatch tables

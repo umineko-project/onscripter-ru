@@ -495,8 +495,7 @@ ninja_install() {
     local ret=0
 
     cd _build
-    ninja >"$logfile" || ret=$?
-    ninja install >>"$logfile" || ret=$?
+    LIBRARY_PATH=$outdir/lib:$LIBRARY_PATH ninja install >>"$logfile" || ret=$?
     cd ..
 
     if (( $ret )); then
