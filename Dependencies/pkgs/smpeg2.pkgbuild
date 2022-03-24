@@ -23,11 +23,10 @@ hashes=(
     '1749da9868f3cb57d699fffbcaeea78a430a60839b1ebf11962f1f71e49a9bbc'
 )
 
-cflags="-O3"
+CFLAGS="$CFLAGS ${cflags[@]} -fPIC"
 
 configopts=(
-    '--disable-shared'
-    '--enable-static'
+    '--enable-shared'
     '--disable-debug'
     '--disable-dependency-tracking'
     '--enable-mmx'

@@ -20,7 +20,7 @@ hashes=(
     '39ee540876ac2bbd1d9595df186b77a174a0507a048853252e8fd60df1df5f04'
 )
 
-cflags="-O3"
+CFLAGS="$CFLAGS ${cflags[@]} -fPIC"
 cflags_win32="-I$outdir/include/khronos"
 
 configopts_win32=(

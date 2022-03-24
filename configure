@@ -152,6 +152,8 @@ do
         prev=MAKE ;;
       --std=* | -std=*)
         CXXSTD=-std=$arg ;;
+      --shared | -shared)
+	SHARED_BUILD_ONSCRLIB=true ;;
       --pedantic | -pedantic)
         EXTRAOSCFLAGS="$EXTRAOSCFLAGS -pedantic" ;;
       --with-werror | -with-werror)
@@ -198,6 +200,7 @@ do
 	  --help                   display this message
 	  --prefix=DIR             install in prefix DIR (default is /usr/local)
 	  --make=NAME              use GNU make executable with the given name
+	  --shared		   attempts to dynamically link and build libraries
 	  --std=STD                c++ compiles with -std=STD (default is c++14)
 	  --pedantic               compile with -pedantic
 	  --unsupported-compiler   don't check for known compilers
@@ -495,7 +498,7 @@ fi
 echo -n "Deciding on flags...      "
 
 case "$SYS" in
-Posix)  EXE=     ; OBJ=.o ; LIB=.a ; W32= ;;
+Posix)  EXE=     ; OBJ=.o ; LIB=.so ; W32= ;;
 MacOSX) EXE=     ; OBJ=.o ; LIB=.a ; W32= ;;
 MinGW)  EXE=.exe ; OBJ=.o ; LIB=.a ; W32=true ;;
 Droid)  EXE=     ; OBJ=.o ; LIB=.a ; W32= ;;

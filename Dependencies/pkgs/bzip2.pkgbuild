@@ -52,6 +52,8 @@ build() {
     msg "Compiling %s" "$pkgname"
     export CFLAGS="$CFLAGS ${cflags[@]} -fPIC"
     export LDFLAGS="$LDFLAGS ${ldflags[@]}"
+    
+
     compile
 
 
@@ -59,10 +61,10 @@ build() {
     local ret=0
     local logfile="$logdir/$pkgname.install.log"
     mkdir $outdir/lib/
-    if (( $shared )); then
+    if [ "$(SHARED_ONSCRLIB_BUILD)" = true ];
 	    make $MAKEOPTS -f Makefile-libbz2_so PREFIX="$outdir" &>"$logfile" || ret=$?
-	    cp bzip2-shared $outdir/bin/
-        cp libbz2.so.${pkgver} $outdir/lib/libbz2.so
+	    cp bzip2-shared $outdir/bin/ || ret=$?
+            cp libbz2.so.${pkgver} $outdir/lib/libbz2.so || ret=$?
     else
 	    make $MAKEOPTS install PREFIX="$outdir" &>"$logfile" || ret=$?
     fi
@@ -77,4 +79,7 @@ build() {
     postbuild
 }
 
+configure() {
+	echo nothing
+}
 # vim: set syntax=sh:

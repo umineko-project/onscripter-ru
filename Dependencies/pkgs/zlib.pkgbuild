@@ -38,7 +38,11 @@ build() {
             ./configure --enable-shared --prefix="$outdir" --static &>"$logfile" || ret=$?
 	;;
 	*)
-            ./configure --enable-shared --prefix="$outdir"  --static &>"$logfile" || ret=$?
+	    if [ "$(SHARED_ONSCRLIB_BUILD)" = true ]; then
+            	./configure --enable-shared --prefix="$outdir" &>"$logfile" || ret=$?
+	    else
+		./configure --enable-shared --prefix="$outdir" --static &>"$logfile" || ret=$?
+	    fi
         ;;
     esac
         
