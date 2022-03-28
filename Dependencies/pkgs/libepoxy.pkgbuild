@@ -1,9 +1,7 @@
 pkgname=libepoxy
 pkgver=1.5.9
 pkgrel=1
-if (( !$SHARED_BUILD_ONSCRLIB )); then
-	
-else
+if [ -z $SHARED_BUILD_ONSCRLIB ]; then
 	meson_extra_flags=(
     		'--default-library=static'
 	)
