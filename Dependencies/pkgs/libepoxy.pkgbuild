@@ -1,7 +1,7 @@
 pkgname=libepoxy
 pkgver=1.5.9
 pkgrel=1
-if [ -z $SHARED_BUILD_ONSCRLIB ]; then
+if [ $SHARED_BUILD_ONSCRLIB = false]; then
 	meson_extra_flags=(
     		'--default-library=static'
 	)
@@ -27,7 +27,7 @@ hashes=(
 
 prebuild() {
     pushd "$pkgname-${pkgver}" &>/dev/null
-    if (( $SHARED_BUILD_ONSCRLIB )); then
+    if [ $SHARED_BUILD_ONSCRLIB = false]; then
         apply_patch "${sources[1]}"
     fi
 }

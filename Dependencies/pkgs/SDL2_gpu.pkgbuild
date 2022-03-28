@@ -121,7 +121,7 @@ build() {
     msg "Installing"
     
     local ret=0
-    if [ "$(SHARED_ONSCRLIB_BUILD)" = true ];
+    if [ $SHARED_BUILD_ONSCRLIB = true ]; then
         cp "SDL_gpu-/lib/libSDL2_gpu.so" "$outdir/lib/libSDL2_gpu.so" || ret=1
     else
         cp "SDL_gpu-/lib/libSDL2_gpu.a" "$outdir/lib/libSDL2_gpu.a" || ret=1
