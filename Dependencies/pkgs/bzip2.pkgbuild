@@ -61,7 +61,7 @@ build() {
     local ret=0
     local logfile="$logdir/$pkgname.install.log"
     mkdir $outdir/lib/
-    if [ $SHARED_BUILD_ONSCRLIB = true ]; then
+    if $SHARED_BUILD_ONSCRLIB ; then
 	    make $MAKEOPTS -f Makefile-libbz2_so PREFIX="$outdir" &>"$logfile" || ret=$?
 	    cp bzip2-shared $outdir/bin/ || ret=$?
         cp libbz2.so.${pkgver} $outdir/lib/libbz2.so || ret=$?
