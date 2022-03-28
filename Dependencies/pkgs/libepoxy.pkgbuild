@@ -1,7 +1,7 @@
 pkgname=libepoxy
-pkgver=1.5.9
+pkgver=1.5.10
 pkgrel=1
-if [ $SHARED_BUILD_ONSCRLIB = false]; then
+if (( $SHARED_BUILD_ONSCRLIB )); then
 	meson_extra_flags=(
     		'--default-library=static'
 	)
@@ -17,7 +17,7 @@ fi
 # As they switched to meson, upgrading to 1.5.3 will require supporting meson
 # in onscrlib rather than attempting to work around no longer supported autotools.
 sources=(
-    "https://github.com/anholt/libepoxy/releases/download/${pkgver}/libepoxy-${pkgver}.tar.xz"
+    "https://github.com/anholt/libepoxy/archive/refs/tags/${pkgver}.tar.gz"
     'libepoxy-static.patch'
 )
 hashes=(
@@ -27,7 +27,7 @@ hashes=(
 
 prebuild() {
     pushd "$pkgname-${pkgver}" &>/dev/null
-    if [ $SHARED_BUILD_ONSCRLIB = false]; then
+    if [[ $SHARED_BUILD_ONSCRLIB -eq 0 ]] ; then
         apply_patch "${sources[1]}"
     fi
 }

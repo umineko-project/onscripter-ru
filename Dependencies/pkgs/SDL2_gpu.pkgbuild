@@ -94,7 +94,7 @@ build() {
             fi
         ;;
         linux-like)
-            cmake -G "Unix Makefiles" -DSDL_gpu_BUILD_STATIC=ON -DSDL_gpu_BUILD_SHARED=ON -DSDL_gpu_USE_SYSTEM_EPOXY=ON -DCMAKE_C_FLAGS="$lcf" -DCMAKE_CXX_FLAGS="$lcxf" &>"$logfile" || ret=$?
+            cmake -G "Unix Makefiles" -DSDL_gpu_USE_SYSTEM_EPOXY=ON -DCMAKE_C_FLAGS="$lcf" -DBUILD_SHARED=ON -DCMAKE_INSTALL_PREFIX=$outdir -DCMAKE_CXX_FLAGS="$lcxf" &>"$logfile" || ret=$?
         ;;
     esac
     
@@ -121,11 +121,10 @@ build() {
     msg "Installing"
     
     local ret=0
-    if $SHARED_BUILD_ONSCRLIB ; then
-        cp "SDL_gpu-/lib/libSDL2_gpu.so" "$outdir/lib/libSDL2_gpu.so" || ret=1
-    else
-        cp "SDL_gpu-/lib/libSDL2_gpu.a" "$outdir/lib/libSDL2_gpu.a" || ret=1
-    fi
+    
+    cp "SDL_gpu-/lib/libSDL2_gpu.so" "$outdir/lib/libSDL2_gpu.so"
+    cp "SDL_gpu-/lib/libSDL2_gpu.a" "$outdir/lib/libSDL2_gpu.a" || ret=1
+    
     cp "include/SDL_gpu_version.h" "$outdir/include/SDL2/SDL_gpu_version.h" || ret=1
     cp "include/SDL_gpu.h" "$outdir/include/SDL2/SDL_gpu.h" || ret=1
     cp "src/externals/gl2stub/gl2stub.h" "$outdir/include/gl2stub.h" || ret=1

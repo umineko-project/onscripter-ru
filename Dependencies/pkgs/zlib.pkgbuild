@@ -38,11 +38,12 @@ build() {
             ./configure --enable-shared --prefix="$outdir" --static &>"$logfile" || ret=$?
 	;;
 	*)
-        if $SHARED_BUILD_ONSCRLIB ; then
-            	./configure --enable-shared --prefix="$outdir" &>"$logfile" || ret=$?
-	    else
+
+        ./configure --enable-shared --prefix="$outdir" &>"$logfile" || ret=$?
+        # I know this is lazy but it lets you compile static without clearing
+        make $MAKEOPTS &>"$logfile" || ret=$?
+        make $MAKEOPTS install &>"$logfile" || ret=$?
 		./configure --enable-shared --prefix="$outdir" --static &>"$logfile" || ret=$?
-	    fi
         ;;
     esac
         

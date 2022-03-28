@@ -61,13 +61,11 @@ build() {
     local ret=0
     local logfile="$logdir/$pkgname.install.log"
     mkdir $outdir/lib/
-    if $SHARED_BUILD_ONSCRLIB ; then
-	    make $MAKEOPTS -f Makefile-libbz2_so PREFIX="$outdir" &>"$logfile" || ret=$?
-	    cp bzip2-shared $outdir/bin/ || ret=$?
-        cp libbz2.so.${pkgver} $outdir/lib/libbz2.so || ret=$?
-    else
-	    make $MAKEOPTS install PREFIX="$outdir" &>"$logfile" || ret=$?
-    fi
+	make $MAKEOPTS -f Makefile-libbz2_so PREFIX="$outdir" &>"$logfile" || ret=$?
+	cp bzip2-shared $outdir/bin/ || ret=$?
+    cp libbz2.so.${pkgver} $outdir/lib/libbz2.so || ret=$?
+	make $MAKEOPTS install PREFIX="$outdir" &>"$logfile" || ret=$?
+    
     if (( $ret )); then
         tail -n 20 "$logfile"
         error "Installing %s failed" "$pkgname"
