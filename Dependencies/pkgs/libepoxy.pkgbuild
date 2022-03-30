@@ -1,24 +1,11 @@
 pkgname=libepoxy
 pkgver=1.5.10
 pkgrel=1
-if is_static_build; then
-    msg2 "Using static libepoxy"
-    meson_extra_flags=(
-    	'--default-library=static'
-    )
-    #depends=('libX11')
-else
-    meson_extra_flags=(
-    	'--default-library=shared'
-    )
-fi
-# TODO: Upgrade libepoxy in some future, but this will require patches:
-# 1.5.x branch till 1.5.3 is pretty much broken:
-# - https://github.com/anholt/libepoxy/issues/160
-# - https://github.com/anholt/libepoxy/issues/180
-# 1.5.0 and newer do not have configure, and autoreconf requires xorg macros.
-# As they switched to meson, upgrading to 1.5.3 will require supporting meson
-# in onscrlib rather than attempting to work around no longer supported autotools.
+
+meson_extra_flags=(
+    '--default-library=both'
+)
+
 sources=(
     "https://github.com/anholt/libepoxy/archive/refs/tags/${pkgver}.tar.gz"
     'libepoxy-static.patch'
