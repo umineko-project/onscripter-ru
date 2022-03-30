@@ -6,7 +6,7 @@ if is_static_build; then
     meson_extra_flags=(
     	'--default-library=static'
     )
-    depends=('libX11')
+    #depends=('libX11')
 else
     meson_extra_flags=(
     	'--default-library=shared'

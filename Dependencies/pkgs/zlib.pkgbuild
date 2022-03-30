@@ -36,14 +36,9 @@ build() {
         ;;
         win32)
             ./configure --enable-shared --prefix="$outdir" --static &>"$logfile" || ret=$?
-	;;
-	*)
-
-        ./configure --enable-shared --prefix="$outdir" &>"$logfile" || ret=$?
-        # I know this is lazy but it lets you compile static without clearing
-        make $MAKEOPTS &>"$logfile" || ret=$?
-        make $MAKEOPTS install &>"$logfile" || ret=$?
-		./configure --enable-shared --prefix="$outdir" --static &>"$logfile" || ret=$?
+	    ;;
+	    *)
+            ./configure --prefix="$outdir" &>"$logfile" || ret=$?
         ;;
     esac
         
