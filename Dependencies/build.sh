@@ -751,16 +751,6 @@ getArch() {
     echo "${APPLE_ARCH[*]}"
 }
 
-
-is_static_build() {
-    if $SHARED_BUILD_ONSCRLIB; then
-        return 1
-    else
-        return 0
-    fi
-}
-
-
 # Find MacOSX SDK
 case $(getHost) in
     darwin-macOS)

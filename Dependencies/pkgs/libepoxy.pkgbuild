@@ -8,18 +8,13 @@ meson_extra_flags=(
 
 sources=(
     "https://github.com/anholt/libepoxy/archive/refs/tags/${pkgver}.tar.gz"
-    'libepoxy-static.patch'
 )
 hashes=(
     '0b808a06c9685a62fca34b680abb8bc7fb2fda074478e329b063c1f872b826f6'
-    'lololo'
 )
 
 prebuild() {
     pushd "$pkgname-${pkgver}" &>/dev/null
-    if is_static_build; then
-        apply_patch "${sources[1]}"
-    fi
 }
 
 build() {
