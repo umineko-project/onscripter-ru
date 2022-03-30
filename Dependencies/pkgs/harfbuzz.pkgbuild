@@ -1,5 +1,5 @@
 pkgname=harfbuzz
-pkgver=3.3.2
+pkgver=4.1.0
 pkgrel=1
 depends=('freetype')
 sources=(

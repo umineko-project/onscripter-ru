@@ -123,6 +123,7 @@ TOOLCHAIN_PREFIX=""
 COMPILER_PREFIX=""
 EMBED_PATH=""
 BUILD_PATH=""
+LINK_TYPE=static
 
 VERSION=$(awk '/define VER_NUMBER/ {print $3}' Resources/Support/Version.hpp | sed s/-ru$//)
 
@@ -153,7 +154,8 @@ do
       --std=* | -std=*)
         CXXSTD=-std=$arg ;;
       --shared | -shared)
-	SHARED_BUILD_ONSCRLIB=true ;;
+	export LINK_TYPE="shared"
+	;;
       --pedantic | -pedantic)
         EXTRAOSCFLAGS="$EXTRAOSCFLAGS -pedantic" ;;
       --with-werror | -with-werror)
@@ -493,12 +495,22 @@ if [ "x$MAKE" != "xmake" ]; then
   fi
 fi
 
+echo -n "Link type... "
+echo "$LINK_TYPE"
+
 # ---------- Compiler flag support ----------
 
 echo -n "Deciding on flags...      "
 
 case "$SYS" in
-Posix)  EXE=     ; OBJ=.o ; LIB=.so ; W32= ;;
+Posix)
+  if [[ "$LINK_TYPE" == "shared" ]]; then
+    EXE=     ; OBJ=.o ; LIB=.so ; W32= 
+  else
+    EXE=     ; OBJ=.o ; LIB=.a ; W32=
+  fi
+  ;;
+
 MacOSX) EXE=     ; OBJ=.o ; LIB=.a ; W32= ;;
 MinGW)  EXE=.exe ; OBJ=.o ; LIB=.a ; W32=true ;;
 Droid)  EXE=     ; OBJ=.o ; LIB=.a ; W32= ;;

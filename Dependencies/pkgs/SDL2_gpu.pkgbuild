@@ -94,7 +94,7 @@ build() {
             fi
         ;;
         linux-like)
-            cmake -G "Unix Makefiles" -DSDL_gpu_USE_SYSTEM_EPOXY=ON -DCMAKE_C_FLAGS="$lcf" -DBUILD_SHARED=ON -DCMAKE_INSTALL_PREFIX=$outdir -DCMAKE_CXX_FLAGS="$lcxf" &>"$logfile" || ret=$?
+            cmake -G "Unix Makefiles" -DCMAKE_C_FLAGS="$lcf" -DCMAKE_INSTALL_PREFIX=$outdir -DCMAKE_CXX_FLAGS="$lcxf" &>"$logfile" || ret=$?
         ;;
     esac
     
@@ -122,19 +122,7 @@ build() {
     
     local ret=0
     
-    cp "SDL_gpu-/lib/libSDL2_gpu.so" "$outdir/lib/libSDL2_gpu.so"
-    cp "SDL_gpu-/lib/libSDL2_gpu.a" "$outdir/lib/libSDL2_gpu.a" || ret=1
-    
-    cp "include/SDL_gpu_version.h" "$outdir/include/SDL2/SDL_gpu_version.h" || ret=1
-    cp "include/SDL_gpu.h" "$outdir/include/SDL2/SDL_gpu.h" || ret=1
-    cp "src/externals/gl2stub/gl2stub.h" "$outdir/include/gl2stub.h" || ret=1
-    cp "src/externals/gl2stub/gl2stub_ext.h" "$outdir/include/gl2stub_ext.h" || ret=1
-    cp "src/externals/gl2stub/gl2stub_khrplatform.h" "$outdir/include/gl2stub_khrplatform.h" || ret=1
-    cp "src/externals/gl2stub/gl2stub_platform.h" "$outdir/include/gl2stub_platform.h" || ret=1
-    cp "src/externals/gl3stub/gl3stub.h" "$outdir/include/gl3stub.h" || ret=1
-    cp "include/SDL_gpu_OpenGL_2.h" "$outdir/include/SDL2/SDL_gpu_OpenGL_2.h" || ret=1
-    cp "include/SDL_gpu_GLES_2.h" "$outdir/include/SDL2/SDL_gpu_GLES_2.h" || ret=1
-    cp "include/SDL_gpu_GLES_3.h" "$outdir/include/SDL2/SDL_gpu_GLES_3.h" || ret=1
+    make install || ret=1
     
     if (( $ret )); then
         error "Installation %s failed" "$pkgname"

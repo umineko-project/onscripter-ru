@@ -1,13 +1,16 @@
 pkgname=libepoxy
 pkgver=1.5.10
 pkgrel=1
-if (( $SHARED_BUILD_ONSCRLIB )); then
-	meson_extra_flags=(
-    		'--default-library=static'
-	)
-    depends=(
-    		'libX11'
-	)
+if is_static_build; then
+    msg2 "Using static libepoxy"
+    meson_extra_flags=(
+    	'--default-library=static'
+    )
+    depends=('libX11')
+else
+    meson_extra_flags=(
+    	'--default-library=shared'
+    )
 fi
 # TODO: Upgrade libepoxy in some future, but this will require patches:
 # 1.5.x branch till 1.5.3 is pretty much broken:
@@ -27,7 +30,7 @@ hashes=(
 
 prebuild() {
     pushd "$pkgname-${pkgver}" &>/dev/null
-    if [[ $SHARED_BUILD_ONSCRLIB -eq 0 ]] ; then
+    if is_static_build; then
         apply_patch "${sources[1]}"
     fi
 }
