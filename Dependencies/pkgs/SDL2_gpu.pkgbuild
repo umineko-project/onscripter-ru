@@ -111,6 +111,8 @@ build() {
     local logfile="$logdir/$pkgname.make.log"
     
     make $MAKEOPTS SDL_gpu &>"$logfile" || ret=$?
+    make $MAKEOPTS SDL_gpu_shared &>"$logfile" || ret=$?
+
     if (( $ret )); then
         tail -n 20 "$logfile"
         error "Compiling %s failed" "$pkgname"
@@ -125,7 +127,7 @@ build() {
         cp "SDL_gpu-MINGW-${pkgver}/lib/libSDL2_gpu_s.a" "$outdir/lib/libSDL2_gpu.a" || ret=1
     else
         cp "SDL_gpu/lib/libSDL2_gpu.a" "$outdir/lib/libSDL2_gpu.a" || ret=1
-        cp "SDL_gpu/lib/libSDL2_gpu.so" "$outdir/lib/libSDL2_gpu.so"
+        cp "SDL_gpu/lib/libSDL2_gpu.so" "$outdir/lib/libSDL2_gpu.so" || ret=1
     fi
     cp "include/SDL_gpu.h" "$outdir/include/SDL2/SDL_gpu.h" || ret=1
     cp "include/SDL_gpu_version.h" "$outdir/include/SDL2/SDL_gpu_version.h" || ret=1
