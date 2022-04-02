@@ -94,10 +94,9 @@ build() {
             fi
         ;;
         linux-like)
-            cmake -G "Unix Makefiles" -DBUILD_SHARED=TRUE -DUSE_SYSTEM_EPOXY=ON -DCMAKE_C_FLAGS="$lcf" -DCMAKE_CXX_FLAGS="$lcxf"-DCMAKE_INSTALL_PREFIX=$outdir &>"$logfile" || ret=$?
+            cmake -G "Unix Makefiles" -DOpenGL_GL_PREFERENCE=GLVND -DUSE_SYSTEM_EPOXY=ON -DCMAKE_C_FLAGS="$lcf" -DCMAKE_CXX_FLAGS="$lcxf"-DCMAKE_INSTALL_PREFIX=$outdir &>"$logfile" || ret=$?
         ;;
     esac
-    echo cmake -G "Unix Makefiles" -DBUILD_SHARED=TRUE -DUSE_SYSTEM_EPOXY=ON -DCMAKE_C_FLAGS="$lcf" -DCMAKE_CXX_FLAGS="$lcxf"-DCMAKE_INSTALL_PREFIX=$outdir
     if (( $ret )); then
         tail -n 20 "$logfile"
         error "Cmake %s failed" "$pkgname"
