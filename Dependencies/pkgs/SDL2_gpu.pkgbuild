@@ -13,7 +13,7 @@ hashes=(
 # It is discussed in https://github.com/grimfang4/sdl-gpu/pull/155 (again),
 # and I simply do not want to investigate it right now for no benefit.
 giturl=https://github.com/m3t4f1v3/sdl-gpu
-githash=c2cfc2360c2e99684684f5211d5573ddebff3b03
+githash=02b35fa420d354daeabbb09869a956ea5feb5f6c
 
 if [ "$(getTarget)" != "darwin-iOS" ] && [ "$(getTarget)" != "droid" ]; then
     depends=(${depends[@]} 'libepoxy');
@@ -94,10 +94,10 @@ build() {
             fi
         ;;
         linux-like)
-            cmake -G "Unix Makefiles" -DCMAKE_C_FLAGS="$lcf" -DCMAKE_INSTALL_PREFIX=$outdir -DCMAKE_CXX_FLAGS="$lcxf" &>"$logfile" || ret=$?
+            cmake -G "Unix Makefiles" -DBUILD_SHARED=TRUE -DUSE_SYSTEM_EPOXY=ON -DCMAKE_C_FLAGS="$lcf" -DCMAKE_CXX_FLAGS="$lcxf"-DCMAKE_INSTALL_PREFIX=$outdir &>"$logfile" || ret=$?
         ;;
     esac
-    
+    echo cmake -G "Unix Makefiles" -DBUILD_SHARED=TRUE -DUSE_SYSTEM_EPOXY=ON -DCMAKE_C_FLAGS="$lcf" -DCMAKE_CXX_FLAGS="$lcxf"-DCMAKE_INSTALL_PREFIX=$outdir
     if (( $ret )); then
         tail -n 20 "$logfile"
         error "Cmake %s failed" "$pkgname"
@@ -121,8 +121,23 @@ build() {
     msg "Installing"
     
     local ret=0
-    local logfile="$logdir/$pkgname.makeinstall.log"
-    make install &>"$logfile" || ret=$?
+    if [ -f "SDL_gpu-MINGW-${pkgver}/lib/libSDL2_gpu_s.a" ]; then
+        cp "SDL_gpu-MINGW-${pkgver}/lib/libSDL2_gpu_s.a" "$outdir/lib/libSDL2_gpu.a" || ret=1
+    else
+        cp "SDL_gpu/lib/libSDL2_gpu.a" "$outdir/lib/libSDL2_gpu.a" || ret=1
+        cp "SDL_gpu/lib/libSDL2_gpu.so" "$outdir/lib/libSDL2_gpu.so"
+    fi
+    cp "include/SDL_gpu.h" "$outdir/include/SDL2/SDL_gpu.h" || ret=1
+    cp "include/SDL_gpu_version.h" "$outdir/include/SDL2/SDL_gpu_version.h" || ret=1
+
+    cp "src/externals/gl2stub/gl2stub.h" "$outdir/include/gl2stub.h" || ret=1
+    cp "src/externals/gl2stub/gl2stub_ext.h" "$outdir/include/gl2stub_ext.h" || ret=1
+    cp "src/externals/gl2stub/gl2stub_khrplatform.h" "$outdir/include/gl2stub_khrplatform.h" || ret=1
+    cp "src/externals/gl2stub/gl2stub_platform.h" "$outdir/include/gl2stub_platform.h" || ret=1
+    cp "src/externals/gl3stub/gl3stub.h" "$outdir/include/gl3stub.h" || ret=1
+    cp "include/SDL_gpu_OpenGL_2.h" "$outdir/include/SDL2/SDL_gpu_OpenGL_2.h" || ret=1
+    cp "include/SDL_gpu_GLES_2.h" "$outdir/include/SDL2/SDL_gpu_GLES_2.h" || ret=1
+    cp "include/SDL_gpu_GLES_3.h" "$outdir/include/SDL2/SDL_gpu_GLES_3.h" || ret=1
     
     if (( $ret )); then
         error "Installation %s failed" "$pkgname"

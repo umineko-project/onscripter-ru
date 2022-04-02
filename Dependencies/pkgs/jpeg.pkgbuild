@@ -1,7 +1,7 @@
 pkgname=jpeg
 pkgver=9e
 pkgrel=1
-sources=("http://www.ijg.org/files/jpegsrc.v${pkgver}.tar.gz")
+sources=("http://www.ijg.org/files/jpegsrc.v${pkgver}.tar.gz") #http://www.ijg.org/files/
 hashes=('650250979303a649e21f87b5ccd02672af1ea6954b911342ea491f351ceb7122')
 
 configopts=(

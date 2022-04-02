@@ -1,8 +1,8 @@
 pkgname=libcxxabi
-pkgver=8.0.0
+pkgver=14.0.0
 pkgrel=1
 sources=(
-    "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/${pkgname}-${pkgver}.src.tar.xz"
+    "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/${pkgname}-${pkgver}.src.tar.xz" #https://github.com/llvm/llvm-project/releases/latest
 )
 hashes=(
     'c2d6de9629f7c072ac20ada776374e9e3168142f20a46cdb9d6df973922b07cd'

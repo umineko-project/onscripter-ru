@@ -7,7 +7,7 @@ meson_extra_flags=(
 )
 
 sources=(
-    "https://github.com/anholt/libepoxy/archive/refs/tags/${pkgver}.tar.gz"
+    "https://github.com/anholt/libepoxy/archive/refs/tags/${pkgver}.tar.gz" #https://github.com/anholt/libepoxy/releases/latest
 )
 hashes=(
     '0b808a06c9685a62fca34b680abb8bc7fb2fda074478e329b063c1f872b826f6'

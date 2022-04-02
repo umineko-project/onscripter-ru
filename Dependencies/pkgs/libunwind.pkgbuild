@@ -2,7 +2,7 @@ pkgname=libunwind
 pkgver=1.2
 pkgrel=1
 giturl='https://android.googlesource.com/platform/external/libunwind'
-githash='0c1a9cab2ffc52d4969d6148539f8b6f67387d00'
+githash='ec57b05e0acc7838d2a0f75551a18d28f670692e' #look above for latest git
 sources=(
     'libunwind-droid-macro-ctypes.patch'
     'libunwind-droid-os.patch'

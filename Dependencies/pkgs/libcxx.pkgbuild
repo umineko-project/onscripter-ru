@@ -1,9 +1,9 @@
 pkgname=libcxx
-pkgver=13.0.1
+pkgver=14.0.0
 pkgrel=1
 depends=('libcxxabi')
 sources=(
-    "https://github.com/llvm/llvm-project/releases/download/llvmorg-${pkgver}/libcxx-${pkgver}.src.tar.xz"
+    "https://github.com/llvm/llvm-project/releases/download/llvmorg-${pkgver}/libcxx-${pkgver}.src.tar.xz" #https://github.com/llvm/llvm-project/releases/latest
     'libcxx-snow-leo.patch'
 )
 hashes=(

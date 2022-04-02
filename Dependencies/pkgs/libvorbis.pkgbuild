@@ -3,7 +3,7 @@ pkgver=1.3.7
 pkgrel=1
 depends=('libogg')
 sources=(
-    "https://downloads.xiph.org/releases/vorbis/libvorbis-${pkgver}.tar.gz"
+    "https://downloads.xiph.org/releases/vorbis/libvorbis-${pkgver}.tar.gz" #https://ftp.osuosl.org/pub/xiph/releases/vorbis/?C=M;O=D
     'libvorbis-droid-flags.patch'
 )
 hashes=(

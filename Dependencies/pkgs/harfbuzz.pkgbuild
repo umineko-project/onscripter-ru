@@ -1,9 +1,9 @@
 pkgname=harfbuzz
-pkgver=4.1.0
+pkgver=4.2.0
 pkgrel=1
 depends=('freetype')
 sources=(
-    "https://github.com/harfbuzz/harfbuzz/releases/download/${pkgver}/harfbuzz-${pkgver}.tar.xz"
+    "https://github.com/harfbuzz/harfbuzz/releases/download/${pkgver}/harfbuzz-${pkgver}.tar.xz" #https://github.com/harfbuzz/harfbuzz/releases/latest
     'harfbuzz-multithread-mingw.patch'
 )
 hashes=(
