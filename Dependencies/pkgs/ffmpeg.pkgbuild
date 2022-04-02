@@ -229,6 +229,8 @@ if [ "$(getTarget)" == "win32" ] && [ "$(getCC)" != "gcc" ]; then
 fi
 
 configopts_linux=(
+    '--disable-vdpau'
+    '--disable-vaapi'
     '--disable-hwaccels'
     '--disable-decoders'
 )
