@@ -108,8 +108,8 @@ VECTORIZE=true
 VECTORIZE_LEVEL=0
 # Removal of __STRICT_ANSI__ is necessary for package compatibility (ffmpeg?).
 # Addition of _ISOC99_SOURCE and _ISOC11_SOURCE fixes printf on MinGW.
-CSTD="-std=c11 -D_ISOC99_SOURCE -D_ISOC11_SOURCE -U__STRICT_ANSI__"
-CXXSTD="-D_ISOC99_SOURCE -D_ISOC11_SOURCE -U__STRICT_ANSI__ -fpermissive"
+CSTD="-std=c11 -D_ISOC99_SOURCE -D_ISOC11_SOURCE -D__STRICT_ANSI__"
+CXXSTD="-std=c++14 -D_ISOC99_SOURCE -D_ISOC11_SOURCE -D__STRICT_ANSI__"
 
 DEFAULT_CC="gcc"
 DEFAULT_OPT="-Os"
@@ -123,7 +123,6 @@ TOOLCHAIN_PREFIX=""
 COMPILER_PREFIX=""
 EMBED_PATH=""
 BUILD_PATH=""
-LINK_TYPE=static
 
 VERSION=$(awk '/define VER_NUMBER/ {print $3}' Resources/Support/Version.hpp | sed s/-ru$//)
 
@@ -153,9 +152,6 @@ do
         prev=MAKE ;;
       --std=* | -std=*)
         CXXSTD=-std=$arg ;;
-      --shared | -shared)
-	export LINK_TYPE="shared"
-	;;
       --pedantic | -pedantic)
         EXTRAOSCFLAGS="$EXTRAOSCFLAGS -pedantic" ;;
       --with-werror | -with-werror)
@@ -202,7 +198,6 @@ do
 	  --help                   display this message
 	  --prefix=DIR             install in prefix DIR (default is /usr/local)
 	  --make=NAME              use GNU make executable with the given name
-	  --shared		   attempts to dynamically link and build libraries
 	  --std=STD                c++ compiles with -std=STD (default is c++14)
 	  --pedantic               compile with -pedantic
 	  --unsupported-compiler   don't check for known compilers
@@ -495,22 +490,12 @@ if [ "x$MAKE" != "xmake" ]; then
   fi
 fi
 
-echo -n "Link type... "
-echo "$LINK_TYPE"
-
 # ---------- Compiler flag support ----------
 
 echo -n "Deciding on flags...      "
 
 case "$SYS" in
-Posix)
-  if [[ "$LINK_TYPE" == "shared" ]]; then
-    EXE=     ; OBJ=.o ; LIB=.so ; W32= 
-  else
-    EXE=     ; OBJ=.o ; LIB=.a ; W32=
-  fi
-  ;;
-
+Posix)  EXE=     ; OBJ=.o ; LIB=.a ; W32= ;;
 MacOSX) EXE=     ; OBJ=.o ; LIB=.a ; W32= ;;
 MinGW)  EXE=.exe ; OBJ=.o ; LIB=.a ; W32=true ;;
 Droid)  EXE=     ; OBJ=.o ; LIB=.a ; W32= ;;
@@ -541,7 +526,7 @@ case "$CXX_TMP:$SYS" in
   *clang*:"MinGW")
     LINK_START_GROUP="-Wl,--start-group"
     LINK_END_GROUP="-Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic -Wl,--end-group"
-    EXTRALDFLAGS="$EXTRALDFLAGS -shared-libgcc"
+    EXTRALDFLAGS="$EXTRALDFLAGS -static-libgcc"
     EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DWIN32 -DPTW32_STATIC_LIB"
     EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -lwinmm -lshlwapi -lws2_32 -lglu32 -lopengl32 -Wl,--wrap=SDL_LoadObject -Wl,--large-address-aware"
   ;;
@@ -550,19 +535,19 @@ case "$CXX_TMP:$SYS" in
     LINK_END_GROUP="-Wl,--end-group"
     EXTRACFLAGS="$EXTRACFLAGS -fPIC"
     EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DDROID"
-    EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -shared"
+    EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -shared -static-libstdc++"
   ;;
   *g++*:"MinGW")
     LINK_START_GROUP="-Wl,--start-group"
     LINK_END_GROUP="-Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic -Wl,--end-group"
-    EXTRALDFLAGS="$EXTRALDFLAGS -shared-libgcc -mthreads"
+    EXTRALDFLAGS="$EXTRALDFLAGS -static-libgcc -static-libstdc++ -mthreads"
     EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DWIN32 -DPTW32_STATIC_LIB -mthreads"
     EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -lwinmm -lshlwapi -lws2_32 -lglu32 -lopengl32 -Wl,--wrap=SDL_LoadObject -Wl,--large-address-aware"
   ;;
   g++*:"Posix" | *clang*:"Posix")
     LINK_START_GROUP="-Wl,--start-group"
     LINK_END_GROUP="-Wl,--end-group"
-    EXTRALDFLAGS="$EXTRALDFLAGS -shared-libgcc"
+    EXTRALDFLAGS="$EXTRALDFLAGS -static-libgcc -static-libstdc++"
     #FIXME: Passing -DLINUX is roughly a hack, we should properly handle BSD.
     EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DLINUX -D__STDC_CONSTANT_MACROS"
     #FIXME: These flags originate from ONScripter project and need to be updated.
@@ -976,7 +961,7 @@ INCS = -I\$(PROJECT) -I\$(EXTLIB)/include \\
 	\$(shell $FREETYPE_CONFIG --cflags)
 
 LIBS = \$(EXTRAOSLDFLAGS) -L\$(EXTLIB)/lib $LINK_START_GROUP \\
-	\$(shell \$(SDL_CONFIG) --libs) \$(filter-out \$(shell \$(SDL_CONFIG) --libs),\$(shell $SMPEG_CONFIG --libs)) \\
+	\$(shell \$(SDL_CONFIG) --static-libs) \$(filter-out \$(shell \$(SDL_CONFIG) --libs),\$(shell $SMPEG_CONFIG --libs)) \\
 	\$(shell $FREETYPE_CONFIG --libs) \\
 	$LINKSDL2_image $LINKjpeg $LINKpng $LINKz \\
 	$LINKSDL2_mixer $LINKogg $LINKvorbis $LINKvorbisfile \\

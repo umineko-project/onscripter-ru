@@ -654,7 +654,7 @@ AVCodec *MediaProcController::Decoder::findCodec(AVCodecContext *context) {
 
 	// Fallback to implicit hardware or software decoder
 	if (!codec) {
-		codec = avcodec_find_decoder(context->codec_id);
+		auto codec = avcodec_find_decoder(context->codec_id);
 
 		int err = avcodec_open2(context, codec, nullptr);
 		if (err < 0) {

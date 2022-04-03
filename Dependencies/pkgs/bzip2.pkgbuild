@@ -9,10 +9,6 @@ sources=(
     'bzip2-notest.patch'
     'bzip2-ccreal.patch'
     'bzip2-paths.patch'
-    'bzip2-replace-deprecated-compile-options.patch'
-    'bzip2-build-dll.patch'
-    'bzip2-add-version-resources.patch'
-    'bzip2-remove-unsupported-description-option.patch'
 )
 
 hashes=(
@@ -38,13 +34,9 @@ build() {
     
     if [ "$(getCC)" == "clang" ]; then
         apply_patch "${sources[3]}"
+    elif [ "$(getCC)" != "gcc" ]; then
+        apply_patch "${sources[5]}"
     fi
-    if [ "$(getTarget)" == "win32" ]; then
-	    apply_patch "${sources[7]}"
-	    apply_patch "${sources[8]}"
-	    apply_patch "${sources[9]}"
-	    apply_patch "${sources[10]}"
-    fi 
     apply_patch "${sources[4]}"
     #fixed by 53f3d0d71c3c445bc4ac413d42c4386381e47b49
     #apply_patch "${sources[6]}"
@@ -55,16 +47,21 @@ build() {
     
 
     compile
-
+    local logfile="$logdir/$pkgname.shared.log"
+    make $MAKEOPTS -f Makefile-libbz2_so PREFIX="$outdir" &>"$logfile" || ret=$?
 
     msg "Installing %s" "$pkgname"
     local ret=0
     local logfile="$logdir/$pkgname.install.log"
-    mkdir $outdir/lib/
-	make $MAKEOPTS -f Makefile-libbz2_so PREFIX="$outdir" &>"$logfile" || ret=$?
-	cp bzip2-shared $outdir/bin/ || ret=$?
-    cp libbz2.so.${pkgver} $outdir/lib/libbz2.so || ret=$?
-	make $MAKEOPTS install PREFIX="$outdir" &>"$logfile" || ret=$?
+
+    if [ "$(getTarget)" == "win32" ]; then
+    	msg2 "skipping shared for windows"
+    else
+        cp bzip2-shared $outdir/bin/
+        mkdir $outdir/lib/
+	cp libbz2.so.${pkgver} $outdir/lib/libbz2.so
+    fi
+    make $MAKEOPTS install PREFIX="$outdir" &>"$logfile" || ret=$?
     
     if (( $ret )); then
         tail -n 20 "$logfile"

@@ -38,7 +38,7 @@ build() {
             ./configure --enable-shared --prefix="$outdir" --static &>"$logfile" || ret=$?
 	;;
 	*)
-            ./configure --enable-shared --prefix="$outdir" &>"$logfile" || ret=$?
+            ./configure --prefix="$outdir" --static &>"$logfile" || ret=$?
         ;;
     esac
         

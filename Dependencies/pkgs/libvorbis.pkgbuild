@@ -15,8 +15,6 @@ cflags_win32="-mstackrealign"
 
 configopts=(
     '--disable-dependency-tracking'
-    '--enable-static'
-    '--enable-shared'
     "--libdir=$outdir/lib"
 )
 

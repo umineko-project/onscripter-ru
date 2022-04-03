@@ -26,7 +26,6 @@ hashes=(
 CFLAGS="$CFLAGS ${cflags[@]} -fPIC"
 
 configopts=(
-    '--enable-shared'
     '--disable-debug'
     '--disable-dependency-tracking'
     '--enable-mmx'

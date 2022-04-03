@@ -12,8 +12,6 @@ hashes=(
 
 configopts=(
     '--disable-dependency-tracking'
-    '--enable-static'
-    '--enable-shared'
 )
 
 configopts_linux=(

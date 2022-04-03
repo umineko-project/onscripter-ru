@@ -98,8 +98,6 @@ cflags_linux="-D__STDC_CONSTANT_MACROS"
 cflags_win32="-D__STDC_CONSTANT_MACROS -m32 -march=i686"
 
 configopts=(
-    '--enable-static'
-    '--enable-shared'
     '--enable-pic'
     #optimise size
     '--enable-small'
@@ -225,16 +223,21 @@ configopts_win32=(
 )
 
 if [ "$(getTarget)" == "win32" ] && [ "$(getCC)" != "gcc" ]; then
-    configopts_win32+=('--cc=gcc')
+    configopts_win32+=('--cross-prefix=i686-w64-mingw32-')
 fi
 
-configopts_linux=(
-    '--disable-vdpau'
-    '--disable-vaapi'
-    '--disable-hwaccels'
-    '--disable-decoders'
-)
-
+if [[ "$LINK_TYPE" == "shared" ]]; then
+	configopts_linux=(
+    		'--disable-decoders'
+	)
+else
+	configopts_linux=(
+                '--disable-vdpau'
+                '--disable-vaapi'
+                '--disable-hwaccels'
+                '--disable-decoders'
+        )
+fi
 if $CROSS_BUILD; then
     configopts+=(
         '--enable-cross-compile'
@@ -242,6 +245,7 @@ if $CROSS_BUILD; then
     )
     configopts_win32+=(
         '--target-os=mingw32'
+	'--cross-prefix=i686-w64-mingw32-'
     )
     configopts_ios+=(
         '--target-os=darwin'
