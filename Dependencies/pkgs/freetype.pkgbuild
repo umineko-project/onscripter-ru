@@ -27,7 +27,7 @@ elif [ $(( $PKGBUILD_RECURSION_DEPTH )) -ge 1 ]; then
 else
     error_out "Please, install harfbuzz before building freetype manually"
 fi
-
+CFLAGS="$CFLAGS ${cflags[@]} -fPIC"
 cflags_win32="-U__STRICT_ANSI__"
 if [ -e "$outdir/.pkgs/harfbuzz" ]; then
     ldflags="-L$outdir/lib -lpng -lharfbuzz"

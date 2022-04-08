@@ -226,18 +226,14 @@ if [ "$(getTarget)" == "win32" ] && [ "$(getCC)" != "gcc" ]; then
     configopts_win32+=('--cross-prefix=i686-w64-mingw32-')
 fi
 
-if [[ "$LINK_TYPE" == "shared" ]]; then
-	configopts_linux=(
-    		'--disable-decoders'
-	)
-else
-	configopts_linux=(
-                '--disable-vdpau'
-                '--disable-vaapi'
-                '--disable-hwaccels'
-                '--disable-decoders'
-        )
-fi
+
+configopts_linux=(
+    '--disable-vdpau'
+    '--disable-vaapi'
+    '--disable-hwaccels'
+    '--disable-decoders'
+)
+
 if $CROSS_BUILD; then
     configopts+=(
         '--enable-cross-compile'
