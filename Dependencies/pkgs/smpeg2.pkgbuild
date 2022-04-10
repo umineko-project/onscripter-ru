@@ -28,6 +28,7 @@ CFLAGS="$CFLAGS ${cflags[@]} -fPIC"
 configopts=(
     '--disable-debug'
     '--disable-dependency-tracking'
+    '--disable-sdltest'
     '--enable-mmx'
     "--libdir=$outdir/lib"
     "--with-sdl-prefix=$outdir"
@@ -46,6 +47,7 @@ prebuild() {
     apply_patch "${sources[3]}"
     apply_patch "${sources[4]}"
     apply_patch "${sources[5]}"
+    apply_patch "${sources[7]}"
 
     if [ "$(getTarget)" == "linux-like" ] && [ "$(getTargetCPU)" == "aarch64" ]; then
         apply_patch "${sources[6]}"

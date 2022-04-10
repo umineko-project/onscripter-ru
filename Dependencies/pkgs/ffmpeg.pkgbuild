@@ -92,6 +92,8 @@ configopts_droid=(
     '--disable-decoders'
     '--enable-decoder=h264_mediacodec'
     '--enable-decoder=mpeg4_mediacodec'
+    '--enable-cross-compile'
+    '--unsupported-compiler'
 )
 
 cflags_linux="-D__STDC_CONSTANT_MACROS"
@@ -235,6 +237,7 @@ configopts_linux=(
 )
 
 if $CROSS_BUILD; then
+    ldflags='-lbcrypt'
     configopts+=(
         '--enable-cross-compile'
         "--arch=$(getTargetCPU)"

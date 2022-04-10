@@ -122,8 +122,8 @@ build() {
     msg "Installing"
     
     local ret=0
-    if [ -f "SDL_gpu-MINGW-${pkgver}/lib/libSDL2_gpu_s.a" ]; then
-        cp "SDL_gpu-MINGW-${pkgver}/lib/libSDL2_gpu_s.a" "$outdir/lib/libSDL2_gpu.a" || ret=1
+    if [ -f "SDL_gpu-MINGW/lib/libSDL2_gpu_s.a" ]; then
+        cp "SDL_gpu-MINGW/lib/libSDL2_gpu_s.a" "$outdir/lib/libSDL2_gpu.a" || ret=1
     else
         cp "SDL_gpu/lib/libSDL2_gpu.a" "$outdir/lib/libSDL2_gpu.a" || ret=1
         cp "SDL_gpu/lib/libSDL2_gpu.so" "$outdir/lib/libSDL2_gpu.so" || ret=1

@@ -10,9 +10,9 @@ hashes=(
     '654fb8f00ecaf616fa03440bc6783ae4a0f7d336368ff16f71c9b09a8087459d'
 )
 
-configopts=(
-    '--disable-dependency-tracking'
-)
+#configopts=(
+#    '--disable-dependency-tracking'
+#)
 
 configopts_linux=(
     '--disable-udev'

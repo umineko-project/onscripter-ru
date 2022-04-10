@@ -480,17 +480,17 @@ meson_configure() {
     fi
 
     local ret=0
-    LIBRARY_PATH=$outdir/lib:$LIBRARY_PATH meson --prefix="$outdir" --libdir=lib $meson_extra_flags $meson_command >"$logfile" || ret=$?
+    LIBRARY_PATH=$outdir/lib:$LIBRARY_PATH $meson_executable --prefix="$outdir" --libdir=lib ${mesonopts[@]} $meson_command >"$logfile" || ret=$?
     cd ..
     if (( $ret )); then
         tail -n 20 "$logfile"
-        error "Meson configure and or build failed"
+        error "Meson configure failed"
         exit 1
     fi
 }
 
 ninja_install() {
-    msg2 "Using ninja to compile"
+    msg2 "Using ninja to compile and install"
     local logfile="$logdir/$pkgname.ninja.log"
     local ret=0
 
@@ -501,19 +501,6 @@ ninja_install() {
     if (( $ret )); then
         tail -n 20 "$logfile"
         error "Ninja failed"
-        exit 1
-    fi
-}
-
-meson_install() {
-    local logfile="$logdir/$pkgname.meson.install.log"
-    local ret=0
-
-    meson install -C build
-
-    if (( $ret )); then
-        tail -n 20 "$logfile"
-        error "Meson install failed"
         exit 1
     fi
 }
