@@ -7,7 +7,7 @@ mesonopts=(
 )
 
 if [ "$(getTarget)" == "win32" ]; then
-    mesonopts+=('-Dx11=false' '-Dglx=no' '-Degl=no')
+    mesonopts+=('-Dx11=false' '-Dglx=no')
     meson_executable='i686-w64-mingw32-meson'
 else
     meson_executable='meson'

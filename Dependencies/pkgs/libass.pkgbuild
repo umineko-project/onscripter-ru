@@ -1,5 +1,5 @@
 pkgname=libass
-pkgver=0.14.0
+pkgver=0.15.2
 pkgrel=1
 depends=('harfbuzz' 'fribidi')
 
@@ -24,8 +24,8 @@ configopts=(
     "--libdir=$outdir/lib"
     "FREETYPE_CFLAGS=-I$outdir/include/freetype2"
     "FREETYPE_LIBS=-L$outdir/lib"
-    #"FRIBIDI_CFLAGS=-I$outdir/include"
-    #"FRIBIDI_LIBS=-L$outdir/lib"
+    "FRIBIDI_CFLAGS=-I$outdir/include"
+    "FRIBIDI_LIBS=-L$outdir/lib"
     "ENCA_CFLAGS=-I$outdir/include"
     "ENCA_LIBS=-L$outdir/lib"
     "HARFBUZZ_CFLAGS=-I$outdir/include/harfbuzz"
@@ -56,7 +56,6 @@ else
         "CXX=$(getCXX)"
     )
 fi
-ldflags="-lfreetype"
 cflags="-I$outdir/include/fribidi"
 
 prebuild() {
