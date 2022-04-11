@@ -1,5 +1,5 @@
---- a/libass/ass_fontselect.c	2017-10-27 01:34:18.000000000 +0800
-+++ b/libass/ass_fontselect.c	2020-05-04 19:50:58.926098100 +0800
+--- a/libass/ass_fontselect.c	2021-09-12 07:27:04.000000000 +1000
++++ b/libass/ass_fontselect.c	2022-04-11 11:54:13.420021100 +1000
 @@ -47,6 +47,9 @@
  #include "ass_font.h"
  #include "ass_string.h"
@@ -10,7 +10,7 @@
  #define ABS(x) ((x) < 0 ? -(x) : (x))
  #define MAX_FULLNAME 100
  
-@@ -163,26 +166,78 @@ static ASS_FontProviderFuncs ft_funcs =
+@@ -168,39 +171,81 @@ static ASS_FontProviderFuncs ft_funcs =
  
  static void load_fonts_from_dir(ASS_Library *library, const char *dir)
  {
@@ -22,22 +22,35 @@
 +        ass_msg(library, MSGL_WARN,
 +                "Error obtaining unicode path for font dir: '%s' (code: %d)", dir, GetLastError());
          return;
+     size_t dirlen = strlen(dir);
+     size_t namemax = 0;
+     char *namebuf = NULL;
 -    while (1) {
 -        struct dirent *entry = readdir(d);
 -        if (!entry)
 -            break;
 -        if (entry->d_name[0] == '.')
 -            continue;
--        char fullname[4096];
--        snprintf(fullname, sizeof(fullname), "%s/%s", dir, entry->d_name);
+-        size_t namelen = dirlen + strlen(entry->d_name) + 2u;
+-        if (namelen < 2 || namelen - 2 < dirlen)
+-            continue;
+-        if (namelen > namemax) {
+-            size_t newlen = FFMAX(2048, namelen + FFMIN(256, SIZE_MAX - namelen));
+-            if (ASS_REALLOC_ARRAY(namebuf, newlen))
+-                namemax = newlen;
+-            else
+-                continue;
+-        }
+-        snprintf(namebuf, namemax, "%s/%s", dir, entry->d_name);
 -        size_t bufsize = 0;
--        ass_msg(library, MSGL_INFO, "Loading font file '%s'", fullname);
--        void *data = read_file(library, fullname, &bufsize);
+-        ass_msg(library, MSGL_INFO, "Loading font file '%s'", namebuf);
+-        void *data = read_file(library, namebuf, &bufsize);
 -        if (data) {
 -            ass_add_font(library, entry->d_name, data, bufsize);
 -            free(data);
 -        }
-     }
+-    }
+     free(namebuf);
 -    closedir(d);
 +    wchar_t wpath_wc[PATH_MAX];
 +    wcscpy(wpath_wc, wpath);

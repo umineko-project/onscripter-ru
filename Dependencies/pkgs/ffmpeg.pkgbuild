@@ -222,11 +222,6 @@ configopts_win32=(
     '--disable-decoders'
 )
 
-if [ "$(getTarget)" == "win32" ] && [ "$(getCC)" != "gcc" ]; then
-    configopts_win32+=('--cross-prefix=i686-w64-mingw32-')
-fi
-
-
 configopts_linux=(
     '--disable-vdpau'
     '--disable-vaapi'
@@ -235,14 +230,13 @@ configopts_linux=(
 )
 
 if $CROSS_BUILD; then
-    ldflags='-lbcrypt'
     configopts+=(
         '--enable-cross-compile'
         "--arch=$(getTargetCPU)"
     )
     configopts_win32+=(
         '--target-os=mingw32'
-	'--cross-prefix=i686-w64-mingw32-'
+	    '--cross-prefix=i686-w64-mingw32-'
     )
     configopts_ios+=(
         '--target-os=darwin'

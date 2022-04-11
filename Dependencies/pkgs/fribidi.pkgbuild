@@ -12,6 +12,12 @@ configopts=(
     "--libdir=$outdir/lib"
 )
 
+prebuild() {
+    pushd "$pkgname-${pkgver}" &>/dev/null
+    
+    autogenerate
+}
+
 # Special version that uses bsdtar (which works with 32-bit uid_t)
 extract_sources() {
     msg "Extracting sources"

@@ -54,7 +54,7 @@ configopts=(
 prebuild() {
     pushd "$pkgname-${pkgver}" &>/dev/null
 
-    autogen
+    autogenerate
 
     apply_patch "${sources[1]}"
 

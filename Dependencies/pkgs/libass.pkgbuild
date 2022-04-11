@@ -1,5 +1,5 @@
 pkgname=libass
-pkgver=0.15.2
+pkgver=0.14.0
 pkgrel=1
 depends=('harfbuzz' 'fribidi')
 
@@ -24,8 +24,8 @@ configopts=(
     "--libdir=$outdir/lib"
     "FREETYPE_CFLAGS=-I$outdir/include/freetype2"
     "FREETYPE_LIBS=-L$outdir/lib"
-    "FRIBIDI_CFLAGS=-I$outdir/include"
-    "FRIBIDI_LIBS=-L$outdir/lib"
+    #"FRIBIDI_CFLAGS=-I$outdir/include"
+    #"FRIBIDI_LIBS=-L$outdir/lib"
     "ENCA_CFLAGS=-I$outdir/include"
     "ENCA_LIBS=-L$outdir/lib"
     "HARFBUZZ_CFLAGS=-I$outdir/include/harfbuzz"
@@ -56,20 +56,20 @@ else
         "CXX=$(getCXX)"
     )
 fi
-ldflags="-lfontconfig -lfreetype -lharfbuzz -lfribidi"
+ldflags="-lfreetype"
 cflags="-I$outdir/include/fribidi"
 
 prebuild() {
     pushd "$pkgname-${pkgver}" &>/dev/null
     
     apply_patch "${sources[1]}"
-
+    # why is this even needed??
     # libass provides no API to configure file i/o, and thus does not support unicode filenames.
     # This patch enforces utf-8 path support for ass_set_fonts on Windows.
-#    if [ "$(getTarget)" == "win32" ]; then
-#        apply_patch "${sources[2]}"
-#        apply_patch "${sources[3]}" not really a problem anymore
-#    fi
+    #if [ "$(getTarget)" == "win32" ]; then
+    #    apply_patch "${sources[2]}"
+    #    apply_patch "${sources[3]}"
+    #fi
 }
 
 postbuild() {

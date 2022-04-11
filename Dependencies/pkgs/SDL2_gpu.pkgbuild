@@ -1,5 +1,5 @@
 pkgname=SDL2_gpu
-pkgver=0.12.0
+pkgver=0.11.0
 pkgrel=2
 depends=('SDL2')
 sources=(
@@ -12,8 +12,8 @@ hashes=(
 # effect, supposedly due to once again wrong matrix multiplication logic.
 # It is discussed in https://github.com/grimfang4/sdl-gpu/pull/155 (again),
 # and I simply do not want to investigate it right now for no benefit.
-giturl=https://github.com/m3t4f1v3/sdl-gpu
-githash=02b35fa420d354daeabbb09869a956ea5feb5f6c
+giturl=https://github.com/umineko-project/sdl-gpu
+githash=255a1b5a1d3d54b2f030a88b19dec1ef85b48bb1
 
 if [ "$(getTarget)" != "darwin-iOS" ] && [ "$(getTarget)" != "droid" ]; then
     depends=(${depends[@]} 'libepoxy');
@@ -94,9 +94,10 @@ build() {
             fi
         ;;
         linux-like)
-            cmake -G "Unix Makefiles" -DOpenGL_GL_PREFERENCE=GLVND -DUSE_SYSTEM_EPOXY=ON -DCMAKE_C_FLAGS="$lcf" -DCMAKE_CXX_FLAGS="$lcxf"-DCMAKE_INSTALL_PREFIX=$outdir &>"$logfile" || ret=$?
+            cmake -G "Unix Makefiles" -DSDL_gpu_USE_SYSTEM_EPOXY=ON -DCMAKE_C_FLAGS="$lcf" -DCMAKE_CXX_FLAGS="$lcxf" &>"$logfile" || ret=$?
         ;;
     esac
+    
     if (( $ret )); then
         tail -n 20 "$logfile"
         error "Cmake %s failed" "$pkgname"
@@ -110,8 +111,6 @@ build() {
     local logfile="$logdir/$pkgname.make.log"
     
     make $MAKEOPTS SDL_gpu &>"$logfile" || ret=$?
-    make $MAKEOPTS SDL_gpu_shared &>"$logfile" || ret=$?
-
     if (( $ret )); then
         tail -n 20 "$logfile"
         error "Compiling %s failed" "$pkgname"
@@ -122,15 +121,12 @@ build() {
     msg "Installing"
     
     local ret=0
-    if [ -f "SDL_gpu-MINGW/lib/libSDL2_gpu_s.a" ]; then
-        cp "SDL_gpu-MINGW/lib/libSDL2_gpu_s.a" "$outdir/lib/libSDL2_gpu.a" || ret=1
+    if [ -f "SDL_gpu-MINGW-${pkgver}/lib/libSDL2_gpu_s.a" ]; then
+        cp "SDL_gpu-MINGW-${pkgver}/lib/libSDL2_gpu_s.a" "$outdir/lib/libSDL2_gpu.a" || ret=1
     else
-        cp "SDL_gpu/lib/libSDL2_gpu.a" "$outdir/lib/libSDL2_gpu.a" || ret=1
-        cp "SDL_gpu/lib/libSDL2_gpu.so" "$outdir/lib/libSDL2_gpu.so" || ret=1
+        cp "SDL_gpu-${pkgver}/lib/libSDL2_gpu.a" "$outdir/lib/libSDL2_gpu.a" || ret=1
     fi
     cp "include/SDL_gpu.h" "$outdir/include/SDL2/SDL_gpu.h" || ret=1
-    cp "include/SDL_gpu_version.h" "$outdir/include/SDL2/SDL_gpu_version.h" || ret=1
-
     cp "src/externals/gl2stub/gl2stub.h" "$outdir/include/gl2stub.h" || ret=1
     cp "src/externals/gl2stub/gl2stub_ext.h" "$outdir/include/gl2stub_ext.h" || ret=1
     cp "src/externals/gl2stub/gl2stub_khrplatform.h" "$outdir/include/gl2stub_khrplatform.h" || ret=1

@@ -25,6 +25,7 @@ prebuild() {
         # Seems to be only necessary for x86-like builds
         apply_patch "${sources[1]}"
     fi
+    autogenerate
 }
 
 # vim: set syntax=sh:

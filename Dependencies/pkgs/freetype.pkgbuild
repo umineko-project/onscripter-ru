@@ -35,6 +35,12 @@ else
     ldflags="-L$outdir/lib -lpng"
 fi
 
+prebuild() {
+    pushd "$pkgname-${pkgver}" &>/dev/null
+    
+    autogenerate
+}
+
 build() {
     msg "Performing pre-build actions"
     prebuild

@@ -508,7 +508,7 @@ ninja_install() {
 # Run a script called "autogen.sh" in the source directory, logging the
 # output and trapping failure.
 
-autogen() {
+autogenerate() {
     msg2 "Generating configure script"
     local logfile="$logdir/$pkgname.autogen.log"
     local ret=0

@@ -49,7 +49,7 @@ prebuild() {
     export LIBPNG_LIBS="-L$outdir/lib -lpng"
     export LIBPNG_CFLAGS="-I$outdir/include/libpng16"
 
-    autogen
+    autogenerate
 }
 
 # Special version of this to ignore errors in extraction

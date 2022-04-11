@@ -74,7 +74,4 @@ build() {
     postbuild
 }
 
-configure() {
-	echo nothing
-}
 # vim: set syntax=sh:
