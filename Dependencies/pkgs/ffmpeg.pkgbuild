@@ -92,6 +92,7 @@ configopts_droid=(
     '--disable-decoders'
     '--enable-decoder=h264_mediacodec'
     '--enable-decoder=mpeg4_mediacodec'
+    '--disable-vulkan'
 )
 
 cflags_linux="-D__STDC_CONSTANT_MACROS"

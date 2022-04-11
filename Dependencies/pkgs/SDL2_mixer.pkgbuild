@@ -51,6 +51,10 @@ configopts=(
     "--with-sdl-prefix=$outdir"
 )
 
+configopts_droid=(
+    '--disable-music-opus'
+)
+
 prebuild() {
     pushd "$pkgname-${pkgver}" &>/dev/null
 

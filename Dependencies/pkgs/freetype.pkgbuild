@@ -30,9 +30,9 @@ fi
 CFLAGS="$CFLAGS ${cflags[@]} -fPIC"
 cflags_win32="-U__STRICT_ANSI__"
 if [ -e "$outdir/.pkgs/harfbuzz" ]; then
-    ldflags="-L$outdir/lib -lpng -lharfbuzz"
+    ldflags="-L$outdir/lib -lpng -lharfbuzz -lm -lfreetype"
 else
-    ldflags="-L$outdir/lib -lpng"
+    ldflags="-L$outdir/lib -lpng -lm"
 fi
 
 prebuild() {

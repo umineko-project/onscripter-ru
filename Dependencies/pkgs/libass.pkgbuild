@@ -38,6 +38,10 @@ configopts_win32=(
     '--disable-directwrite'
 )
 
+configopts_droid=(
+    '--host=aarch64-linux-android'
+)
+
 configopts_ios=( )
 configopts_mac=( )
 

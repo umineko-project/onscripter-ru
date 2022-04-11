@@ -34,6 +34,10 @@ configopts=(
     "--with-sdl-prefix=$outdir"
 )
 
+configopts_droid=(
+    '--disable-pipewire'
+)
+
 # Xcode 10 does not have libstdc++
 if [ "$MMAC_VER_MIN" != "10.6" ]; then
     ldflags_mac_extra="-stdlib=libc++"

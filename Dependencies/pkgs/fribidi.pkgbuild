@@ -12,6 +12,10 @@ configopts=(
     "--libdir=$outdir/lib"
 )
 
+configopts_droid=(
+    '--host=aarch64-linux-android'
+)
+
 prebuild() {
     pushd "$pkgname-${pkgver}" &>/dev/null
     

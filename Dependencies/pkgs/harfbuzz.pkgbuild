@@ -23,7 +23,7 @@ configopts=(
     "FREETYPE_LIBS=-L$outdir/lib"
 )
 
-ldflags="-L$outdir/lib -lfreetype"
+ldflags="-L$outdir/lib -lfreetype -lpng16 -lm"
 # Xcode 10 does not have libstdc++
 if [ "$MMAC_VER_MIN" != "10.6" ]; then
     ldflags_mac_extra="-stdlib=libc++"
