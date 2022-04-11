@@ -108,8 +108,8 @@ VECTORIZE=true
 VECTORIZE_LEVEL=0
 # Removal of __STRICT_ANSI__ is necessary for package compatibility (ffmpeg?).
 # Addition of _ISOC99_SOURCE and _ISOC11_SOURCE fixes printf on MinGW.
-CSTD="-std=c11 -D_ISOC99_SOURCE -D_ISOC11_SOURCE -D__STRICT_ANSI__"
-CXXSTD="-std=c++14 -D_ISOC99_SOURCE -D_ISOC11_SOURCE -D__STRICT_ANSI__"
+CSTD="-std=c11 -D_ISOC99_SOURCE -D_ISOC11_SOURCE -U__STRICT_ANSI__"
+CXXSTD="-std=c++14 -D_ISOC99_SOURCE -D_ISOC11_SOURCE -U__STRICT_ANSI__"
 
 DEFAULT_CC="gcc"
 DEFAULT_OPT="-Os"
@@ -495,7 +495,7 @@ fi
 echo -n "Deciding on flags...      "
 
 case "$SYS" in
-Posix)  EXE=     ; OBJ=.o ; LIB=.so ; W32= ;;
+Posix)  EXE=     ; OBJ=.o ; LIB=.a ; W32= ;;
 MacOSX) EXE=     ; OBJ=.o ; LIB=.a ; W32= ;;
 MinGW)  EXE=.exe ; OBJ=.o ; LIB=.a ; W32=true ;;
 Droid)  EXE=     ; OBJ=.o ; LIB=.a ; W32= ;;
@@ -528,7 +528,7 @@ case "$CXX_TMP:$SYS" in
     LINK_END_GROUP="-Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic -Wl,--end-group"
     EXTRALDFLAGS="$EXTRALDFLAGS -static-libgcc"
     EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DWIN32 -DPTW32_STATIC_LIB"
-    EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -lwinmm -lshlwapi -lws2_32 -lglu32 -lopengl32 -lbcrypt -Wl,--wrap=SDL_LoadObject -Wl,--large-address-aware"
+    EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -lwinmm -lshlwapi -lws2_32 -lglu32 -lopengl32 -lbcrypt -lfribidi -Wl,--wrap=SDL_LoadObject -Wl,--large-address-aware"
   ;;
   *clang*:"Droid")
     LINK_START_GROUP="-Wl,--start-group"
@@ -542,7 +542,7 @@ case "$CXX_TMP:$SYS" in
     LINK_END_GROUP="-Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic -Wl,--end-group"
     EXTRALDFLAGS="$EXTRALDFLAGS -static-libgcc -static-libstdc++ -mthreads"
     EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DWIN32 -DPTW32_STATIC_LIB -mthreads"
-    EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -lwinmm -lshlwapi -lws2_32 -lglu32 -lopengl32 -lbcrypt -Wl,--wrap=SDL_LoadObject -Wl,--large-address-aware"
+    EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -lwinmm -lshlwapi -lws2_32 -lglu32 -lopengl32 -lbcrypt -lfribidi -Wl,--wrap=SDL_LoadObject -Wl,--large-address-aware"
   ;;
   g++*:"Posix" | *clang*:"Posix")
     LINK_START_GROUP="-Wl,--start-group"

@@ -92,7 +92,7 @@ build () {
 
     case $(getTarget) in
         win32)
-            cmake -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_C_COMPILER=i686-w64-mingw32-gcc -DCMAKE_RC_COMPILER="$(which i686-w64-mingw32-windres)" -DCMAKE_FIND_ROOT_PATH=/usr/i686-w64-mingw32 -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY -DSDL_LOADSO_WINDOWS=ON -DEXTRA_LDFLAGS=-lshlwapi -DSDL_SSE2=ON -DSDL_NAS=OFF -DSDL_HAPTIC=ON -DSDL_JOYSTICK=ON -DSDL_STATIC_PIC=ON -DEXTRA_CFLAGS=-I"$outdirinclude/khronos" -DCMAKE_INSTALL_PREFIX="$outdir" .. &>"$logfile" || ret=$?
+            cmake -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_C_COMPILER=i686-w64-mingw32-gcc -DCMAKE_RC_COMPILER="$(which i686-w64-mingw32-windres)" -DCMAKE_FIND_ROOT_PATH=/usr/i686-w64-mingw32 -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY -DSDL_LOADSO_WINDOWS=ON -DEXTRA_LDFLAGS=-lshlwapi -DSDL_SSE2=ON -DSDL_NAS=OFF -DSDL_HAPTIC=ON -DSDL_JOYSTICK=ON -DSDL_STATIC_PIC=ON -DCMAKE_CXX_FLAGS=-I"$outdir/include/khronos/" -DCMAKE_INSTALL_PREFIX="$outdir" .. &>"$logfile" || ret=$?
         ;;
         darwin-macOS)
             # This option seems to slow clang down quite a bit on glew compilation (around 4 mins), disable if you need to debug
