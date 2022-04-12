@@ -8,19 +8,14 @@ hashes=('6a64f2a687f5c4f203a46fa659f43dd43d1f8b845df8d723107e8a7e6158e4ce')
 configopts=(
     '--enable-static'
     '--disable-debug'
-    '--with-glib=no'
+    #'--with-glib=no' automatic now
     "--libdir=$outdir/lib"
 )
 
 configopts_droid=(
-    '--host=aarch64-linux-android'
+    '--target=aarch64-unknown-linux-android'
+    '--host=x86_64-unknown-linux-gnu'
 )
-
-prebuild() {
-    pushd "$pkgname-${pkgver}" &>/dev/null
-    
-    autogenerate
-}
 
 # Special version that uses bsdtar (which works with 32-bit uid_t)
 extract_sources() {

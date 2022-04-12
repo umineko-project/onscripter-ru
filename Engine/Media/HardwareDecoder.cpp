@@ -170,7 +170,7 @@ static AVPixelFormat init(AVCodecContext *context, const AVPixelFormat *format) 
 	return MediaProcController::HardwareDecoderIFace::defaultFormat(format);
 }
 
-static AVCodec *findDecoder(AVCodecContext *context) {
+static const AVCodec *findDecoder(AVCodecContext *context) {
 	switch (context->codec_id) {
 		case AV_CODEC_ID_H264:
 			return avcodec_find_decoder_by_name("h264_mediacodec");
@@ -244,7 +244,7 @@ AVCodec *MediaProcController::HardwareDecoderIFace::findDecoder(AVCodecContext *
 #if defined(IOS) || defined(MACOSX)
 	return HardwareDecoderVT::findDecoder(context);
 #elif defined(DROID)
-	return HardwareDecoderMC::findDecoder(context);
+	return const_cast<AVCodec *>(HardwareDecoderMC::findDecoder(context)); //this is very dirty and I do not like it one bit
 #else
 	(void)context;
 	return nullptr;

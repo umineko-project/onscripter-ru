@@ -39,7 +39,8 @@ configopts_win32=(
 )
 
 configopts_droid=(
-    '--host=aarch64-linux-android'
+    '--target=aarch64-unknown-linux-android'
+    '--host=x86_64-unknown-linux-gnu'
 )
 
 configopts_ios=( )
@@ -60,7 +61,7 @@ else
         "CXX=$(getCXX)"
     )
 fi
-ldflags="-lfreetype -lfribidi"
+ldflags_win32="-lfreetype -lfribidi"
 cflags="-I$outdir/include/fribidi"
 
 prebuild() {
@@ -75,6 +76,8 @@ prebuild() {
     #    apply_patch "${sources[3]}"
     #fi
 }
+
+
 
 postbuild() {
     # Is this necessary?

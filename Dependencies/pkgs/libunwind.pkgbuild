@@ -1,8 +1,8 @@
 pkgname=libunwind
-pkgver=1.2
+pkgver=1.6.2 # not really
 pkgrel=1
-giturl='https://android.googlesource.com/platform/external/libunwind'
-githash='ec57b05e0acc7838d2a0f75551a18d28f670692e' #look above for latest git
+giturl='https://github.com/libunwind/libunwind.git'
+githash='e07b43c02d5cf1ea060c018fdf2e2ad34b7c7d80' #look above for latest git
 sources=(
     'libunwind-droid-macro-ctypes.patch'
     'libunwind-droid-os.patch'
@@ -16,6 +16,11 @@ configopts=(
     '--disable-dependency-tracking'
     '--disable-coredump'
     '--enable-ptrace'
+)
+
+configopts_droid=(
+    '--target=aarch64'
+    '--host=x86_64'
 )
 
 cflags_droid=(
