@@ -14,5 +14,4 @@ For the list of available platforms and compilation instructions please proceed 
 - All third-party library authors
 
 
-MAY NOT WORK ON MACOS
-You will need a [patched version](https://github.com/m3t4f1v3/umineko-scripting) for the discord rpc stub
+**MAY NOT WORK ON MACOS** and you will need a [patched version](https://github.com/m3t4f1v3/umineko-scripting) for the discord rpc stub
