@@ -15,7 +15,4 @@ For the list of available platforms and compilation instructions please proceed 
 
 
 MAY NOT WORK ON MACOS
-youll need a [patched version](https://github.com/m3t4f1v3/umineko-scripting) of some of the script too 
-
-
-i hate mingw :trollface:
+You will need a [patched version](https://github.com/m3t4f1v3/umineko-scripting) for the discord rpc stub
