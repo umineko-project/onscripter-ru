@@ -9,6 +9,7 @@
 
 #include "Engine/Core/ONScripter.hpp"
 #include "Engine/Components/Async.hpp"
+#include "Engine/Components/DiscordEvents.hpp"
 #include "Engine/Components/Joystick.hpp"
 #include "Engine/Components/Window.hpp"
 #include "Engine/Layers/Media.hpp"
@@ -394,7 +395,7 @@ void ONScripter::waitEvent(int count, bool nopPreferred) {
 			window.setTitle(titlestring);
 			freearr(&titlestring);
 		}
-
+    
 		//sendToLog(LogLevel::Info,"  flipped -- aimed for %i ms, took %i ms\n", constant_refresh_interval, ticksNow - lastFlipTime);
 		lastFlipTime = ticksNow;
 
@@ -1443,7 +1444,6 @@ void ONScripter::runEventLoop() {
 	while (true) {
 		event = std::move(localEventQueue.back());
 		localEventQueue.pop_back();
-
 		endOfEventBatch = false;
 
 		if (exitCode.load(std::memory_order_relaxed) != ExitType::None) {

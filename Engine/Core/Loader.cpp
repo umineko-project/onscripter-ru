@@ -8,6 +8,7 @@
  */
 
 #include "External/Compatibility.hpp"
+#include "Engine/Components/DiscordEvents.hpp"
 #include "Engine/Core/ONScripter.hpp"
 #include "Engine/Readers/Direct.hpp"
 #include "Support/FileIO.hpp"
@@ -27,11 +28,6 @@ void *__real_SDL_LoadObject(const char *sofile);
 void *__wrap_SDL_LoadObject(const char *sofile);
 }
 #endif
-
-#if defined(LINUX) || defined(WIN32)
-#include <discord/discord.h>
-#endif
-
 #include <cstdio>
 
 ControllerCollection ctrl;
@@ -770,9 +766,8 @@ CONSTRUCTOR setupCrashReporter() {
 
 int main(int argc, char **argv) {
 	initFileIO();
-#if defined(LINUX) || defined(WIN32)
-	#include <External/discord_game_sdk.h>
-#endif
+	initDiscord();
+	setPresence();
 #ifdef DROID
 	// Attempt to launch an already running ons (by tapping on the icon) right after the installation
 	// will cause the library not to be loaded and reused without state initialisation.

@@ -3,8 +3,7 @@ pkgver=1.0
 pkgrel=1
 type=meta
 
-depends=(
-    'discord' #REMOVE ME
+depends+=(
     'bzip2'
     'zlib'
     'libpng'
@@ -32,7 +31,7 @@ if [ "$(getTarget)" == "droid" ] && [ "$(getTargetCPU)" != "arm" ]; then
 fi
 
 if [ "$(getTarget)" == "linux-like" ] || [ "$(getTarget)" == "win32" ]; then
-    depends=(${depends[@]} 'discord');
+    depends=('discord' ${depends[@]});
 fi
 
 build() {

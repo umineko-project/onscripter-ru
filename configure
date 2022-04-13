@@ -542,12 +542,12 @@ case "$CXX_TMP:$SYS" in
     LINK_END_GROUP="-Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic -Wl,--end-group"
     EXTRALDFLAGS="$EXTRALDFLAGS -static-libgcc -static-libstdc++ -mthreads"
     EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DWIN32 -DPTW32_STATIC_LIB -mthreads"
-    EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -lwinmm -lshlwapi -lws2_32 -lglu32 -lopengl32 -lbcrypt -lfribidi -Wl,--wrap=SDL_LoadObject -Wl,--large-address-aware"
+    EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -lwinmm -lshlwapi -lws2_32 -lglu32 -lopengl32 -lbcrypt -lfribidi -l-Wl,--wrap=SDL_LoadObject -Wl,--large-address-aware"
   ;;
   g++*:"Posix" | *clang*:"Posix")
     LINK_START_GROUP="-Wl,--start-group"
     LINK_END_GROUP="-Wl,--end-group"
-    EXTRALDFLAGS="$EXTRALDFLAGS -static-libgcc -static-libstdc++"
+    EXTRALDFLAGS="$EXTRALDFLAGS -static-libgcc -static-libstdc++ -ldiscordsdk -ldiscord_game_sdk"
     #FIXME: Passing -DLINUX is roughly a hack, we should properly handle BSD.
     EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DLINUX -D__STDC_CONSTANT_MACROS"
     #FIXME: These flags originate from ONScripter project and need to be updated.
@@ -708,6 +708,7 @@ echo -n "Preparing build tree...   "
 SOURCES=(
   'Engine/Components/Async.cpp'
   'Engine/Components/Dialogue.cpp'
+  'Engine/Components/DiscordEvents.cpp'
   'Engine/Components/DynamicProperty.cpp'
   'Engine/Components/Fonts.cpp'
   'Engine/Components/GlyphAtlas.cpp'

@@ -13,7 +13,6 @@
 
 #include <algorithm>
 #include <utility>
-
 std::deque<std::function<void()>> postponedEventChanges;
 std::unordered_set<const char *> postponedEventChangeLabels;
 
