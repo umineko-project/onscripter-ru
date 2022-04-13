@@ -1,5 +1,6 @@
 {
     "files.associations": {
         "*.pkgbuild": "shellscript",
-    }
+    },
+    "C_Cpp.dimInactiveRegions": false
 }

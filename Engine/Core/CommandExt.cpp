@@ -28,7 +28,7 @@
 #include <malloc/malloc.h>
 #endif
 
-#include "External/discord/discord.h"
+#include "External/discord_game_sdk.h"
 
 int ONScripter::zOrderOverridePreserveCommand() {
 	preserve = !preserve;

@@ -547,7 +547,7 @@ case "$CXX_TMP:$SYS" in
   g++*:"Posix" | *clang*:"Posix")
     LINK_START_GROUP="-Wl,--start-group"
     LINK_END_GROUP="-Wl,--end-group"
-    EXTRALDFLAGS="$EXTRALDFLAGS -static-libgcc -static-libstdc++"
+    EXTRALDFLAGS="$EXTRALDFLAGS -static-libgcc -static-libstdc++ -ldiscord_game_sdk"
     #FIXME: Passing -DLINUX is roughly a hack, we should properly handle BSD.
     EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DLINUX -D__STDC_CONSTANT_MACROS"
     #FIXME: These flags originate from ONScripter project and need to be updated.
