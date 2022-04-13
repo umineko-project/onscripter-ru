@@ -4,6 +4,7 @@ pkgrel=1
 type=meta
 
 depends=(
+    'discord' #REMOVE ME
     'bzip2'
     'zlib'
     'libpng'
@@ -30,6 +31,9 @@ if [ "$(getTarget)" == "droid" ] && [ "$(getTargetCPU)" != "arm" ]; then
     depends=(${depends[@]} 'libunwind');
 fi
 
+if [ "$(getTarget)" == "linux-like" ] || [ "$(getTarget)" == "win32" ]; then
+    depends=(${depends[@]} 'discord');
+fi
 
 build() {
     msg "onscrlib built successfully."

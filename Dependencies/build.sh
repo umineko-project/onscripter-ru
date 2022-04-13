@@ -408,7 +408,8 @@ extract_sources() {
                 cmd="tar"
                 cmd_flags=('--strip-components=1' "--one-top-level=$pkgname-$pkgver" '-xf');;
             *application/x-zip*|*application/zip*)
-                cmd='unzip -q';;
+                cmd='unzip'
+                cmd_flags='-q';;
             *)
                 # MinGW32 has broken mime types in 'file' command, fall back on the
                 # extension to work around
@@ -419,7 +420,8 @@ extract_sources() {
                         cmd_flags=('--strip-components=1' "--one-top-level=$pkgname-$pkgver" '-xf');;
                     zip)
                         # should look one more level in, to see if tar is there...
-                        cmd='unzip -q';;
+                        cmd='unzip'
+                        cmd_flags='-q';;
                     *)
                         continue;;
                 esac;;
