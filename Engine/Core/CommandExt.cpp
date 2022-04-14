@@ -2365,7 +2365,7 @@ int ONScripter::getLogDataCommand() {
 }
 
 int ONScripter::setDiscordRPCCommand() {
-	
+
 	int32_t clicks = script_h.readInt();
 	const char* scenario = copystr(script_h.readStr());
 	const char* backgroundMusicTitle = copystr(script_h.readStr());

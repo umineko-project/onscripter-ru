@@ -8,7 +8,7 @@ hashes=('505e70834d35383537b6491e7ae8641f1a4bed1876dbfe361201fc80868d88ca')
 configopts=(
     '--disable-dependency-tracking'
     '--enable-hardware-optimizations=yes'
-    "--libdir=$outdir/lib"
+    "--libdir=$outdir/lib/"
     "--with-zlib-prefix=$outdir"
 )
 

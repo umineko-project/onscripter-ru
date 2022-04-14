@@ -13,9 +13,9 @@ prebuild() {
     pushd "$pkgname-$pkgver/cpp" &>/dev/null
     sed -i 's/std\:\:int32_t/int32_t/g' *
     sed -i 's/std\:\:int64_t/int64_t/g' *
+    sed -i 's/std\:\:uint8_t/uint8_t/g' *
     sed -i 's/std\:\:uint32_t/uint32_t/g' *
     sed -i 's/std\:\:uint64_t/uint64_t/g' *
-    sed -i 's/std\:\:uint8_t/uint8_t/g' *
 }
 
 compile() {
@@ -49,6 +49,7 @@ configure() {
     local logfile="$logdir/$pkgname.copylibs.log"
     local ret=0
     mkdir -p $outdir/lib/ &>>"$logfile" || ret=$?
+    mkdir -p $outdir/include/discord/ &>>"$logfile" || ret=$?
     cp ../lib/x86_64/discord_game_sdk.bundle $outdir/lib/libdiscord_game_sdk.bundle &>"$logfile" || ret=$?
     cp ../lib/x86_64/discord_game_sdk.dylib $outdir/lib/libdiscord_game_sdk.dylib &>"$logfile" || ret=$?
     cp ../lib/x86_64/discord_game_sdk.so $outdir/lib/libdiscord_game_sdk.so &>"$logfile" || ret=$?
