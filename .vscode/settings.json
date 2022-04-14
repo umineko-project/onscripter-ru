@@ -95,7 +95,9 @@
         "semaphore": "cpp",
         "stop_token": "cpp",
         "cfenv": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "charconv": "cpp",
+        "filesystem": "cpp"
     },
     "C_Cpp.dimInactiveRegions": false
 }

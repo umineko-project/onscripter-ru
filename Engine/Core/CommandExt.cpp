@@ -9,6 +9,7 @@
 
 #include "Engine/Core/ONScripter.hpp"
 #include "Engine/Components/Async.hpp"
+#include "Engine/Components/DiscordEvents.hpp"
 #include "Engine/Components/Joystick.hpp"
 #include "Engine/Components/Window.hpp"
 #include "Engine/Layers/ObjectFall.hpp"
@@ -27,6 +28,8 @@
 #ifdef IOS
 #include <malloc/malloc.h>
 #endif
+
+#include <chrono>
 
 int ONScripter::zOrderOverridePreserveCommand() {
 	preserve = !preserve;
@@ -2362,10 +2365,24 @@ int ONScripter::getLogDataCommand() {
 }
 
 int ONScripter::setDiscordRPCCommand() {
-	sendToLog(LogLevel::Info, script_h.readStr());
-	sendToLog(LogLevel::Info, script_h.readStr());
-	sendToLog(LogLevel::Info, script_h.readStr());
-	sendToLog(LogLevel::Info, script_h.readStr());
+	
+	int32_t clicks = script_h.readInt();
+	const char* scenario = copystr(script_h.readStr());
+	const char* backgroundMusicTitle = copystr(script_h.readStr());
+	int32_t playTime = script_h.readInt(); // year 2038 problem
+	int32_t loadSaveTime = script_h.readInt(); // year 2038 problem
+	int32_t startTime = loadSaveTime - playTime;
+	const char* clickOrMusic;
+	sendToLog(LogLevel::Info, "Discord RPC: %d %s %s %d\n", clicks, scenario, backgroundMusicTitle, startTime);
+
+	if (ons_cfg_options["discord-clicks-over-music"] == "noval") {
+		clickOrMusic = std::to_string(clicks).c_str(); // not very clean, but it works
+	} else {
+		clickOrMusic = backgroundMusicTitle;
+	}
+
+	setPresence("test", "test2", "butterfly", clickOrMusic, "edsmiley", scenario, startTime, NULL, "test11", NULL, NULL);
+
 	return RET_CONTINUE;
 }
 

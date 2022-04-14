@@ -36,14 +36,18 @@ int initDiscord() {
   return 0;
 }
 
-int setPresence() {
+int setPresence(const char* details, const char* currentState, const char* largeImageKey, const char* largeImageText, const char* smallImageKey, const char* smallImageText, int64_t startTimestamp, int64_t endTimestamp, const char* partyId, int partySize, int partySizeMax) {
   discord::Activity activity{};
-  activity.SetDetails("Fruit Tarts");
-  activity.SetState("Pop Snacks");
-  activity.GetAssets().SetSmallImage("the");
-  activity.GetAssets().SetSmallText("i mage");
-  activity.GetAssets().SetLargeImage("the");
-  activity.GetAssets().SetLargeText("u mage");
+  activity.SetDetails(details);
+  activity.SetState(currentState);
+  activity.GetAssets().SetSmallImage(smallImageKey);
+  activity.GetAssets().SetSmallText(smallImageText);
+  activity.GetAssets().SetLargeImage(largeImageKey);
+  activity.GetAssets().SetLargeText(largeImageText);
+  activity.GetTimestamps().SetStart(startTimestamp);
+  activity.GetTimestamps().SetEnd(endTimestamp);
+  activity.GetParty().GetSize().SetCurrentSize(partySize);
+  activity.GetParty().GetSize().SetMaxSize(partySizeMax);
   activity.SetType(discord::ActivityType::Playing);
   state.core->ActivityManager().UpdateActivity(activity, [](discord::Result result) {
       std::cout << ((result == discord::Result::Ok) ? "Succeeded" : "Failed")

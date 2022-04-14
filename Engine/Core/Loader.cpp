@@ -346,6 +346,10 @@ static void parseOptions(int argc, char **argv, bool &hasArchivePath) {
 				ons.ons_cfg_options["strict"] = "noval";
 			} else if (!std::strcmp(argv[0] + 1, "-scale")) {
 				ons.ons_cfg_options["scale"] = "noval";
+			} else if (!std::strcmp(argv[0] + 1, "-discord-ipc")) {
+				ons.ons_cfg_options["discord-ipc"] = "noval";
+			} else if (!std::strcmp(argv[0] + 1, "-discord-clicks-over-music")) {
+				ons.ons_cfg_options["discord-clicks-over-music"] = "noval";
 			} else if (!std::strcmp(argv[0] + 1, "-detect-png-nscmask")) {
 				ons.setMaskType(ONScripter::PNG_MASK_AUTODETECT);
 				ons.ons_cfg_options["detect-png-nscmask"] = "noval";
@@ -767,7 +771,6 @@ CONSTRUCTOR setupCrashReporter() {
 int main(int argc, char **argv) {
 	initFileIO();
 	initDiscord();
-	setPresence();
 #ifdef DROID
 	// Attempt to launch an already running ons (by tapping on the icon) right after the installation
 	// will cause the library not to be loaded and reused without state initialisation.

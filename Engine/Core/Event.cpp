@@ -1442,6 +1442,7 @@ void ONScripter::runEventLoop() {
 	bool started_in_automode = automode_flag;
 
 	while (true) {
+		updateCallbacks();
 		event = std::move(localEventQueue.back());
 		localEventQueue.pop_back();
 		endOfEventBatch = false;

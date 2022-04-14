@@ -35,8 +35,7 @@ copy() {
     local logfile="$logdir/$pkgname.install.log"
     local ret=0
     cp libdiscordsdk.so $outdir/lib/ &>"$logfile" || ret=$?
-    mkdir -p $outdir/include/discord/ &>>"$logfile" || ret=$?
-    cp *.h $outdir/include/discord/ &>>"$logfile" || ret=$?
+    cp *.h $outdir/include/discord/ &>"$logfile" || ret=$?
     if (( $ret )); then
         tail -n 20 "$logfile"
         error "Installing %s failed" "$pkgname"
@@ -47,7 +46,21 @@ copy() {
 }
 
 configure() {
-    : # do nothing lol
+    local logfile="$logdir/$pkgname.copylibs.log"
+    local ret=0
+    mkdir -p $outdir/lib/ &>>"$logfile" || ret=$?
+    cp ../lib/x86_64/discord_game_sdk.bundle $outdir/lib/libdiscord_game_sdk.bundle &>"$logfile" || ret=$?
+    cp ../lib/x86_64/discord_game_sdk.dylib $outdir/lib/libdiscord_game_sdk.dylib &>"$logfile" || ret=$?
+    cp ../lib/x86_64/discord_game_sdk.so $outdir/lib/libdiscord_game_sdk.so &>"$logfile" || ret=$?
+    cp ../lib/x86/discord_game_sdk.dll $outdir/lib/libdiscord_game_sdk.dll &>"$logfile" || ret=$?
+    cp ../lib/x86/discord_game_sdk.dll.lib $outdir/lib/libdiscord_game_sdk.lib &>"$logfile" || ret=$?
+    if (( $ret )); then
+        tail -n 20 "$logfile"
+        error "Copying libs %s failed" "$pkgname"
+        error "The last 20 lines of the log are shown above."
+        error "The full log is: %s" "$logfile"
+        exit 1
+    fi
 }
 
 extract_sources() {
