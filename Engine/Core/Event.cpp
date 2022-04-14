@@ -19,13 +19,7 @@
 #include <sys/wait.h>
 #endif
 
-#include <csignal>
 #include <numeric>
-
-namespace {
-volatile bool interrupted{false};
-}
-
 
 const uint32_t MAX_TOUCH_TAP_TIMESPAN{80};
 const uint32_t MAX_TOUCH_SWIPE_TIMESPAN{300};
@@ -1447,10 +1441,7 @@ void ONScripter::runEventLoop() {
 	std::unique_ptr<SDL_Event> event;
 	bool started_in_automode = automode_flag;
 
-	while (true && !interrupted) {
-		std::signal(SIGINT, [](int) { interrupted = true; });
-		updateCallbacks();
-
+	while (true) {
 		event = std::move(localEventQueue.back());
 		localEventQueue.pop_back();
 		endOfEventBatch = false;

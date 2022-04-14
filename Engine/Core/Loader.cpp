@@ -767,7 +767,7 @@ CONSTRUCTOR setupCrashReporter() {
 int main(int argc, char **argv) {
 	initFileIO();
 	initDiscord();
-	setPresence("lol", "lol", "butterfly", "dawn", "edsmiley", "wooo");
+	setPresence();
 #ifdef DROID
 	// Attempt to launch an already running ons (by tapping on the icon) right after the installation
 	// will cause the library not to be loaded and reused without state initialisation.
