@@ -1,3 +1,4 @@
+#if defined(LINUX) || defined(WIN32)
 #include <cassert>
 #include <csignal>
 #include <cstdio>
@@ -31,7 +32,7 @@ int initDiscord() {
   }
   state.core->SetLogHook(
     discord::LogLevel::Debug, [](discord::LogLevel level, const char* message) {
-        std::cerr << "Log(" << static_cast<uint32_t>(level) << "): " << message << "\n";
+        std::cerr << "Log(" << static_cast<uint32_t>(level) << "): "/*beato trollface in unicode when*/ << message << "\n";
     });
   return 0;
 }
@@ -55,3 +56,4 @@ int setPresence(const char* details, const char* currentState, const char* large
   });
   return 0;
 }
+#endif

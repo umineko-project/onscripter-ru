@@ -17,7 +17,13 @@
 
 # Generate $LINKpackage variable
 genlink() {
-  eval "LINK$1=\"\\\$(EXTLIB)/lib/lib$1$2\\\$(LIBSUFFIX)\""
+  if [[ "${IGNORED_LIBS[@]}" =~ "$1" ]]; then
+    :
+  elif [ -z $2 ]; then
+    eval "LINK$1=\"\\\$(EXTLIB)/lib/lib$1\\\$(LIBSUFFIX)\""
+  else
+    eval "LINK$1=\"\\\$(EXTLIB)/lib/lib$1$2$3\""
+  fi
 }
 
 # Quick and dirty local header dependency builder.
@@ -92,7 +98,7 @@ pathautofix() {
 
 # ---------- Program begins here ----------
 
-# It may not be a requirement of our own buildsystem, but many onscrlib packages will fail. 
+# It may not be a requirement of our own buildsystem, but many onscrlib packages will fail.
 if [[ "$(pwd)" =~ \  ]]; then
   echo "Error: Running in a directory with spaces or non-ascii characters!"
   echo "You could create a symlink as a workaround."
@@ -207,7 +213,7 @@ do
 	
 	Build-specific options:
 	  --build-path=DIR         absolute path to build directory (default is DerivedData)
-	  --release-build          build with PUBLIC_RELEASE flag 	
+	  --release-build          build with PUBLIC_RELEASE flag
 	  --strip-binary           strip debug information from the executable
 	  --directx-sdk-path=DIR   enable DirectX 9 SDK support (Windows only)
 	  --prefer-clang           use clang compiler if CC is not specified
@@ -331,8 +337,8 @@ else
   echo -n "Checking C compiler...    "
   CC_TMP=`($CC --version) 2>/dev/null | head -1`
   case "$CC_TMP" in
-    gcc* | *apple*gcc* | *\(GCC\)*) 
-      [[ "$CC_TMP" =~ \ ([0-9](\.[0-9_]+)+)($|\ ) ]] && 
+    gcc* | *apple*gcc* | *\(GCC\)*)
+      [[ "$CC_TMP" =~ \ ([0-9](\.[0-9_]+)+)($|\ ) ]] &&
       CC_VER="${BASH_REMATCH[1]}"; echo "gcc $CC_VER" ;;
     Apple*) CC_VER=`expr "x$CC_TMP" : 'x.*version \([0-9][.][0-9][.][0-9]\)'`; echo "Apple clang $CC_VER" ;;
     *clang*) CC_VER=`expr "x$CC_TMP" : 'x.*version \([0-9][.][0-9]\)'`; echo "clang $CC_VER" ;;
@@ -361,7 +367,7 @@ CXX_TMP=`($CXX --version) 2>/dev/null | head -1`
 if ! $UNSUPPORTED_COMPILER; then
   echo -n "Checking C++ compiler...  "
   case "$CXX_TMP" in
-    g++* | *apple*g++* | *\(GCC\)*) 
+    g++* | *apple*g++* | *\(GCC\)*)
       [[ "$CXX_TMP" =~ \ ([0-9](\.[0-9_]+)+)($|\ ) ]] &&
       CXX_VER="${BASH_REMATCH[1]}"; echo "g++ $CXX_VER" ;;
     Apple*) CXX_VER=`expr "x$CXX_TMP" : 'x.*version \([0-9][.][0-9][.][0-9]\)'`; echo "Apple clang++ $CXX_VER" ;;
@@ -392,7 +398,7 @@ if $VECTORIZE; then
   case "x$ARCH:$CXX_TMP" in
     xx86_64:g++*|xx86_64:*apple*g++*|x*86:g++*|x*86:*apple*g++*|*\(GCC\)*)
       VECFLAGS="-mmmx -msse -msse2 -msse3 -mfpmath=sse,387" ;;
-    xx86_64:*|x*86:*) 
+    xx86_64:*|x*86:*)
       # clang doesn't offer -mfpmath=387
       VECFLAGS="-mmmx -msse -msse2 -msse3 -mfpmath=sse" ;;
     xarm:*)
@@ -411,7 +417,7 @@ if $VECTORIZE; then
       VECFLAGS="-ffast-math -ftree-vectorize $VECFLAGS"
       echo "ok, default level"
     ;;
-    *) 
+    *)
       echo "none"
     ;;
   esac
@@ -536,6 +542,7 @@ case "$CXX_TMP:$SYS" in
     EXTRACFLAGS="$EXTRACFLAGS -fPIC"
     EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DDROID"
     EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -shared -static-libstdc++"
+    IGNORED_LIBS=( 'discordsdk' 'discord_game_sdk' )
   ;;
   *g++*:"MinGW")
     LINK_START_GROUP="-Wl,--start-group"
@@ -561,7 +568,7 @@ case "$CXX_TMP:$SYS" in
     elif [ "$POSIX" == "Solaris" ]; then
       EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DCONST_ICONV"
       EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -lX11 -lXext"
-    fi 
+    fi
   ;;
   *apple*g++*)
     EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DMACOSX -D__STDC_CONSTANT_MACROS"
@@ -626,13 +633,15 @@ genlink avcodec
 genlink swscale
 genlink swresample
 genlink ass
+genlink discordsdk .so
+genlink discord_game_sdk .so
 genlink fribidi
 genlink freetype
 genlink harfbuzz
 
 if [ "$SYS" == "Droid" ]; then
   if [ "$ARCH" == "aarch64" ]; then
-    genlink unwind -aarch64
+    genlink unwind -aarch64 "\\\$(LIBSUFFIX)"
     LINKunwindArch="$LINKunwind"
     genlink unwind
     LINKunwind="$LINKunwind $LINKunwindArch"
@@ -646,7 +655,7 @@ if [ "$SYS" == "Droid" ]; then
     LINKunwind="$LINKunwind $LINKunwindArch"
   fi
 else
-	genlink usb -1.0
+	genlink usb -1.0 "\\\$(LIBSUFFIX)"
   genlink epoxy
 fi
 
@@ -669,9 +678,9 @@ if [ "$EMBED_PATH" == "" ]; then
   mkdir -p "${BUILD_PATH}/Tools/embed"
 
   if [ "$EMBED_CC" == "" ]; then
-    command -v gcc >/dev/null 2>&1 
+    command -v gcc >/dev/null 2>&1
     if (( $? )); then
-      command -v clang >/dev/null 2>&1 
+      command -v clang >/dev/null 2>&1
       if (( $? )); then
         echo "fail"
         echo "Unable to find c compiler to generate embed tool!"
@@ -968,7 +977,7 @@ LIBS = \$(EXTRAOSLDFLAGS) -L\$(EXTLIB)/lib $LINK_START_GROUP \\
 	$LINKSDL2_mixer $LINKogg $LINKvorbis $LINKvorbisfile \\
 	$LINKSDL2_gpu $LINKepoxy $LINKbz2 \\
 	$LINKavutil $LINKavformat $LINKavcodec $LINKswscale $LINKswresample \\
-	$LINKass $LINKusb $LINKfribidi $LINKharfbuzz $LINKunwind $LINK_END_GROUP
+	$LINKass $LINKdiscordsdk $LINKdiscord_game_sdk $LINKusb $LINKfribidi $LINKharfbuzz $LINKunwind $LINK_END_GROUP
 
 .SUFFIXES:
 .SUFFIXES: $OBJ .cpp .h .c
@@ -1014,7 +1023,7 @@ cat >> "$BUILD_PATH/Makefile" <<_EOF
 
 \$(BUILD_PATH)/\$(TARGET)\$(EXESUFFIX): \$(ONSCRIPTER_OBJS)
 	@echo "[LINK] \$(BUILD_PATH)/\$(TARGET)\$(EXESUFFIX)"
-	@\$(CXX) -o \$@ \$(LDFLAGS) -ldiscordsdk -ldiscord_game_sdk \$(ONSCRIPTER_OBJS) \$(LIBS)
+	@\$(CXX) -o \$@ \$(LDFLAGS) \$(ONSCRIPTER_OBJS) \$(LIBS)
 
 \$(BUILD_PATH)/%\$(OBJSUFFIX): \$(PROJECT)/%.cpp
 	@echo "[CXX] \$<"
