@@ -12,7 +12,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: install packages
-      run: sudo apt install yasm libreadline-dev libasound-dev libgl1-mesa-dev libegl1-mesa-dev libxrandr-dev meson binutils-mingw-w64-i686 gcc-mingw-w64-i686
+      run: sudo apt install yasm libreadline-dev libasound-dev libgl1-mesa-dev libegl1-mesa-dev libxrandr-dev python3-pip binutils-mingw-w64-i686 gcc-mingw-w64-i686
+    - name: install meson via pip
+      run: pip3 install meson
     - name: configure linux (dev)
       run: ./configure
     - name: make
