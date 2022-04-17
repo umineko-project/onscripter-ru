@@ -1,4 +1,4 @@
-name: Build dev version on linux
+name: Build mingw, android and linux
 
 on:
   push:
@@ -12,7 +12,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: install packages
-      run: sudo apt install yasm libreadline-dev libasound-dev libgl1-mesa-dev libegl1-mesa-dev libxrandr-dev binutils-mingw-w64-i686 gcc-mingw-w64-i686
+      run: sudo apt install yasm libreadline-dev libasound-dev libgl1-mesa-dev libegl1-mesa-dev libxrandr-dev meson binutils-mingw-w64-i686 gcc-mingw-w64-i686
     - name: configure linux (dev)
       run: ./configure
     - name: make
