@@ -2365,210 +2365,22 @@ int ONScripter::getLogDataCommand() {
 	return RET_CONTINUE;
 }
 
-const char* scenarioList[9][20] = {
-  {
-    "Prologue",
-    "Arrival at Niijima Airport",
-    "Arrival at Rokkenjima",
-    "Guesthouse",
-    "Dining Hall",
-    "Epitaph of the Portrait",
-    "Sandy Beach",
-    "Letter and Umbrella",
-    "Legend of the Gold",
-    "Night of the Storm",
-    "The Sacrifices Chosen by the Key",
-    "Curtain-rise on Tragedy",
-    "Occult",
-    "The Two Who Are Close",
-    "Boiler Room",
-    "Besieged",
-    "The Golden Witch",
-    "Notebook Pages in a Wine Bottle"
-  },
-  {
-    "Prologue",
-    "\"Furniture\"",
-    "Wonderful Utopia",
-    "School Culture Festival",
-    "Chessboard Preparations",
-    "Guest of Honor",
-    "The Witch\'s Move",
-    "\"Furniture\" and \"People\"",
-    "Wedding Ring",
-    "Halloween",
-    "Jessica and Kanon",
-    "New Rule",
-    "A Suspect",
-    "Wolves and Sheep Puzzle",
-    "Devil\'s Proof",
-    "Fleeting Resistance",
-    "Surrender",
-    "Resurrection",
-    "Banquet of the Witch"
-  },
-  {
-    "Prologue",
-    "Days as a Young Girl",
-    "My Preparations Are Already Complete",
-    "The Witch\'s Written Challenge",
-    "Possibility of a 19th Person",
-    "Rosa and the Witch of the Forest",
-    "The Beginning of the Ritual",
-    "Madam Beatrice",
-    "Virgilia",
-    "Skirmish",
-    "The Key to the Golden Land",
-    "Coronation",
-    "The New Witch",
-    "Announcement of Sacrifices",
-    "Battle to the Death in the Hall",
-    "The Definition of a Witch",
-    "Real Magic",
-    "The Witch\'s Courtroom",
-    "The Witch Illusion"
-  },
-  {
-    "Prologue",
-    "The New Guest",
-    "Ange and Maria",
-    "The Future 12 Years Later",
-    "Red Truth, Blue Truth",
-    "Ange\'s Recollection",
-    "Mariage Sorcière",
-    "Invitation to Fantasy",
-    "My World",
-    "Sakutaro",
-    "To the Island of the Witch",
-    "Ushiromiya Kinzo",
-    "The Sweet World of Witches",
-    "Dungeon",
-    "My Mission",
-    "Final Family Conference",
-    "The Next Head",
-    "Cause of the Tragedy",
-    "Journey\'s Endpoint",
-    "Ushiromiya Ange"
-  },
-  {
-    "Prologue",
-    "Magic of Miracles",
-    "A Proper Mystery",
-    "Locked-room Barrier",
-    "Furudo Erika",
-    "Witch of Miracles",
-    "Those Who Reach It",
-    "The Frantic Golden Drama",
-    "The True Family Conference",
-    "Revenge for 19 Years Ago",
-    "Morning of Tragedy",
-    "Ten Wedges to Pierce Witches",
-    "Reasoning and Inspection",
-    "Closet",
-    "The Great Court of Illusions",
-    "Revenge After 19 Years"
-  },
-  {
-    "Prologue",
-    "The Witch of Theatergoing",
-    "Game Master",
-    "True Feelings",
-    "The Annoying Guest",
-    "The Source of Magic",
-    "The Lovers",
-    "Magic of a Different Interpretation",
-    "Zepar and Furfur",
-    "Self-Reliance",
-    "Romantic Regrets",
-    "The Fate of Those Who Do Not Fight",
-    "Visiting the Crime Scenes",
-    "Detective Proclamation",
-    "A Small Contradiction",
-    "Logic Error",
-    "The Demon Wedding Ceremony",
-    "The Duel of the Lovers",
-    "Red and Blue Truth"
-  },
-  {
-    "Prologue",
-    "The Murder of Beatrice",
-    "Rosa\'s Confession",
-    "Ushiromiya Kinzo",
-    "Salò Republic",
-    "The Witch Who Came from the Sea",
-    "The Birth of Beatrice",
-    "Ghost Story of the VIP Room",
-    "Here\'s the Culprit",
-    "A New Life",
-    "The First Friend",
-    "Days Enraptured",
-    "New Days",
-    "A New Element",
-    "Days of Trial",
-    "Sprout of Love, Root of Love",
-    "Journey to the Golden Land",
-    "The Day the Witch Revived",
-    "The Witch Illusion Scatters"
-  },
-  {
-    "Prologue",
-    "To Rokkenjima",
-    "Six-year-old Ange",
-    "Returning the Gold",
-    "Halloween Party",
-    "Quiz Tournament (first half)",
-    "Quiz Tournament (question #1)",
-    "Quiz Tournament (second half)",
-    "Banquet of Witches and Humans",
-    "Bern\'s Puzzle",
-    "The Visitor Who Came Late",
-    "Black Cat Scratch Marks",
-    "Hachijo Tohya",
-    "The Book of the Truth",
-    "Hachijo Ikuko",
-    "Siege of the Fleet",
-    "Ange\'s Choice"
-  },
-  {
-	"testing",
-	"testing 2",
-	"testing 3"
-  }
-};
+int ONScripter::setDiscordID() {
+	initDiscord(script_h.readInt());
+	return RET_CONTINUE;
+}
 
 int ONScripter::setDiscordRPCCommand() {
 #if defined(LINUX) || defined(WIN32)
-	int32_t clicks = script_h.readInt();
-	char* backgroundMusicTitle = copystr(script_h.readStr());
-	char* scenarioString = copystr(script_h.readStr());
-	int32_t playTime = script_h.readInt(); // year 2038 problem
-	int32_t loadSaveTime = script_h.readInt(); // year 2038 problem
-	int32_t startTime = loadSaveTime - playTime;
-	char* clicksOrMusic;
-	int scenarioNumbers[2];
-
-	if (ons_cfg_options["discord-clicks-over-music"] == "noval") {
-		sprintf(clicksOrMusic, "%d", clicks); // not very clean, but it works
-	} else {
-		clicksOrMusic = backgroundMusicTitle;
-	}
-	
-	// ABSOLUTELY DISGUSTING CODE
-	scenarioNumbers[0] = atoi(&scenarioString[0]);
-
-	if (strcmp(&scenarioString[3], "\0")) {
-	  	scenarioNumbers[1] = atoi(&scenarioString[2]);
-	} else {
-		char buf[2];
-		buf[0] = scenarioString[2];
-		buf[1] = scenarioString[3];
-	  	scenarioNumbers[1] = atoi(buf);
-	};
-
-	char* scenario = scenarioList[scenarioNumbers[0]-1][scenarioNumbers[1]];
-
-	sendToLog(LogLevel::Info, "Discord RPC: %d %s %s %s %d\n", clicks, scenarioString, scenario, backgroundMusicTitle, startTime);
-	setPresence(scenario, clicksOrMusic, "butterfly", clicksOrMusic, "edsmiley", "tes5", startTime, NULL, "test11", NULL, NULL);
+	const char* state = script_h.readStr();
+	const char* details = script_h.readStr();
+	const int32_t startTimestamp = script_h.readInt();
+	const int32_t endTimestamp = script_h.readInt();
+	const char* largeImageKey = script_h.readStr();
+	const char* largeImageText = script_h.readStr();
+	const char* smallImageKey = script_h.readStr();
+	const char* smallImageText = script_h.readStr();
+	setPresence(state, details, largeImageText, largeImageKey, smallImageText, smallImageKey, startTimestamp, endTimestamp, NULL, NULL, NULL);
 #else
   	sendToLog(LogLevel::Warn, "RPC not implemented for platform.");
 #endif

@@ -17,13 +17,12 @@ DiscordState state{};
 discord::Core* core{};
 
 int updateCallbacks() {
-  
   state.core->RunCallbacks();
   return 0;
 };
 
-int initDiscord() {
-  auto result = discord::Core::Create(933377421372182550, DiscordCreateFlags_NoRequireDiscord, &core);
+int initDiscord(int32_t id) {
+  auto result = discord::Core::Create(id, DiscordCreateFlags_NoRequireDiscord, &core);
   state.core.reset(core);
   if (!state.core) {
       std::cout << "Failed to instantiate discord core! (err " << static_cast<int>(result)

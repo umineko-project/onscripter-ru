@@ -383,6 +383,8 @@ public:
 	int setwindow2Command();
 	int setwindowCommand();
 	int seteffectspeedCommand();
+	int setDiscordRPCCommand();
+	int setDiscordID();
 	int setcursorCommand();
 	int selectCommand();
 	int savetimeCommand();
@@ -498,7 +500,6 @@ public:
 	int drawbg2Command();
 	int drawbgCommand();
 	int drawCommand();
-	int setDiscordRPCCommand();
 	int deletescreenshotCommand();
 	int delayCommand();
 	int defineresetCommand();

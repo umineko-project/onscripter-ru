@@ -482,7 +482,7 @@ meson_configure() {
     fi
 
     local ret=0
-    LIBRARY_PATH=$outdir/lib:$LIBRARY_PATH $meson_executable --prefix="$outdir" --libdir=lib ${mesonopts[@]} $meson_command >"$logfile" || ret=$?
+    LIBRARY_PATH=$outdir/lib:$LIBRARY_PATH meson --prefix="$outdir" --libdir=lib ${mesonopts[@]} $meson_command >"$logfile" || ret=$?
     cd ..
     if (( $ret )); then
         tail -n 20 "$logfile"

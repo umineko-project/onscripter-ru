@@ -24,7 +24,7 @@ jobs:
         # Artifact name
         name: Linux build (dev)
         # Destination path
-        path: DerivedData/Posix-x86_64/onscripter-ru
+        path: /home/runner/work/onscripter-ru/onscripter-ru/DerivedData/Posix-x86_64/onscripter-ru
     - name: clean
       run: make clean
     - name: configure linux (release)
@@ -37,7 +37,7 @@ jobs:
         # Artifact name
         name: Linux build (release)
         # Destination path
-        path: DerivedData/Posix-x86_64/onscripter-ru
+        path: /home/runner/work/onscripter-ru/onscripter-ru/DerivedData/Posix-x86_64/onscripter-ru
     - name: Disable compiler overrides as they cause problems
       run: unset CC ; unset CXX ; unset CC_FOR_BUILD ; unset CXX_FOR_BUILD
     - name: Configure and build android (dev)
@@ -48,7 +48,7 @@ jobs:
         # Artifact name
         name: Android build (dev)
         # Destination path
-        path: DerivedData/Droid-package/onscripter-ru.apk
+        path: /home/runner/work/onscripter-ru/onscripter-ru/DerivedData/Droid-package/onscripter-ru.apk
     - name: clean
       run: make clean
     - name: Android build (release)
@@ -59,7 +59,7 @@ jobs:
         # Artifact name
         name: Android build (release)
         # Destination path
-        path: DerivedData/Droid-package/onscripter-ru.apk
+        path: /home/runner/work/onscripter-ru/onscripter-ru/DerivedData/Droid-package/onscripter-ru.apk
     - name: Disable compiler overrides as they cause problems
       run: unset CC ; unset CXX ; unset CC_FOR_BUILD ; unset CXX_FOR_BUILD
     - name: Set compilers compatible with Windows
@@ -74,7 +74,7 @@ jobs:
         # Artifact name
         name: Windows build (dev)
         # Destination path
-        path: DerivedData/MinGW-i686//onscripter-ru.exe
+        path: /home/runner/work/onscripter-ru/onscripter-ru/DerivedData/MinGW-i686//onscripter-ru.exe
     - name: clean
       run: make clean
     - name: configure Windows (release)
@@ -87,6 +87,6 @@ jobs:
         # Artifact name
         name: Windows build (release)
         # Destination path
-        path: DerivedData/MinGW-i686//onscripter-ru.exe
+        path: /home/runner/work/onscripter-ru/onscripter-ru/DerivedData/MinGW-i686//onscripter-ru.exe
     - name: clean
       run: make clean

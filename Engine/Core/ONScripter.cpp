@@ -442,6 +442,7 @@ static std::unordered_map<HashedString, CommandFunc> func_lut{
     {"drawbg", &ONScripter::drawbgCommand},
     {"draw", &ONScripter::drawCommand},
     {"discordrpc", &ONScripter::setDiscordRPCCommand},	  //ons-ru
+    {"discordid", &ONScripter::setDiscordID},		  //ons-ru
     {"deletescreenshot", &ONScripter::deletescreenshotCommand},
     {"delay", &ONScripter::delayCommand},
     {"definereset", &ONScripter::defineresetCommand},

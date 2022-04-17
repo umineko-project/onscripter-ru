@@ -7,14 +7,11 @@ mesonopts=(
 )
 
 if [ "$(getTarget)" == "win32" ]; then
-    mesonopts+=('-Dx11=false' '-Dglx=no')
-    meson_executable='i686-w64-mingw32-meson'
-else
-    meson_executable='meson'
+    mesonopts+=('-Dx11=false' '-Dglx=no' '--cross-file=linux-mingw-w64-32bit.txt')
 fi
-
 sources=(
     "https://github.com/anholt/libepoxy/archive/refs/tags/${pkgver}.tar.gz" #https://github.com/anholt/libepoxy/releases/latest
+    'https://raw.githubusercontent.com/mesonbuild/meson/master/cross/linux-mingw-w64-32bit.txt'
 )
 hashes=(
     '0b808a06c9685a62fca34b680abb8bc7fb2fda074478e329b063c1f872b826f6'
