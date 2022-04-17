@@ -2365,7 +2365,7 @@ int ONScripter::getLogDataCommand() {
 	return RET_CONTINUE;
 }
 
-const char* scenarioList[8][20] = {
+const char* scenarioList[9][20] = {
   {
     "Prologue",
     "Arrival at Niijima Airport",
@@ -2528,40 +2528,49 @@ const char* scenarioList[8][20] = {
     "Hachijo Ikuko",
     "Siege of the Fleet",
     "Ange\'s Choice"
+  },
+  {
+	"testing",
+	"testing 2",
+	"testing 3"
   }
-  
 };
 
 int ONScripter::setDiscordRPCCommand() {
 #if defined(LINUX) || defined(WIN32)
 	int32_t clicks = script_h.readInt();
-	const char* scenarioString = copystr(script_h.readStr());
-	const char* backgroundMusicTitle = copystr(script_h.readStr());
+	char* backgroundMusicTitle = copystr(script_h.readStr());
+	char* scenarioString = copystr(script_h.readStr());
 	int32_t playTime = script_h.readInt(); // year 2038 problem
 	int32_t loadSaveTime = script_h.readInt(); // year 2038 problem
 	int32_t startTime = loadSaveTime - playTime;
-	const char* clickOrMusic;
+	char* clicksOrMusic;
 	int scenarioNumbers[2];
-	sendToLog(LogLevel::Info, "Discord RPC: %d %s %s %d\n", clicks, scenarioString, backgroundMusicTitle, startTime);
 
 	if (ons_cfg_options["discord-clicks-over-music"] == "noval") {
-		clickOrMusic = std::to_string(clicks).c_str(); // not very clean, but it works
+		sprintf(clicksOrMusic, "%d", clicks); // not very clean, but it works
 	} else {
-		clickOrMusic = backgroundMusicTitle;
+		clicksOrMusic = backgroundMusicTitle;
 	}
 	
 	// ABSOLUTELY DISGUSTING CODE
-	if (scenarioString.length() == 3) {
-	  scenarioNumbers[0] = atoi(scenarioString[0]);
-	  scenarioNumbers[1] = atoi(scenarioString[2]);
+	scenarioNumbers[0] = atoi(&scenarioString[0]);
+
+	if (strcmp(&scenarioString[3], "\0")) {
+	  	scenarioNumbers[1] = atoi(&scenarioString[2]);
 	} else {
-	  scenarioNumbers[0] = atoi(scenarioString[0]);
-	  scenarioNumbers[1] = atoi(scenarioString[2]+scenarioString[3]);
+		char buf[2];
+		buf[0] = scenarioString[2];
+		buf[1] = scenarioString[3];
+	  	scenarioNumbers[1] = atoi(buf);
 	};
-	
-	setPresence("test", "test2", "butterfly", clickOrMusic, "edsmiley", scenarioString, startTime, NULL, "test11", NULL, NULL);
+
+	char* scenario = scenarioList[scenarioNumbers[0]-1][scenarioNumbers[1]];
+
+	sendToLog(LogLevel::Info, "Discord RPC: %d %s %s %s %d\n", clicks, scenarioString, scenario, backgroundMusicTitle, startTime);
+	setPresence(scenario, clicksOrMusic, "butterfly", clicksOrMusic, "edsmiley", "tes5", startTime, NULL, "test11", NULL, NULL);
 #else
-  sendToLog(LogLevel::Warn, "RPC not implemented for platform.");
+  	sendToLog(LogLevel::Warn, "RPC not implemented for platform.");
 #endif
 	return RET_CONTINUE;
 }

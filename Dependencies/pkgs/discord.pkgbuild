@@ -21,7 +21,14 @@ prebuild() {
 compile() {
     local logfile="$logdir/$pkgname.compile.log"
     local ret=0
-    $CXX -o libdiscordsdk.so *.cpp -fpermissive -shared -fPIC &>"$logfile" || ret=$?
+    if [ "$(getTarget)" == "win32" ]; then
+        FILEEXTENSION=.dll
+    elif [ "$(getTarget)" == "linux-like" ]; then
+        FILEEXTENSION=.so
+    else
+        FILEEXTENSION=.dylib
+    fi
+    $CXX -o libdiscordsdk$FILEEXTENSION *.cpp -fpermissive -shared -L$outdir/lib/ -ldiscord_game_sdk -fPIC &>"$logfile" || ret=$?
     if (( $ret )); then
         tail -n 20 "$logfile"
         error "Compiling %s failed" "$pkgname"
@@ -34,7 +41,7 @@ compile() {
 copy() {
     local logfile="$logdir/$pkgname.install.log"
     local ret=0
-    cp libdiscordsdk.so $outdir/lib/ &>"$logfile" || ret=$?
+    cp libdiscordsdk$FILEEXTENSION $outdir/lib/ &>"$logfile" || ret=$?
     cp *.h $outdir/include/discord/ &>"$logfile" || ret=$?
     if (( $ret )); then
         tail -n 20 "$logfile"

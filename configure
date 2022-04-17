@@ -501,9 +501,9 @@ fi
 echo -n "Deciding on flags...      "
 
 case "$SYS" in
-Posix)  EXE=     ; OBJ=.o ; LIB=.a ; W32= ;;
-MacOSX) EXE=     ; OBJ=.o ; LIB=.a ; W32= ;;
-MinGW)  EXE=.exe ; OBJ=.o ; LIB=.a ; W32=true ;;
+Posix)  EXE=     ; OBJ=.o ; LIB=.a ; SHAREDLIB=.so; W32= ;;
+MacOSX) EXE=     ; OBJ=.o ; LIB=.a ; SHAREDLIB=.dylib; W32= ;;
+MinGW)  EXE=.exe ; OBJ=.o ; LIB=.a ; SHAREDLIB=.dll; W32=true ;;
 Droid)  EXE=     ; OBJ=.o ; LIB=.a ; W32= ;;
 *)      echo "error"
         echo "Found an unsupported system $SYS!"
@@ -533,7 +533,7 @@ case "$CXX_TMP:$SYS" in
     LINK_START_GROUP="-Wl,--start-group"
     LINK_END_GROUP="-Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic -Wl,--end-group"
     EXTRALDFLAGS="$EXTRALDFLAGS -static-libgcc"
-    EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DWIN32 -DPTW32_STATIC_LIB"
+    EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DWIN32 -DPTW32_STATIC_LIB -fpermissive"
     EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -lwinmm -lshlwapi -lws2_32 -lglu32 -lopengl32 -lbcrypt -lfribidi -Wl,--wrap=SDL_LoadObject -Wl,--large-address-aware"
   ;;
   *clang*:"Droid")
@@ -548,7 +548,7 @@ case "$CXX_TMP:$SYS" in
     LINK_START_GROUP="-Wl,--start-group"
     LINK_END_GROUP="-Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic -Wl,--end-group"
     EXTRALDFLAGS="$EXTRALDFLAGS -static-libgcc -static-libstdc++ -mthreads"
-    EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DWIN32 -DPTW32_STATIC_LIB -mthreads"
+    EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DWIN32 -DPTW32_STATIC_LIB -mthreads -fpermissive"
     EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -lwinmm -lshlwapi -lws2_32 -lglu32 -lopengl32 -lbcrypt -lfribidi -Wl,--wrap=SDL_LoadObject -Wl,--large-address-aware"
   ;;
   g++*:"Posix" | *clang*:"Posix")
@@ -556,7 +556,7 @@ case "$CXX_TMP:$SYS" in
     LINK_END_GROUP="-Wl,--end-group"
     EXTRALDFLAGS="$EXTRALDFLAGS -static-libgcc -static-libstdc++"
     #FIXME: Passing -DLINUX is roughly a hack, we should properly handle BSD.
-    EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DLINUX -D__STDC_CONSTANT_MACROS"
+    EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DLINUX -D__STDC_CONSTANT_MACROS -fpermissive"
     #FIXME: These flags originate from ONScripter project and need to be updated.
     if [ "$POSIX" == "FreeBSD" ]; then
       EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DCONST_ICONV"
@@ -633,8 +633,8 @@ genlink avcodec
 genlink swscale
 genlink swresample
 genlink ass
-genlink discordsdk .so
-genlink discord_game_sdk .so
+genlink discordsdk $SHAREDLIB
+genlink discord_game_sdk $SHAREDLIB
 genlink fribidi
 genlink freetype
 genlink harfbuzz

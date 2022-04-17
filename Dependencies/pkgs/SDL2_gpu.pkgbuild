@@ -66,10 +66,9 @@ build() {
     case $(getTarget) in
         win32)
             if $CROSS_BUILD; then
-                #epoxy is breaking so far
                 cmake -G "Unix Makefiles" -DCMAKE_SYSTEM_NAME=Windows ${IFS# '-DSDL_gpu_USE_SYSTEM_EPOXY=ON'} -DCMAKE_C_FLAGS="$lcf" -DCMAKE_CXX_FLAGS="$lcxf" &>"$logfile" || ret=$?
             else
-                cmake -G "MSYS Makefiles" -DSDL_gpu_USE_SYSTEM_EPOXY=ON -DSDL_gpu_DISABLE_GLES=OFF -DSDL_gpu_DISABLE_GLES_1=ON -DSDL_gpu_DYNAMIC_GLES_2=ON -DSDL_gpu_DYNAMIC_GLES_3=ON -DCMAKE_C_FLAGS="$lcf" -DCMAKE_CXX_FLAGS="$lcxf" &>"$logfile" || ret=$?
+                cmake -G "MSYS Makefiles" -DSDL_gpu_USE_SYSTEM_GLEW=ON -DSDL_gpu_DISABLE_GLES=OFF -DSDL_gpu_DISABLE_GLES_1=ON -DSDL_gpu_DYNAMIC_GLES_2=ON -DSDL_gpu_DYNAMIC_GLES_3=ON -DCMAKE_C_FLAGS="$lcf" -DCMAKE_CXX_FLAGS="$lcxf" &>"$logfile" || ret=$?
             fi
         ;;
         darwin-macOS)
