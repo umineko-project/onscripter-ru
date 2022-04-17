@@ -18,8 +18,8 @@ jobs:
       run: ./configure
     - name: make
       run: make -j $(getconf _NPROCESSORS_ONLN)
-    - name: Download a Build Artifact
-      uses: actions/download-artifact@v3.0.0
+    - name: Download Artifact
+      uses: actions/upload-artifact@v3.0.0
       with:
         # Artifact name
         name: Linux build (dev)
@@ -31,8 +31,8 @@ jobs:
       run: ./configure --release-build --strip-binary
     - name: make
       run: make -j $(getconf _NPROCESSORS_ONLN)
-    - name: Download a Build Artifact
-      uses: actions/download-artifact@v3.0.0
+    - name: Download Artifact
+      uses: actions/upload-artifact@v3.0.0
       with:
         # Artifact name
         name: Linux build (release)
@@ -42,8 +42,8 @@ jobs:
       run: unset CC ; unset CXX ; unset CC_FOR_BUILD ; unset CXX_FOR_BUILD
     - name: Configure and build android (dev)
       run: ./Scripts/quickdroid.tool --normal
-    - name: Download a Build Artifact
-      uses: actions/download-artifact@v3.0.0
+    - name: Download Artifact
+      uses: actions/upload-artifact@v3.0.0
       with:
         # Artifact name
         name: Android build (dev)
@@ -53,8 +53,8 @@ jobs:
       run: make clean
     - name: Android build (release)
       run: ./Scripts/quickdroid.tool --release
-    - name: Download a Build Artifact
-      uses: actions/download-artifact@v3.0.0
+    - name: Download Artifact
+      uses: actions/upload-artifact@v3.0.0
       with:
         # Artifact name
         name: Android build (release)
@@ -68,8 +68,8 @@ jobs:
       run: ./configure --cross=i686-w64-mingw32
     - name: make
       run: make -j $(getconf _NPROCESSORS_ONLN)
-    - name: Download a Build Artifact
-      uses: actions/download-artifact@v3.0.0
+    - name: Download Artifact
+      uses: actions/upload-artifact@v3.0.0
       with:
         # Artifact name
         name: Windows build (dev)
@@ -81,8 +81,8 @@ jobs:
       run: ./configure --cross=i686-w64-mingw32 --release-build --strip-binary 
     - name: make
       run: make -j $(getconf _NPROCESSORS_ONLN)
-    - name: Download a Build Artifact
-      uses: actions/download-artifact@v3.0.0
+    - name: Download Artifact
+      uses: actions/upload-artifact@v3.0.0
       with:
         # Artifact name
         name: Windows build (release)
