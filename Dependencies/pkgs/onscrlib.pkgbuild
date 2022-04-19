@@ -30,7 +30,7 @@ if [ "$(getTarget)" == "droid" ] && [ "$(getTargetCPU)" != "arm" ]; then
     depends=(${depends[@]} 'libunwind');
 fi
 
-if [ "$(getTarget)" == "linux-like" ] || [ "$(getTarget)" == "win32" ]; then
+if [[ $USEDISCORD ]]; then
     depends=('discord' ${depends[@]});
 fi
 

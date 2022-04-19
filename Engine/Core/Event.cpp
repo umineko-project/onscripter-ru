@@ -11,6 +11,9 @@
 #include "Engine/Components/Async.hpp"
 #if defined(DISCORD)
 #include "Engine/Components/DiscordEvents.hpp"
+namespace {
+volatile bool interrupted{false};
+}
 #endif
 #include "Engine/Components/Joystick.hpp"
 #include "Engine/Components/Window.hpp"
@@ -1421,12 +1424,6 @@ void ONScripter::constantRefresh() {
 		effect_current = nullptr;
 		event_mode &= ~(WAIT_INPUT_MODE);
 	}
-#if defined(DISCORD)
-	auto it = ons.ons_cfg_options.find("discord");
-	if (it != ons.ons_cfg_options.end()) {
-		runDiscordCallbacks();
-	}
-#endif
 	constant_refresh_mode     = REFRESH_NONE_MODE;
 	constant_refresh_executed = true;
 }
@@ -1446,6 +1443,15 @@ void ONScripter::runEventLoop() {
 	bool started_in_automode = automode_flag;
 
 	while (true) {
+#if defined(DISCORD)
+		auto it = ons.ons_cfg_options.find("discord");
+		if (it != ons.ons_cfg_options.end()) {
+			signal(SIGINT, [](int) { interrupted = true; });
+			if (!interrupted) {
+				runDiscordCallbacks();
+			}
+		}
+#endif
 		event = std::move(localEventQueue.back());
 		localEventQueue.pop_back();
 		endOfEventBatch = false;

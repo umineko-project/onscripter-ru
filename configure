@@ -953,6 +953,7 @@ export CFLAGS   := -I\$(EXTLIB)/include \$(CFLAGS) $EXTRACFLAGS
 export CPPFLAGS := -I\$(EXTLIB)/include \$(CPPFLAGS) $EXTRACFLAGS
 export LDFLAGS  := -L\$(EXTLIB)/lib \$(LDFLAGS) $EXTRALDFLAGS
 export DISCORDFLAGS := $DISCORDFLAGS
+export USEDISCORD := $USEDISCORD
 export CSTD     := $CSTD
 export CXXSTD   := $CXXSTD
 
