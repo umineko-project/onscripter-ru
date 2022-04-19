@@ -1328,12 +1328,6 @@ void ONScripter::advanceGameState(uint64_t ns) {
 
 	// update animation clocks
 	advanceAIclocks(ns);
-#if defined(DISCORD)
-	auto it = ons.ons_cfg_options.find("discord");
-	if (it != ons.ons_cfg_options.end()) {
-		runDiscordCallbacks();
-	}
-#endif
 	// should we make this a function?
 	for (auto &ss : spritesets) {
 		if (ss.second.warpAmplitude != 0) {
@@ -1427,7 +1421,12 @@ void ONScripter::constantRefresh() {
 		effect_current = nullptr;
 		event_mode &= ~(WAIT_INPUT_MODE);
 	}
-
+#if defined(DISCORD)
+	auto it = ons.ons_cfg_options.find("discord");
+	if (it != ons.ons_cfg_options.end()) {
+		runDiscordCallbacks();
+	}
+#endif
 	constant_refresh_mode     = REFRESH_NONE_MODE;
 	constant_refresh_executed = true;
 }

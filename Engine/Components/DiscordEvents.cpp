@@ -1,10 +1,4 @@
 #if defined(DISCORD)
-#include <cassert>
-#include <csignal>
-#include <cstdio>
-#include <cstdlib>
-#include <iostream>
-#include <thread>
 #include <discord/discord.h>
 #include "Support/FileIO.hpp"
 
@@ -21,13 +15,12 @@ void initDiscord(int32_t id) {
   auto result = discord::Core::Create(id, DiscordCreateFlags_NoRequireDiscord, &core);
   state.core.reset(core);
   if (!state.core) {
-      std::cout << "Failed to instantiate discord core! (err " << static_cast<int>(result)
-                << ")\n";
+      sendToLog(LogLevel::Error, "%d\n", static_cast<int>(result));
       std::exit(-1);
   }
   state.core->SetLogHook(
     discord::LogLevel::Debug, [](discord::LogLevel level, const char* message) {
-        std::cerr << "Log(" << static_cast<uint32_t>(level) << "): "/*beato trollface in unicode when*/ << message << "\n";
+        sendToLog(LogLevel::Error, "Log( %d) %s\n", static_cast<uint32_t>(level), message);
     });
 }
 
@@ -45,13 +38,12 @@ void setPresence(const char* details, const char* currentState, const char* larg
   activity.GetParty().GetSize().SetMaxSize(partySizeMax);
   activity.SetType(discord::ActivityType::Playing);
   state.core->ActivityManager().UpdateActivity(activity, [](discord::Result result) {
-      std::cout << ((result == discord::Result::Ok) ? "Succeeded" : "Failed")
-                << " updating activity!\n";
+      sendToLog(((result == discord::Result::Ok) ? LogLevel::Error : LogLevel::Info), " updating activity!\n");
   });
 }
 
 void runDiscordCallbacks() {
   sendToLog(LogLevel::Error, "ratiod");
-  std::cout << (const char*) state.core->RunCallbacks();
+  sendToLog(LogLevel::Info, (const char*) state.core->RunCallbacks());
 }
 #endif
