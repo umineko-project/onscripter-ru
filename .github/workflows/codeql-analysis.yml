@@ -39,7 +39,10 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-
+    - name: install dependencies
+      run: sudo apt install yasm libreadline-dev libasound-dev libgl1-mesa-dev libegl1-mesa-dev libxrandr-dev python3-pip
+    - name: install meson via pip
+      run: pip3 install meson ninja
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v2
