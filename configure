@@ -162,6 +162,10 @@ do
         EXTRAOSCFLAGS="$EXTRAOSCFLAGS -pedantic" ;;
       --with-werror | -with-werror)
         EXTRAOSCFLAGS="$EXTRAOSCFLAGS -Werror" ;;
+      --with-discord | -with-discord)
+        DISCORDFLAGS="-ldiscord_game_sdk -ldiscordsdk"
+        EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DDISCORD"
+        USEDISCORD=true ;;
       --unsupported-compiler | -unsupported-compiler)
         UNSUPPORTED_COMPILER=true ;;
       --unsupported-compiler=* | -unsupported-compiler=*)
@@ -538,11 +542,10 @@ case "$CXX_TMP:$SYS" in
   ;;
   *clang*:"Droid")
     LINK_START_GROUP="-Wl,--start-group"
-    LINK_END_GROUP="-Wl,--end-group"
+    LINK_END_GROUP="--end-group"
     EXTRACFLAGS="$EXTRACFLAGS -fPIC"
     EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DDROID"
     EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -shared -static-libstdc++"
-    IGNORED_LIBS=( 'discordsdk' 'discord_game_sdk' )
   ;;
   *g++*:"MinGW")
     LINK_START_GROUP="-Wl,--start-group"
@@ -633,8 +636,10 @@ genlink avcodec
 genlink swscale
 genlink swresample
 genlink ass
-genlink discordsdk $SHAREDLIB
-genlink discord_game_sdk $SHAREDLIB
+if [[ $USEDISCORD ]]; then
+  genlink discordsdk $SHAREDLIB
+  genlink discord_game_sdk $SHAREDLIB
+fi
 genlink fribidi
 genlink freetype
 genlink harfbuzz
@@ -717,7 +722,6 @@ echo -n "Preparing build tree...   "
 SOURCES=(
   'Engine/Components/Async.cpp'
   'Engine/Components/Dialogue.cpp'
-  'Engine/Components/DiscordEvents.cpp'
   'Engine/Components/DynamicProperty.cpp'
   'Engine/Components/Fonts.cpp'
   'Engine/Components/GlyphAtlas.cpp'
@@ -778,6 +782,15 @@ SOURCES=(
   'External/slre.c'
   "${RESOURCE_FILE}"
 )
+
+if [[ $USEDISCORD ]]; then
+  SOURCES+=(
+    'Engine/Components/DiscordEvents.cpp'
+  )
+  HEADERS+=(
+    'Engine/Components/DiscordEvents.hpp'
+  )
+fi
 
 HEADERS=(
   'Engine/Components/Async.hpp'
@@ -939,6 +952,7 @@ export PATH     := \$(EXTLIB)/bin:\$(PATH)
 export CFLAGS   := -I\$(EXTLIB)/include \$(CFLAGS) $EXTRACFLAGS
 export CPPFLAGS := -I\$(EXTLIB)/include \$(CPPFLAGS) $EXTRACFLAGS
 export LDFLAGS  := -L\$(EXTLIB)/lib \$(LDFLAGS) $EXTRALDFLAGS
+export DISCORDFLAGS := $DISCORDFLAGS
 export CSTD     := $CSTD
 export CXXSTD   := $CXXSTD
 
@@ -977,7 +991,7 @@ LIBS = \$(EXTRAOSLDFLAGS) -L\$(EXTLIB)/lib $LINK_START_GROUP \\
 	$LINKSDL2_mixer $LINKogg $LINKvorbis $LINKvorbisfile \\
 	$LINKSDL2_gpu $LINKepoxy $LINKbz2 \\
 	$LINKavutil $LINKavformat $LINKavcodec $LINKswscale $LINKswresample \\
-	$LINKass $LINKdiscordsdk $LINKdiscord_game_sdk $LINKusb $LINKfribidi $LINKharfbuzz $LINKunwind $LINK_END_GROUP
+	$LINKass $LINKusb $LINKfribidi $LINKharfbuzz $LINKunwind $LINK_END_GROUP
 
 .SUFFIXES:
 .SUFFIXES: $OBJ .cpp .h .c
@@ -1023,7 +1037,7 @@ cat >> "$BUILD_PATH/Makefile" <<_EOF
 
 \$(BUILD_PATH)/\$(TARGET)\$(EXESUFFIX): \$(ONSCRIPTER_OBJS)
 	@echo "[LINK] \$(BUILD_PATH)/\$(TARGET)\$(EXESUFFIX)"
-	@\$(CXX) -o \$@ \$(LDFLAGS) \$(ONSCRIPTER_OBJS) \$(LIBS)
+	@\$(CXX) -o \$@ \$(LDFLAGS) \$(DISCORDFLAGS) \$(ONSCRIPTER_OBJS) \$(LIBS)
 
 \$(BUILD_PATH)/%\$(OBJSUFFIX): \$(PROJECT)/%.cpp
 	@echo "[CXX] \$<"

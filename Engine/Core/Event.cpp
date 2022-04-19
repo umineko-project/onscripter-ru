@@ -9,7 +9,9 @@
 
 #include "Engine/Core/ONScripter.hpp"
 #include "Engine/Components/Async.hpp"
+#if defined(DISCORD)
 #include "Engine/Components/DiscordEvents.hpp"
+#endif
 #include "Engine/Components/Joystick.hpp"
 #include "Engine/Components/Window.hpp"
 #include "Engine/Layers/Media.hpp"
@@ -377,7 +379,6 @@ void ONScripter::waitEvent(int count, bool nopPreferred) {
 		// On droid it is not necessary and it additionally breaks background app handling in Android_PumpEvents
 		SDL_PollEvent(nullptr);
 #endif
-
 		if (show_fps_counter && !(skip_mode & SKIP_SUPERSKIP)) {
 			static std::deque<uint32_t> ticksList;
 			// display fps counter in title bar averaged over 30 frames
@@ -416,7 +417,6 @@ void ONScripter::waitEvent(int count, bool nopPreferred) {
 	} while (count > 0 || !timerBreakout); // if we are told not to break out by timer, this is an infinite loop
 	//sendToLog(LogLevel::Info, "-----------------\n");
 	nested_calls--;
-
 	lastExitTime = SDL_GetTicks();
 
 	// New process --
@@ -1328,7 +1328,12 @@ void ONScripter::advanceGameState(uint64_t ns) {
 
 	// update animation clocks
 	advanceAIclocks(ns);
-
+#if defined(DISCORD)
+	auto it = ons.ons_cfg_options.find("discord");
+	if (it != ons.ons_cfg_options.end()) {
+		runDiscordCallbacks();
+	}
+#endif
 	// should we make this a function?
 	for (auto &ss : spritesets) {
 		if (ss.second.warpAmplitude != 0) {
@@ -1442,7 +1447,6 @@ void ONScripter::runEventLoop() {
 	bool started_in_automode = automode_flag;
 
 	while (true) {
-		updateCallbacks();
 		event = std::move(localEventQueue.back());
 		localEventQueue.pop_back();
 		endOfEventBatch = false;

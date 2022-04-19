@@ -1,4 +1,4 @@
-#if defined(LINUX) || defined(WIN32)
+#if defined(DISCORD)
 #include <cassert>
 #include <csignal>
 #include <cstdio>
@@ -6,6 +6,7 @@
 #include <iostream>
 #include <thread>
 #include <discord/discord.h>
+#include "Support/FileIO.hpp"
 
 struct DiscordState {
     discord::User currentUser;
@@ -16,12 +17,7 @@ struct DiscordState {
 DiscordState state{};
 discord::Core* core{};
 
-int updateCallbacks() {
-  state.core->RunCallbacks();
-  return 0;
-};
-
-int initDiscord(int32_t id) {
+void initDiscord(int32_t id) {
   auto result = discord::Core::Create(id, DiscordCreateFlags_NoRequireDiscord, &core);
   state.core.reset(core);
   if (!state.core) {
@@ -33,10 +29,9 @@ int initDiscord(int32_t id) {
     discord::LogLevel::Debug, [](discord::LogLevel level, const char* message) {
         std::cerr << "Log(" << static_cast<uint32_t>(level) << "): "/*beato trollface in unicode when*/ << message << "\n";
     });
-  return 0;
 }
 
-int setPresence(const char* details, const char* currentState, const char* largeImageKey, const char* largeImageText, const char* smallImageKey, const char* smallImageText, int64_t startTimestamp, int64_t endTimestamp, const char* partyId, int partySize, int partySizeMax) {
+void setPresence(const char* details, const char* currentState, const char* largeImageKey, const char* largeImageText, const char* smallImageKey, const char* smallImageText, int64_t startTimestamp, int64_t endTimestamp, const char* partyId, int partySize, int partySizeMax) {
   discord::Activity activity{};
   activity.SetDetails(details);
   activity.SetState(currentState);
@@ -53,6 +48,10 @@ int setPresence(const char* details, const char* currentState, const char* large
       std::cout << ((result == discord::Result::Ok) ? "Succeeded" : "Failed")
                 << " updating activity!\n";
   });
-  return 0;
+}
+
+void runDiscordCallbacks() {
+  sendToLog(LogLevel::Error, "ratiod");
+  std::cout << (const char*) state.core->RunCallbacks();
 }
 #endif

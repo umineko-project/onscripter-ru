@@ -28,7 +28,7 @@ compile() {
     else
         FILEEXTENSION=.dylib
     fi
-    $CXX -o libdiscordsdk$FILEEXTENSION *.cpp -fpermissive -shared -L$outdir/lib/ -ldiscord_game_sdk -fPIC &>"$logfile" || ret=$?
+    $CXX -o libdiscordsdk$FILEEXTENSION *.cpp -g -shared -L$outdir/lib/ -ldiscord_game_sdk -fPIC &>"$logfile" || ret=$?
     if (( $ret )); then
         tail -n 20 "$logfile"
         error "Compiling %s failed" "$pkgname"

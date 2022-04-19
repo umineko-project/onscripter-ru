@@ -224,10 +224,8 @@ configopts_win32=(
 )
 
 configopts_linux=(
-    '--disable-vdpau'
-    '--disable-vaapi'
-    '--disable-hwaccels'
-    '--disable-decoders'
+    '--extra-libs=-static'
+    '--extra-cflags=--static'
 )
 
 if $CROSS_BUILD; then

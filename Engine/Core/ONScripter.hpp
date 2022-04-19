@@ -383,8 +383,10 @@ public:
 	int setwindow2Command();
 	int setwindowCommand();
 	int seteffectspeedCommand();
+#if defined(DISCORD)
 	int setDiscordRPCCommand();
 	int setDiscordID();
+#endif
 	int setcursorCommand();
 	int selectCommand();
 	int savetimeCommand();

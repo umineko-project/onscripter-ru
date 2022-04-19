@@ -101,6 +101,9 @@ void *__wrap_SDL_LoadObject(const char *sofile) {
 #ifdef WIN32
 	printf("     --waveout-audio              use the windows waveform audio driver (instead of Direct Sound)\n");
 #endif
+#if defined(DISCORD)
+	printf("     --discord                    use discord integration\n");
+#endif
 	printf("     --match-audiodevice-to-bgm   reset audio to match bgm specs\n");
 	printf("     --nomatch-audiodevice-to-bgm don't reset audio to match bgm specs (default)\n");
 	printf("     --registry file              set a registry file\n");
@@ -227,6 +230,11 @@ static void parseOptions(int argc, char **argv, bool &hasArchivePath) {
 				argc--;
 				argv++;
 				ons.ons_cfg_options["d3dcompiler"] = argv[0];
+#if defined(DISCORD)
+			}
+			else if (!std::strcmp(argv[0] + 1, "-discord")) {
+				ons.ons_cfg_options["discord"] = argv[0];
+#endif
 			} else if (!std::strcmp(argv[0] + 1, "-match-audiodevice-to-bgm")) {
 				ons.setMatchBgmAudio(true);
 				ons.ons_cfg_options["match-audiodevice-to-bgm"] = "noval";

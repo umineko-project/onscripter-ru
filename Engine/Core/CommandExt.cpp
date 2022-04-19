@@ -9,9 +9,8 @@
 
 #include "Engine/Core/ONScripter.hpp"
 #include "Engine/Components/Async.hpp"
-#if defined(LINUX) || defined(WIN32)
+#if defined(DISCORD)
 #include "Engine/Components/DiscordEvents.hpp"
-#include <chrono>
 #endif
 #include "Engine/Components/Joystick.hpp"
 #include "Engine/Components/Window.hpp"
@@ -2365,27 +2364,33 @@ int ONScripter::getLogDataCommand() {
 	return RET_CONTINUE;
 }
 
+#if defined(DISCORD)
 int ONScripter::setDiscordID() {
-	initDiscord(script_h.readInt());
+	auto it = ons.ons_cfg_options.find("discord");
+	if (it != ons.ons_cfg_options.end()) {
+		initDiscord(atoi(script_h.readStr()));
+	} else {
+		sendToLog(LogLevel::Error, "Discord RPC is disabled.\n");
+	}
 	return RET_CONTINUE;
 }
 
 int ONScripter::setDiscordRPCCommand() {
-#if defined(LINUX) || defined(WIN32)
 	const char* state = script_h.readStr();
 	const char* details = script_h.readStr();
-	const int32_t startTimestamp = script_h.readInt();
-	const int32_t endTimestamp = script_h.readInt();
 	const char* largeImageKey = script_h.readStr();
 	const char* largeImageText = script_h.readStr();
 	const char* smallImageKey = script_h.readStr();
 	const char* smallImageText = script_h.readStr();
-	setPresence(state, details, largeImageText, largeImageKey, smallImageText, smallImageKey, startTimestamp, endTimestamp, NULL, NULL, NULL);
-#else
-  	sendToLog(LogLevel::Warn, "RPC not implemented for platform.");
-#endif
+	const int32_t startTimestamp = script_h.readInt();
+	const int32_t endTimestamp = script_h.readInt();
+	auto it = ons.ons_cfg_options.find("discord");
+	if (it != ons.ons_cfg_options.end()) {
+		setPresence(state, details, largeImageText, largeImageKey, smallImageText, smallImageKey, startTimestamp, endTimestamp, NULL, NULL, NULL);
+	}
 	return RET_CONTINUE;
 }
+#endif
 
 int ONScripter::getUniqueLogEntryIndexCommand() {
 	// Gets the log entry index for a label. Only to be used for labels that appear just once in the log!
