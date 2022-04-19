@@ -1,7 +1,7 @@
 #if defined(DISCORD)
 #include <discord/discord.h>
 #include "Support/FileIO.hpp"
-
+#include <iostream>
 struct DiscordState {
     discord::User currentUser;
 
@@ -11,8 +11,8 @@ struct DiscordState {
 DiscordState state{};
 discord::Core* core{};
 
-void initDiscord(int32_t id) {
-  auto result = discord::Core::Create(id, DiscordCreateFlags_NoRequireDiscord, &core);
+void initDiscord(const char* id) {
+  auto result = discord::Core::Create(strtoll(id, NULL, 10), DiscordCreateFlags_NoRequireDiscord, &core);
   state.core.reset(core);
   if (!state.core) {
       sendToLog(LogLevel::Error, "%d\n", static_cast<int>(result));
@@ -24,7 +24,7 @@ void initDiscord(int32_t id) {
     });
 }
 
-void setPresence(const char* details, const char* currentState, const char* largeImageKey, const char* largeImageText, const char* smallImageKey, const char* smallImageText, int64_t startTimestamp, int64_t endTimestamp, const char* partyId, int partySize, int partySizeMax) {
+void setPresence(const char* details, const char* currentState, const char* largeImageKey, const char* largeImageText, const char* smallImageKey, const char* smallImageText, const char* startTimestamp, const char* endTimestamp) {
   discord::Activity activity{};
   activity.SetDetails(details);
   activity.SetState(currentState);
@@ -32,18 +32,15 @@ void setPresence(const char* details, const char* currentState, const char* larg
   activity.GetAssets().SetSmallText(smallImageText);
   activity.GetAssets().SetLargeImage(largeImageKey);
   activity.GetAssets().SetLargeText(largeImageText);
-  activity.GetTimestamps().SetStart(startTimestamp);
-  activity.GetTimestamps().SetEnd(endTimestamp);
-  activity.GetParty().GetSize().SetCurrentSize(partySize);
-  activity.GetParty().GetSize().SetMaxSize(partySizeMax);
+  activity.GetTimestamps().SetStart(strtoll(startTimestamp, NULL, 10));
+  activity.GetTimestamps().SetEnd(strtoll(endTimestamp, NULL, 10));
   activity.SetType(discord::ActivityType::Playing);
   state.core->ActivityManager().UpdateActivity(activity, [](discord::Result result) {
-      sendToLog(((result == discord::Result::Ok) ? LogLevel::Error : LogLevel::Info), " updating activity!\n");
+      sendToLog(((result == discord::Result::Ok) ? LogLevel::Info : LogLevel::Error), "Updating activity!\n");
   });
 }
 
 void runDiscordCallbacks() {
-  sendToLog(LogLevel::Error, "ratiod");
-  sendToLog(LogLevel::Info, (const char*) state.core->RunCallbacks());
+  state.core->RunCallbacks();
 }
 #endif

@@ -2365,28 +2365,18 @@ int ONScripter::getLogDataCommand() {
 }
 
 #if defined(DISCORD)
-int ONScripter::setDiscordID() {
-	auto it = ons.ons_cfg_options.find("discord");
-	if (it != ons.ons_cfg_options.end()) {
-		initDiscord(atoi(script_h.readStr()));
-	} else {
-		sendToLog(LogLevel::Error, "Discord RPC is disabled.\n");
-	}
-	return RET_CONTINUE;
-}
-
 int ONScripter::setDiscordRPCCommand() {
-	const char* state = script_h.readStr();
-	const char* details = script_h.readStr();
-	const char* largeImageKey = script_h.readStr();
-	const char* largeImageText = script_h.readStr();
-	const char* smallImageKey = script_h.readStr();
-	const char* smallImageText = script_h.readStr();
-	const int32_t startTimestamp = script_h.readInt();
-	const int32_t endTimestamp = script_h.readInt();
+	std::string state = script_h.readStr();
+	std::string details = script_h.readStr();
+	std::string largeImageKey = script_h.readStr();
+	std::string largeImageText = script_h.readStr();
+	std::string smallImageKey = script_h.readStr();
+	std::string smallImageText = script_h.readStr();
+	std::string startTimestamp = script_h.readStr();
+	std::string endTimestamp = script_h.readStr();
 	auto it = ons.ons_cfg_options.find("discord");
 	if (it != ons.ons_cfg_options.end()) {
-		setPresence(state, details, largeImageText, largeImageKey, smallImageText, smallImageKey, startTimestamp, endTimestamp, NULL, NULL, NULL);
+		setPresence(state.c_str(), details.c_str(), largeImageKey.c_str(), largeImageText.c_str(), smallImageKey.c_str(), smallImageText.c_str(), startTimestamp.c_str(), endTimestamp.c_str());
 	}
 	return RET_CONTINUE;
 }

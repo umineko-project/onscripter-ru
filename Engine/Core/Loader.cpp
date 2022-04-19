@@ -13,7 +13,9 @@
 #include "Support/FileIO.hpp"
 #include "Support/Unicode.hpp"
 #include "Resources/Support/Version.hpp"
-
+#if defined(DISCORD)
+#include "Engine/Components/DiscordEvents.hpp"
+#endif
 #include <unistd.h>
 #ifdef WIN32
 #include <windows.h>
@@ -103,6 +105,7 @@ void *__wrap_SDL_LoadObject(const char *sofile) {
 #endif
 #if defined(DISCORD)
 	printf("     --discord                    use discord integration\n");
+	printf("     --discord-id id              set discord id for integration (REQUIRED)\n");
 #endif
 	printf("     --match-audiodevice-to-bgm   reset audio to match bgm specs\n");
 	printf("     --nomatch-audiodevice-to-bgm don't reset audio to match bgm specs (default)\n");
@@ -233,7 +236,12 @@ static void parseOptions(int argc, char **argv, bool &hasArchivePath) {
 #if defined(DISCORD)
 			}
 			else if (!std::strcmp(argv[0] + 1, "-discord")) {
-				ons.ons_cfg_options["discord"] = argv[0];
+				ons.ons_cfg_options["discord"] = "noval";
+			}
+			else if (!std::strcmp(argv[0] + 1, "-discord-id")) {
+				argc--;
+				argv++;
+				ons.ons_cfg_options["discord-id"] = argv[0];
 #endif
 			} else if (!std::strcmp(argv[0] + 1, "-match-audiodevice-to-bgm")) {
 				ons.setMatchBgmAudio(true);
@@ -848,7 +856,19 @@ int main(int argc, char **argv) {
 	} else if (FileIO::getLogMode() == FileIO::LogMode::Console) {
 		FileIO::prepareConsole(150, 30);
 	}
-
+#if defined(DISCORD)
+	if (opts.find("discord") != opts.end()) {
+		
+		// needed to be set once to make sure that the discord integration does not fail
+		//sendToLog(LogLevel::Info, opts["discord-id"]);
+		auto it = opts.find("discord-id");
+		if (it != opts.end() && !(it->second).empty()) {
+			initDiscord(it->second.c_str());
+		} else {
+			sendToLog(LogLevel::Error, "Discord integration failed! You NEED to set discord-id!\n");
+		}
+	}
+#endif
 	sendToLog(LogLevel::Info, "Available crash reporter features error code %d\n", crashReporterError);
 
 	// ONScripter is based on a set of dependent controllers that are

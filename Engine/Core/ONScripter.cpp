@@ -443,7 +443,6 @@ static std::unordered_map<HashedString, CommandFunc> func_lut{
     {"draw", &ONScripter::drawCommand},
 #if defined(DISCORD)
     {"discordrpc", &ONScripter::setDiscordRPCCommand},	  //ons-ru
-    {"discordid", &ONScripter::setDiscordID},		  //ons-ru
 #endif
     {"deletescreenshot", &ONScripter::deletescreenshotCommand},
     {"delay", &ONScripter::delayCommand},

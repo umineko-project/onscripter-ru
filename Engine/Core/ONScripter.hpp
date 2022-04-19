@@ -385,7 +385,6 @@ public:
 	int seteffectspeedCommand();
 #if defined(DISCORD)
 	int setDiscordRPCCommand();
-	int setDiscordID();
 #endif
 	int setcursorCommand();
 	int selectCommand();
