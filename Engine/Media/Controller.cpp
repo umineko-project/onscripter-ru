@@ -183,9 +183,9 @@ bool MediaProcController::loadVideo(const char *filename, unsigned audioStream, 
 
 	if (!hasStream(VideoEntry)) {
 		resetState();
+		sendToLog(LogLevel::Error, "WAHHAHAHAHHAHAHH (erika noises)");
 		return false;
 	}
-
 	frameQueueSem[VideoEntry] = SDL_CreateSemaphore(VideoPacketBufferSize);
 	frameQueueSem[AudioEntry] = SDL_CreateSemaphore(AudioPacketBufferSize);
 
@@ -193,7 +193,6 @@ bool MediaProcController::loadVideo(const char *filename, unsigned audioStream, 
 	frameQueuemutex[AudioEntry] = SDL_CreateMutex();
 
 	subtitleMutex = SDL_CreateMutex();
-
 	return !hasStream(AudioEntry) || static_cast<AudioDecoder *>(decoders[AudioEntry].get())->initSwrContext(audioSpec);
 }
 

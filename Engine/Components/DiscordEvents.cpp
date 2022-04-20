@@ -20,11 +20,11 @@ void initDiscord(const char* id) {
   }
   state.core->SetLogHook(
     discord::LogLevel::Debug, [](discord::LogLevel level, const char* message) {
-        sendToLog(LogLevel::Error, "Log( %d) %s\n", static_cast<uint32_t>(level), message);
+        sendToLog(LogLevel::Error, "Log(%d) %s\n", static_cast<uint32_t>(level), message);
     });
 }
 
-void setPresence(const char* details, const char* currentState, const char* largeImageKey, const char* largeImageText, const char* smallImageKey, const char* smallImageText, const char* startTimestamp, const char* endTimestamp) {
+void setPresence(const char* details, const char* currentState, const char* largeImageKey, const char* largeImageText, const char* smallImageKey, const char* smallImageText, const char* startTimestamp, const char* endTimestamp=NULL) {
   discord::Activity activity{};
   activity.SetDetails(details);
   activity.SetState(currentState);

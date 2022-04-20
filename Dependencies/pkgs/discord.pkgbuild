@@ -1,6 +1,7 @@
 pkgname=discord
 pkgver=2.5.6
 pkgrel=1
+
 sources=(
     "https://dl-game-sdk.discordapp.net/${pkgver}/discord_game_sdk.zip" #https://discord.com/developers/docs/game-sdk/sdk-starter-guide
 )

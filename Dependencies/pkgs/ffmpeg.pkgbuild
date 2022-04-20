@@ -112,6 +112,7 @@ configopts=(
     '--disable-doc'
     '--disable-outdevs'
     '--disable-iconv'
+    '--disable-tiff'
     #disable unused modules
     '--disable-filters'
     '--disable-bsfs'
