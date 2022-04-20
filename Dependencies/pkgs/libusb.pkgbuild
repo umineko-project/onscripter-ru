@@ -18,10 +18,4 @@ configopts_linux=(
     '--disable-udev'
 )
 
-prebuild() {
-    pushd "$pkgname-${pkgver}" &>/dev/null
-    # fixed by 9cb2e5c111a7fc1eec13dcf73667187b06f68628
-    #apply_patch "${sources[1]}"
-}
-
 # vim: set syntax=sh:

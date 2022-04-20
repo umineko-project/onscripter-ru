@@ -1,0 +1,17 @@
+pkgname=xz
+pkgver=5.2.5
+pkgrel=1
+sources=(
+    "https://tukaani.org/xz/xz-${pkgver}.tar.gz" #https://sourceware.org/pub/bzip2/bzip2-latest.tar.gz
+)
+
+hashes=(
+    'a2848f34fcd5d6cf47def00461fcb528a0484d8edef8208d6d2e2909dc61d9cd'
+)
+
+prebuild() {
+    pushd "$pkgname-${pkgver}" &>/dev/null
+    autogenerate
+}
+
+# vim: set syntax=sh:

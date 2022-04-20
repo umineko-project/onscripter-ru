@@ -8,6 +8,7 @@ pkgname=ffmpeg
 pkgver=5.0
 pkgrel=3
 depends=(
+    'xz'
     'zlib'
     'bzip2'
 )

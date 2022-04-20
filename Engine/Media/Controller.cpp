@@ -180,10 +180,10 @@ bool MediaProcController::loadVideo(const char *filename, unsigned audioStream, 
 	decoders[VideoEntry] = findDecoder(AVMEDIA_TYPE_VIDEO);
 	decoders[AudioEntry] = findDecoder(AVMEDIA_TYPE_AUDIO, audioStream);
 	decoders[SubsEntry]  = findDecoder(AVMEDIA_TYPE_SUBTITLE, subtitleStream, AV_CODEC_ID_SSA);
+	sendToLog(LogLevel::Error, "WAHHAHAHAHHAHAHH (erika noises) exiting");
 
 	if (!hasStream(VideoEntry)) {
 		resetState();
-		sendToLog(LogLevel::Error, "WAHHAHAHAHHAHAHH (erika noises)");
 		return false;
 	}
 	frameQueueSem[VideoEntry] = SDL_CreateSemaphore(VideoPacketBufferSize);
@@ -191,6 +191,7 @@ bool MediaProcController::loadVideo(const char *filename, unsigned audioStream, 
 
 	frameQueuemutex[VideoEntry] = SDL_CreateMutex();
 	frameQueuemutex[AudioEntry] = SDL_CreateMutex();
+	sendToLog(LogLevel::Error, "WAHHAHAHAHHAHAHH (erika noises)");
 
 	subtitleMutex = SDL_CreateMutex();
 	return !hasStream(AudioEntry) || static_cast<AudioDecoder *>(decoders[AudioEntry].get())->initSwrContext(audioSpec);
