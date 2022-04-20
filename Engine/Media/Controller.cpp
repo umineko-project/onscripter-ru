@@ -180,7 +180,6 @@ bool MediaProcController::loadVideo(const char *filename, unsigned audioStream, 
 	decoders[VideoEntry] = findDecoder(AVMEDIA_TYPE_VIDEO);
 	decoders[AudioEntry] = findDecoder(AVMEDIA_TYPE_AUDIO, audioStream);
 	decoders[SubsEntry]  = findDecoder(AVMEDIA_TYPE_SUBTITLE, subtitleStream, AV_CODEC_ID_SSA);
-
 	if (!hasStream(VideoEntry)) {
 		sendToLog(LogLevel::Error, "WAHHAHAHAHHAHAHH (erika noises) exiting");
 		resetState();
