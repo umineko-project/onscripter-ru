@@ -191,7 +191,7 @@ bool MediaProcController::loadVideo(const char *filename, unsigned audioStream, 
 
 	frameQueuemutex[VideoEntry] = SDL_CreateMutex();
 	frameQueuemutex[AudioEntry] = SDL_CreateMutex();
-	sendToLog(LogLevel::Error, "WAHHAHAHAHHAHAHH (erika noises)");
+	sendToLog(LogLevel::Info, "WAHHAHAHAHHAHAHH (erika noises) (she is happy)");
 
 	subtitleMutex = SDL_CreateMutex();
 	return !hasStream(AudioEntry) || static_cast<AudioDecoder *>(decoders[AudioEntry].get())->initSwrContext(audioSpec);
