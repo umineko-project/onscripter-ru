@@ -7,7 +7,7 @@ mesonopts=(
 )
 
 if [ "$(getTarget)" == "win32" ]; then
-    mesonopts+=('-Dx11=false' '-Dglx=no' '--cross-file=linux-mingw-w64-32bit.txt')
+    mesonopts+=('-Dx11=false' '-Dglx=no' '--cross-file=../../../download/linux-mingw-w64-32bit.txt')
 fi
 sources=(
     "https://github.com/anholt/libepoxy/archive/refs/tags/${pkgver}.tar.gz" #https://github.com/anholt/libepoxy/releases/latest
@@ -15,6 +15,7 @@ sources=(
 )
 hashes=(
     '0b808a06c9685a62fca34b680abb8bc7fb2fda074478e329b063c1f872b826f6'
+    'ss'
 )
 
 prebuild() {

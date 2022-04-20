@@ -98,8 +98,6 @@ configopts_droid=(
 cflags_linux="-D__STDC_CONSTANT_MACROS"
 cflags_win32="-D__STDC_CONSTANT_MACROS -m32 -march=i686"
 
-ldflags='-llzma'
-
 configopts=(
     '--enable-pic'
     #optimise size

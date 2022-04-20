@@ -43,7 +43,12 @@ void GPUController::syncRendererStateANGLE2() {
 
 int GPUController::getMaxTextureSizeANGLE2() {
 	int size;
+#ifdef (WIN32)
+	// NEEDS TO BE FIXED
+	size=0x0D33;
+#else
 	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &size);
+#endif
 	return size;
 }
 
@@ -68,7 +73,12 @@ void GPUController::syncRendererStateGLES2() {
 
 int GPUController::getMaxTextureSizeGLES2() {
 	int size;
+#ifdef (WIN32)
+	// NEEDS TO BE FIXED
+	size=0x0D33;
+#else
 	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &size);
+#endif
 	return size;
 }
 
