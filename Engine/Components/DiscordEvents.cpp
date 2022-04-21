@@ -43,4 +43,11 @@ void setPresence(const char* details, const char* currentState, const char* larg
 void runDiscordCallbacks() {
   state.core->RunCallbacks();
 }
+
+void shutdownDiscord(){
+  state.core->ActivityManager().ClearActivity([](discord::Result result) {
+      sendToLog(((result == discord::Result::Ok) ? LogLevel::Info : LogLevel::Error), "Stopping discord!\n");
+  });
+}
+
 #endif

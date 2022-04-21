@@ -58,9 +58,11 @@ configure() {
     local ret=0
     mkdir -p $outdir/lib/ &>>"$logfile" || ret=$?
     mkdir -p $outdir/include/discord/ &>>"$logfile" || ret=$?
+    # Not FOSS but shared library so its ok?
     cp ../lib/x86_64/discord_game_sdk.bundle $outdir/lib/libdiscord_game_sdk.bundle &>"$logfile" || ret=$?
     cp ../lib/x86_64/discord_game_sdk.dylib $outdir/lib/libdiscord_game_sdk.dylib &>"$logfile" || ret=$?
     cp ../lib/x86_64/discord_game_sdk.so $outdir/lib/libdiscord_game_sdk.so &>"$logfile" || ret=$?
+    # Usually used for win32 but can be swapped out to use 64bit
     cp ../lib/x86/discord_game_sdk.dll $outdir/lib/libdiscord_game_sdk.dll &>"$logfile" || ret=$?
     cp ../lib/x86/discord_game_sdk.dll.lib $outdir/lib/libdiscord_game_sdk.lib &>"$logfile" || ret=$?
     if (( $ret )); then

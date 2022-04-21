@@ -860,7 +860,7 @@ int main(int argc, char **argv) {
 	if (opts.find("discord") != opts.end()) {
 		
 		// needed to be set once to make sure that the discord integration does not fail
-		//sendToLog(LogLevel::Info, opts["discord-id"]);
+		//sendToLog(LogLevel::Info, opts.find("discord-id")->second);
 		auto it = opts.find("discord-id");
 		if (it != opts.end() && !(it->second).empty()) {
 			initDiscord(it->second.c_str());
@@ -892,6 +892,12 @@ int main(int argc, char **argv) {
 	//  DynamicPropertyController
 	// }
 	// Deinitialisation is done automatically by ctrl.quit(exit_code);
+
+#if defined(DISCORD)
+	if (opts.find("discord") != opts.end()) {
+		shutdownDiscord();
+	}
+#endif
 
 	if (ons.init())
 		ctrl.quit(-1);
