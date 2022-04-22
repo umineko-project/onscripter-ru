@@ -534,11 +534,11 @@ case "$CXX_TMP:$SYS" in
     EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -stdlib=libc++ -Wl,-framework,VideoToolbox -Wl,-framework,CoreMedia -lc++ -lc++abi"
   ;;
   *clang*:"MinGW")
-    LINK_START_GROUP="-Wl,--start-group"
+    LINK_START_GROUP="-lbcrypt -Wl,--start-group"
     LINK_END_GROUP="-Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic -Wl,--end-group"
     EXTRALDFLAGS="$EXTRALDFLAGS -static-libgcc"
     EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DWIN32 -DPTW32_STATIC_LIB"
-    EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -lwinmm -lshlwapi -lws2_32 -lglu32 -lopengl32 -lbcrypt -Wl,--wrap=SDL_LoadObject -Wl,--large-address-aware"
+    EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -lwinmm -lshlwapi -lws2_32 -lglu32 -lopengl32 -lbcrypt -lfribidi -Wl,--wrap=SDL_LoadObject -Wl,--large-address-aware"
   ;;
   *clang*:"Droid")
     LINK_START_GROUP="-Wl,--start-group"
@@ -552,7 +552,7 @@ case "$CXX_TMP:$SYS" in
     LINK_END_GROUP="-Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic -Wl,--end-group"
     EXTRALDFLAGS="$EXTRALDFLAGS -static-libgcc -static-libstdc++ -mthreads"
     EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DWIN32 -DPTW32_STATIC_LIB -mthreads"
-    EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -lwinmm -lshlwapi -lws2_32 -lglu32 -lopengl32 -lbcrypt -Wl,--wrap=SDL_LoadObject -Wl,--large-address-aware"
+    EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -lwinmm -lshlwapi -lws2_32 -lglu32 -lopengl32 -lbcrypt -lfribidi -Wl,--wrap=SDL_LoadObject -Wl,--large-address-aware"
   ;;
   g++*:"Posix" | *clang*:"Posix")
     LINK_START_GROUP="-Wl,--start-group"

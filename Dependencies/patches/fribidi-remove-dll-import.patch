@@ -1,0 +1,17 @@
+--- a/lib/fribidi-common.h	2022-04-22 13:50:26.696543101 +1000
++++ a/lib/fribidi-common.h	2022-04-22 13:49:49.530138936 +1000
+@@ -44,13 +44,7 @@
+ /* FRIBIDI_ENTRY is a macro used to declare library entry points. */
+ #ifndef FRIBIDI_LIB_STATIC
+ # ifndef FRIBIDI_ENTRY
+-#  ifdef _WIN32
+-#   ifdef FRIBIDI_BUILD
+-#     define FRIBIDI_ENTRY __declspec(dllexport)
+-#   else
+-#     define FRIBIDI_ENTRY __declspec(dllimport)
+-#   endif
+-#  elif (defined(__SUNPRO_C)  || defined(__SUNPRO_CC))
++#  if (defined(__SUNPRO_C)  || defined(__SUNPRO_CC))
+ #   define FRIBIDI_ENTRY __global
+ #  else
+ #   if (defined(__GNUC__) && __GNUC__ >= 4) || defined(__ICC)

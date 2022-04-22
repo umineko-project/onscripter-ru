@@ -47,7 +47,7 @@ void GPUController::syncRendererStateANGLE3() {
 
 int GPUController::getMaxTextureSizeANGLE3() {
 	int size;
-#ifdef (WIN32)
+#if defined(WIN32)
 	// NEEDS TO BE FIXED
 	size=0x0D33;
 #else
@@ -77,7 +77,7 @@ void GPUController::syncRendererStateGLES3() {
 
 int GPUController::getMaxTextureSizeGLES3() {
 	int size;
-#ifdef (WIN32)
+#if defined(WIN32)
 	// NEEDS TO BE FIXED
 	size=0x0D33;
 #else

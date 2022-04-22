@@ -58,7 +58,7 @@ configure() {
     local ret=0
     mkdir -p $outdir/lib/ &>>"$logfile" || ret=$?
     mkdir -p $outdir/include/discord/ &>>"$logfile" || ret=$?
-    # Not FOSS but shared library so its ok?
+    # Not FOSS but shared library so its (copyright) ok?
     cp ../lib/x86_64/discord_game_sdk.bundle $outdir/lib/libdiscord_game_sdk.bundle &>"$logfile" || ret=$?
     cp ../lib/x86_64/discord_game_sdk.dylib $outdir/lib/libdiscord_game_sdk.dylib &>"$logfile" || ret=$?
     cp ../lib/x86_64/discord_game_sdk.so $outdir/lib/libdiscord_game_sdk.so &>"$logfile" || ret=$?
