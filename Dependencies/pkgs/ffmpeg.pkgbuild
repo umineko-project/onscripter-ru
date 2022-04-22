@@ -213,6 +213,7 @@ configopts=(
     '--enable-decoder=mp3'
     '--enable-decoder=flac'
     '--enable-decoder=vorbis'
+    '--disable-decoder=tiff'
     "--libdir=$outdir/lib"
 )
 
