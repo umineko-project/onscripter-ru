@@ -1,7 +1,7 @@
 ONScripter-RU
 =============
 
-[![Build Status](https://travis-ci.com/umineko-project/onscripter-ru.svg?branch=master)](https://travis-ci.com/umineko-project/onscripter-ru)
+[![Build Status](../../workflows/CI/badge.svg)](../../actions)
 
 This is the visual novel engine empowering [Umineko Project port](https://umineko-project.org) of Umineko no Naku Koro ni from PlayStation 3. Albeit the engine being one of the most powerful publicly available engines for creating visual novels, it contains numerous hacks specific to our needs, lacks API documentation, and may not be suitable for your needs.
 

@@ -1,4 +1,4 @@
-name: Build mingw, android and linux
+name: CI
 
 on:
   push:
