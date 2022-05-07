@@ -1,5 +1,5 @@
 pkgname=harfbuzz
-pkgver=4.2.0
+pkgver=4.2.1
 pkgrel=1
 depends=('freetype')
 sources=(
@@ -23,7 +23,7 @@ configopts=(
     "FREETYPE_LIBS=-L$outdir/lib"
 )
 
-ldflags_extra="-L$outdir/lib -lfreetype -lpng16 -lm"
+ldflags="-L$outdir/lib -lfreetype -lpng16 -lm"
 # Xcode 10 does not have libstdc++
 if [ "$MMAC_VER_MIN" != "10.6" ]; then
     ldflags_mac_extra="-stdlib=libc++"
