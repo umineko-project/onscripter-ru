@@ -11,9 +11,11 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
     - name: Setup release environment
       run: |
-          BUILD=$(($(git rev-list --count --first-parent HEAD)+3500))
+          BUILD=$(git rev-list --count --first-parent HEAD)
           TODAY=$(date +"%d.%m.%y")
           echo "BUILD=${BUILD}" >> "$GITHUB_ENV"
           echo "TODAY=${TODAY}" >> "$GITHUB_ENV"
