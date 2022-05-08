@@ -11,12 +11,18 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+    - name: Setup release environment
+      run: |
+          BUILD=$(($(git rev-list --count --first-parent HEAD)+3500))
+          TODAY=$(date +"%d.%m.%y")
+          echo "BUILD=${BUILD}" >> "$GITHUB_ENV"
+          echo "TODAY=${TODAY}" >> "$GITHUB_ENV"
+          echo "Build number ${BUILD}"
     - name: Setup release
       uses: actions/create-release@v1
       id: create_release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        BUILD: $(($(git rev-list --count --first-parent HEAD)))
       with:
         tag_name: z${{ env.BUILD }}
         release_name: ONScripter-ru r${{ env.BUILD }}
