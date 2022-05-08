@@ -19,6 +19,7 @@ jobs:
         echo "TODAY=${TODAY}" >> "$GITHUB_ENV"
     - name: Setup release
       uses: actions/create-release@v1
+      id: create_release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
