@@ -16,7 +16,7 @@ jobs:
       id: create_release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        BUILD: ${$(git rev-list --count --first-parent master)}
+        BUILD: $(($(git rev-list --count --first-parent HEAD)))
       with:
         tag_name: z${{ env.BUILD }}
         release_name: ONScripter-ru r${{ env.BUILD }}
