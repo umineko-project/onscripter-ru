@@ -27,6 +27,7 @@ CFLAGS="$CFLAGS ${cflags[@]} -fPIC"
 
 configopts=(
     '--disable-debug'
+    '--disable-shared'
     '--disable-dependency-tracking'
     '--disable-sdltest'
     '--enable-mmx'

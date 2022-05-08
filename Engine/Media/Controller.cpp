@@ -19,11 +19,17 @@
 MediaProcController media;
 
 int MediaProcController::ownInit() {
+	av_register_all();
 	av_log_set_level(AV_LOG_QUIET);
 	av_log_set_callback(logLine);
 	HardwareDecoderIFace::reg();
-	audioSpec = AudioSpec();
-	int error     = audioSpec.init(ons.audio_format);
+	int error = av_lockmgr_register(lockManager);
+	if (!error) {
+		audioSpec = AudioSpec();
+		error     = audioSpec.init(ons.audio_format);
+	} else {
+		sendToLog(LogLevel::Error, "Failed to init media thread safety\n");
+	}
 
 	return error;
 }
@@ -79,18 +85,18 @@ int MediaProcController::AudioSpec::init(const SDL_AudioSpec &spec) {
 	return 0;
 }
 
-int MediaProcController::lockManager(void **mutex, int op) {
+int MediaProcController::lockManager(void **mutex, AVLockOp op) {
 	switch (op) {
-		case 0:
+		case AV_LOCK_CREATE:
 			*mutex = SDL_CreateMutex();
 			if (!*mutex)
 				return 1;
 			return 0;
-		case 1:
+		case AV_LOCK_OBTAIN:
 			return SDL_LockMutex(static_cast<SDL_mutex *>(*mutex)) != 0;
-		case 2:
+		case AV_LOCK_RELEASE:
 			return SDL_UnlockMutex(static_cast<SDL_mutex *>(*mutex)) != 0;
-		case 3:
+		case AV_LOCK_DESTROY:
 			SDL_DestroyMutex(static_cast<SDL_mutex *>(*mutex));
 			return 0;
 	}
@@ -180,19 +186,20 @@ bool MediaProcController::loadVideo(const char *filename, unsigned audioStream, 
 	decoders[VideoEntry] = findDecoder(AVMEDIA_TYPE_VIDEO);
 	decoders[AudioEntry] = findDecoder(AVMEDIA_TYPE_AUDIO, audioStream);
 	decoders[SubsEntry]  = findDecoder(AVMEDIA_TYPE_SUBTITLE, subtitleStream, AV_CODEC_ID_SSA);
+
 	if (!hasStream(VideoEntry)) {
-		sendToLog(LogLevel::Error, "WAHHAHAHAHHAHAHH (erika noises) exiting");
 		resetState();
 		return false;
 	}
+
 	frameQueueSem[VideoEntry] = SDL_CreateSemaphore(VideoPacketBufferSize);
 	frameQueueSem[AudioEntry] = SDL_CreateSemaphore(AudioPacketBufferSize);
 
 	frameQueuemutex[VideoEntry] = SDL_CreateMutex();
 	frameQueuemutex[AudioEntry] = SDL_CreateMutex();
-	sendToLog(LogLevel::Info, "WAHHAHAHAHHAHAHH (erika noises) (she is happy)");
 
 	subtitleMutex = SDL_CreateMutex();
+
 	return !hasStream(AudioEntry) || static_cast<AudioDecoder *>(decoders[AudioEntry].get())->initSwrContext(audioSpec);
 }
 
@@ -653,7 +660,7 @@ AVCodec *MediaProcController::Decoder::findCodec(AVCodecContext *context) {
 
 	// Fallback to implicit hardware or software decoder
 	if (!codec) {
-		auto codec = avcodec_find_decoder(context->codec_id);
+		codec = avcodec_find_decoder(context->codec_id);
 
 		int err = avcodec_open2(context, codec, nullptr);
 		if (err < 0) {
