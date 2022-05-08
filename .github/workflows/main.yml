@@ -64,9 +64,9 @@ jobs:
         asset_content_type: application/x-pie-executable
     - name: Configure linux (dev) (discord)
       run: ./configure --with-discord
-    - name: Make linux (dev)
+    - name: Make linux (dev) (discord)
       run: make -j $(getconf _NPROCESSORS_ONLN)
-    - name: Upload (dev)
+    - name: Upload (dev) (discord)
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -79,7 +79,7 @@ jobs:
       run: make clean
     - name: Configure linux (release) (discord)
       run: ./configure --release-build --strip-binary --with-discord
-    - name: Make linux (release)
+    - name: Make linux (release) (discord)
       run: make -j $(getconf _NPROCESSORS_ONLN)
     - name: Upload (release)
       uses: actions/upload-release-asset@v1
