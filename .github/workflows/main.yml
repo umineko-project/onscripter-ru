@@ -13,7 +13,7 @@ jobs:
       uses: actions/checkout@v3
     - name: Setup environment
       run: |
-        BUILD=$(($(git rev-list --count --first-parent HEAD)+3500))
+        BUILD=$(git rev-list --count HEAD)
         TODAY=$(date +"%d.%m.%y")
         echo "BUILD=${BUILD}" >> "$GITHUB_ENV"
         echo "TODAY=${TODAY}" >> "$GITHUB_ENV"
