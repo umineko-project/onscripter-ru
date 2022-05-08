@@ -631,7 +631,6 @@ genlink SDL2_mixer
 genlink bz2
 genlink SDL2_gpu
 genlink avutil
-genlink bcrypt
 genlink avformat
 genlink avcodec
 genlink swscale
