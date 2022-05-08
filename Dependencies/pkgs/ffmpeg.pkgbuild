@@ -16,12 +16,14 @@ sources=(
     'ffmpeg-compact-unwind.patch'
     'ffmpeg-droid-noebp.patch'
     'ffmpeg-alloc-warning.patch'
+    'ffmpeg-bcrypt-hacky-fix.patch'
 )
 hashes=(
     'a4abede145de22eaf233baa1726e38e137f5698d9edd61b5763cd02b883f3c7c'
     'f0c076b46522bfbd02f86b4a7dfbd53816bbbc2cd4dd3cba50116f96ef521087'
     'c806a4ffa327be5c0430ee59f67092c59f13ed1bac59aea027fc4bc288bc4db0'
     '3b02223f320a236894a2134da0d5b2953148e3c81ad1c24e5ab25d96fc84a9f5'
+    'sss'
 )
 addcrossopt=false
 
@@ -266,6 +268,9 @@ prebuild() {
         if [ "$(getTargetCPU)" == "x86_32" ]; then
             apply_patch "${sources[2]}"
         fi
+    ;;
+    win32)
+        apply_patch "${sources[4]}"
     ;;
     esac
     # fixed in 4361293fcf59edb56879c36edcd25f0a91e0edf8

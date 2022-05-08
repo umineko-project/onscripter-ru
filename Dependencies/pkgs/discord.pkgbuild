@@ -22,6 +22,7 @@ prebuild() {
 compile() {
     local logfile="$logdir/$pkgname.compile.log"
     local ret=0
+    # todo: use SHAREDLIB from configure file
     if [ "$(getTarget)" == "win32" ]; then
         FILEEXTENSION=.dll
     elif [ "$(getTarget)" == "linux-like" ]; then
