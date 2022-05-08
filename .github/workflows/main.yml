@@ -11,15 +11,35 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+    - name: Setup environment
+      run: |
+        BUILD=$(($(git rev-list --count --first-parent HEAD)+3500))
+        TODAY=$(date +"%d.%m.%y")
+        echo "BUILD=${BUILD}" >> "$GITHUB_ENV"
+        echo "TODAY=${TODAY}" >> "$GITHUB_ENV"
+    - name: Setup release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: z${{ env.BUILD }}
+        release_name: ONScripter-ru r${{ env.BUILD }}
+        draft: false
+        prerelease: false
     - name: Install required packages
       run: sudo apt install yasm libreadline-dev libasound-dev libgl1-mesa-dev libegl1-mesa-dev libxrandr-dev python3-pip autopoint po4a binutils-mingw-w64-i686 gcc-mingw-w64-i686
     - name: Install meson via pip
       run: pip3 install meson ninja
     - name: Configure linux (dev)
       run: ./configure
-    - name: make
+    - name: Make linux (dev)
       run: make -j $(getconf _NPROCESSORS_ONLN)
-    - name: Upload compiled binaries to github
-      uses: softprops/action-gh-release@v0.1.14
+    - name: Upload (dev)
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        files: DerivedData/Posix-x86_64/onscripter-ru
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: DerivedData/Posix-x86_64/onscripter-ru
+        asset_name: onscripter-ru-linux-r${{ env.BUILD }}-dev.zip
+        asset_content_type: application/x-pie-executable
