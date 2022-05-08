@@ -11,17 +11,12 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-    - name: Setup environment
-      run: |
-        BUILD=$(git rev-list --count --first-parent master)
-        TODAY=$(date +"%d.%m.%y")
-        echo "BUILD=${BUILD}" >> "$GITHUB_ENV"
-        echo "TODAY=${TODAY}" >> "$GITHUB_ENV"
     - name: Setup release
       uses: actions/create-release@v1
       id: create_release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BUILD: ${{ git rev-list --count --first-parent master }}
       with:
         tag_name: z${{ env.BUILD }}
         release_name: ONScripter-ru r${{ env.BUILD }}
@@ -42,5 +37,5 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: DerivedData/Posix-x86_64/onscripter-ru
-        asset_name: onscripter-ru-linux-r${{ env.BUILD }}-dev.zip
+        asset_name: onscripter-ru-linux-r${{ env.BUILD }}-dev
         asset_content_type: application/x-pie-executable
