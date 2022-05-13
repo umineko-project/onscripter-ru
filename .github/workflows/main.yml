@@ -47,8 +47,6 @@ jobs:
         asset_path: DerivedData/Posix-x86_64/onscripter-ru
         asset_name: onscripter-ru-linux-r${{ env.BUILD }}-dev
         asset_content_type: application/x-pie-executable
-    - name: Clean
-      run: make clean
     - name: Configure linux (release)
       run: ./configure --release-build --strip-binary
     - name: Make linux (release)
@@ -62,6 +60,10 @@ jobs:
         asset_path: DerivedData/Posix-x86_64/onscripter-ru
         asset_name: onscripter-ru-linux-r${{ env.BUILD }}-release
         asset_content_type: application/x-pie-executable
+    - name: Clean
+      run: |
+        make clean
+        rm DerivedData/Posix-x86_64/Dependencies/onscrlib/.pkgs/onscrlib
     - name: Configure linux (dev) (discord)
       run: ./configure --with-discord
     - name: Make linux (dev) (discord)
@@ -75,8 +77,6 @@ jobs:
         asset_path: DerivedData/Posix-x86_64/onscripter-ru
         asset_name: onscripter-ru-linux-r${{ env.BUILD }}-dev-discord
         asset_content_type: application/x-pie-executable
-    - name: Clean
-      run: make clean
     - name: Configure linux (release) (discord)
       run: ./configure --release-build --strip-binary --with-discord
     - name: Make linux (release) (discord)
