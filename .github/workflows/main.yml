@@ -63,6 +63,7 @@ jobs:
     - name: Clean
       run: |
         make clean
+        rm -f DerivedData/Posix-x86_64/Makefile
         rm -f DerivedData/Posix-x86_64/Dependencies/onscrlib/.pkgs/onscrlib
     - name: Configure linux (dev) (discord)
       run: ./configure --with-discord
