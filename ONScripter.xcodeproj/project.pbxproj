@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 55;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -1879,7 +1879,8 @@
 		1C0A5F5717478DCF004A9BCC /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1160;
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1330;
 				TargetAttributes = {
 					1C9F26D51ADB0E7900138E84 = {
 						CreatedOnToolsVersion = 6.3;
@@ -1908,7 +1909,7 @@
 				};
 			};
 			buildConfigurationList = 1C0A5F5A17478DCF004A9BCC /* Build configuration list for PBXProject "ONScripter" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -2591,6 +2592,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -2636,7 +2638,7 @@
 				GENERATE_PROFILING_CODE = YES;
 				KEEP_PRIVATE_EXTERNS = YES;
 				LD_DEPENDENCY_INFO_FILE = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				ONLY_ACTIVE_ARCH = YES;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
 				SDKROOT = macosx;
@@ -2668,6 +2670,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -2709,7 +2712,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LD_DEPENDENCY_INFO_FILE = "";
 				LLVM_LTO = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
 				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)";
@@ -2720,6 +2723,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "-";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.umineko-project.embed";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -2730,6 +2734,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "-";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.umineko-project.embed";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -2766,7 +2771,7 @@
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
@@ -2800,7 +2805,7 @@
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
@@ -2838,7 +2843,7 @@
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
@@ -2872,7 +2877,7 @@
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
@@ -2883,11 +2888,6 @@
 		2F5351981D51FD980023D8F0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					armv7,
-					armv7s,
-					arm64,
-				);
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-ios";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
@@ -2918,7 +2918,7 @@
 					"$(PROJECT_DIR)/DerivedData/Xcode/onscrlib-armv7s/onscrlib/include/freetype2",
 				);
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Resources/Bundle/Info-ios.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LIBRARY_SEARCH_PATHS = "";
 				"LIBRARY_SEARCH_PATHS[arch=arm64]" = "$(PROJECT_DIR)/DerivedData/Xcode/onscrlib-arm64/onscrlib/lib";
 				"LIBRARY_SEARCH_PATHS[arch=armv7]" = "$(PROJECT_DIR)/DerivedData/Xcode/onscrlib-armv7/onscrlib/lib";
@@ -2944,11 +2944,6 @@
 		2F5351991D51FD980023D8F0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					armv7,
-					armv7s,
-					arm64,
-				);
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-ios";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
@@ -2981,7 +2976,7 @@
 					"$(PROJECT_DIR)/DerivedData/Xcode/onscrlib-armv7s/onscrlib/include/freetype2",
 				);
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Resources/Bundle/Info-ios.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LIBRARY_SEARCH_PATHS = "";
 				"LIBRARY_SEARCH_PATHS[arch=arm64]" = "$(PROJECT_DIR)/DerivedData/Xcode/onscrlib-arm64/onscrlib/lib";
 				"LIBRARY_SEARCH_PATHS[arch=armv7]" = "$(PROJECT_DIR)/DerivedData/Xcode/onscrlib-armv7/onscrlib/lib";
@@ -3008,7 +3003,6 @@
 		2F53519F1D51FEDA0023D8F0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = armv7s;
 				CFLAGS = "-L$(SDKROOT)/usr/lib/system/";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -3037,7 +3031,7 @@
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "onscrlib-armv7s";
@@ -3050,7 +3044,6 @@
 		2F5351A01D51FEDA0023D8F0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = armv7s;
 				CFLAGS = "-L$(SDKROOT)/usr/lib/system/";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -3075,7 +3068,7 @@
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "onscrlib-armv7s";
@@ -3088,7 +3081,6 @@
 		2FA9448C1D52156D00A8C187 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = arm64;
 				CFLAGS = "-L$(SDKROOT)/usr/lib/system/";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -3117,7 +3109,7 @@
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = onscrlib_arm64;
@@ -3131,7 +3123,6 @@
 		2FA9448D1D52156D00A8C187 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = arm64;
 				CFLAGS = "-L$(SDKROOT)/usr/lib/system/";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -3156,7 +3147,7 @@
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = onscrlib_arm64;
@@ -3181,7 +3172,7 @@
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_X86_VECTOR_INSTRUCTIONS = ssse3;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -3193,18 +3184,21 @@
 					"MACOSX=1",
 					"_THREAD_SAFE=1",
 				);
-				GCC_VERSION = com.apple.compilers.clang.mp;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/DerivedData/Xcode/onscrlib64/onscrlib/include",
 					"$(PROJECT_DIR)/DerivedData/Xcode/onscrlib64/onscrlib/include/freetype2",
 				);
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Resources/Bundle/Info-mac.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/DerivedData/Xcode/onscrlib64/onscrlib/lib",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				OTHER_CFLAGS = "-m64";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.umineko-project.onscripter-ru-osx64";
@@ -3233,7 +3227,7 @@
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_X86_VECTOR_INSTRUCTIONS = ssse3;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -3249,18 +3243,21 @@
 					"_THREAD_SAFE=1",
 					"PUBLIC_RELEASE=1",
 				);
-				GCC_VERSION = com.apple.compilers.clang.mp;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/DerivedData/Xcode/onscrlib64/onscrlib/include",
 					"$(PROJECT_DIR)/DerivedData/Xcode/onscrlib64/onscrlib/include/freetype2",
 				);
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Resources/Bundle/Info-mac.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/DerivedData/Xcode/onscrlib64/onscrlib/lib",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_CFLAGS = "-m64";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.umineko-project.onscripter-ru-osx64";
@@ -3278,7 +3275,6 @@
 		CE9D810120E3CA9200670C17 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-mac";
 				CLANG = /opt/clang/bin/clang;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -3290,7 +3286,7 @@
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_X86_VECTOR_INSTRUCTIONS = ssse3;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -3302,18 +3298,21 @@
 					"MACOSX=1",
 					"_THREAD_SAFE=1",
 				);
-				GCC_VERSION = com.apple.compilers.clang.mp;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/DerivedData/Xcode/onscrlib32/onscrlib/include",
 					"$(PROJECT_DIR)/DerivedData/Xcode/onscrlib32/onscrlib/include/freetype2",
 				);
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Resources/Bundle/Info-mac.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/DerivedData/Xcode/onscrlib32/onscrlib/lib",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				OTHER_CFLAGS = "-m32";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.umineko-project.onscripter-ru-osx32";
@@ -3332,7 +3331,6 @@
 		CE9D810220E3CA9200670C17 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-mac";
 				CLANG = /opt/clang/bin/clang;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -3344,7 +3342,7 @@
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_X86_VECTOR_INSTRUCTIONS = ssse3;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -3360,18 +3358,21 @@
 					"_THREAD_SAFE=1",
 					"PUBLIC_RELEASE=1",
 				);
-				GCC_VERSION = com.apple.compilers.clang.mp;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/DerivedData/Xcode/onscrlib32/onscrlib/include",
 					"$(PROJECT_DIR)/DerivedData/Xcode/onscrlib32/onscrlib/include/freetype2",
 				);
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Resources/Bundle/Info-mac.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/DerivedData/Xcode/onscrlib32/onscrlib/lib",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_CFLAGS = "-m32";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.umineko-project.onscripter-ru-osx32";
@@ -3396,16 +3397,19 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Resources/Bundle/Info-mac.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.umineko-project.onscripter-ru-osx";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3428,7 +3432,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -3441,9 +3445,12 @@
 				);
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Resources/Bundle/Info-mac.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.umineko-project.onscripter-ru-osx";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3461,6 +3468,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "-";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.umineko-project.embed";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3471,6 +3479,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "-";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.umineko-project.embed";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3481,6 +3490,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "-";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.umineko-project.embed";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3491,6 +3501,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "-";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.umineko-project.embed";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3509,7 +3520,7 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_X86_VECTOR_INSTRUCTIONS = avx2;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -3526,12 +3537,15 @@
 					"$(PROJECT_DIR)/DerivedData/Xcode/onscrlib64h/onscrlib/include/freetype2",
 				);
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Resources/Bundle/Info-mac.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/DerivedData/Xcode/onscrlib64h/onscrlib/lib",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.umineko-project.onscripter-ru-osx64h";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3557,7 +3571,7 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_X86_VECTOR_INSTRUCTIONS = avx2;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -3578,12 +3592,15 @@
 					"$(PROJECT_DIR)/DerivedData/Xcode/onscrlib64h/onscrlib/include/freetype2",
 				);
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Resources/Bundle/Info-mac.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/DerivedData/Xcode/onscrlib64h/onscrlib/lib",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.umineko-project.onscripter-ru-osx64h";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3600,7 +3617,6 @@
 		CEF2085B21ADF36100D01AD8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = armv7;
 				CFLAGS = "-L$(SDKROOT)/usr/lib/system/";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -3629,7 +3645,7 @@
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3642,7 +3658,6 @@
 		CEF2085C21ADF36100D01AD8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = armv7;
 				CFLAGS = "-L$(SDKROOT)/usr/lib/system/";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -3667,7 +3682,7 @@
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3707,7 +3722,7 @@
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
@@ -3741,7 +3756,7 @@
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";

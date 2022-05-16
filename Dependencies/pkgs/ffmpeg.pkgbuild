@@ -36,7 +36,6 @@ if [ "$APPLE_CPU_FLAG" == "-m32" ]; then
         '--cpu=pentium4'
         "--cc=$(getCC)"
         '--enable-videotoolbox'
-        '--disable-vda'
         '--disable-decoders'
     )
     cflags_ios_extra="-D__STDC_CONSTANT_MACROS"
@@ -46,7 +45,6 @@ if [ "$APPLE_CPU_FLAG" == "-m32" ]; then
             '--cc=clang-armv7s'
             '--as=as-armv7s'
             '--enable-videotoolbox'
-            '--disable-vda'
             '--enable-pic'
             '--enable-thumb'
             '--disable-decoders'
@@ -57,7 +55,6 @@ if [ "$APPLE_CPU_FLAG" == "-m32" ]; then
             '--cc=clang-armv7'
             '--as=as-armv7'
             '--enable-videotoolbox'
-            '--disable-vda'
             '--enable-pic'
             '--enable-thumb'
             '--disable-decoders'
@@ -70,14 +67,12 @@ else
         '--cpu=core2'
         "--cc=$(getCC)"
         '--enable-videotoolbox'
-        '--disable-vda'
         '--disable-decoders'
     )
     cflags_ios_extra="-D__STDC_CONSTANT_MACROS"
     configopts_ios=(
         '--cc=clang-arm64'
         '--enable-videotoolbox'
-        '--disable-vda'
         '--enable-pic'
         '--enable-thumb'
         '--disable-decoders'
