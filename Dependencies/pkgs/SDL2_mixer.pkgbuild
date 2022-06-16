@@ -12,8 +12,8 @@ sources=(
     'SDL2_mixer-no-locks.patch'
 )
 hashes=(
-    '4e615e27efca4f439df9af6aa2c6de84150d17cbfd12174b54868c12f19c83bb'
-    'e76692f6fa21a7327e35203e38346aa2f30f169486ac399bae3c703d17586bf7'
+    'b4cf5a382c061cd75081cf246c2aa2f9df8db04bdda8dcdc6b6cca55bede2419'
+    'b25b3007f1d937e11aaabcd94e297411e55ad63922fb83bda3b635eb302d6d2e'
     '161173d801e429175accf8e6370fb092427917fddf373c7a64e12b60b017608d'
 )
 
@@ -31,6 +31,7 @@ fi
 configopts=(
     '--disable-dependency-tracking'
     '--enable-static'
+    '--disable-shared'
     '--disable-music-cmd'
     '--disable-music-mod'
     '--disable-music-mod-modplug'

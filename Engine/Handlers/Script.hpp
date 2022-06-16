@@ -23,7 +23,6 @@
 
 const uint32_t VARIABLE_RANGE = 9999;
 const size_t MAX_ERRBUF_LEN   = 512;
-const size_t MIN_ERRBUF_LEN	  = 88;
 
 #ifdef PUBLIC_RELEASE
 const char DEFAULT_SCRIPT_NAME[] = "script.file";

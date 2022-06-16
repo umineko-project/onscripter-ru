@@ -120,3 +120,5 @@ postbuild() {
      
     popd &>/dev/null
 }
+
+# vim: set syntax=sh:

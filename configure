@@ -17,9 +17,7 @@
 
 # Generate $LINKpackage variable
 genlink() {
-  if [[ "${IGNORED_LIBS[@]}" =~ "$1" ]]; then
-    :
-  elif [ -z $2 ]; then
+  if [ -z $2 ]; then
     eval "LINK$1=\"\\\$(EXTLIB)/lib/lib$1\\\$(LIBSUFFIX)\""
   else
     eval "LINK$1=\"\\\$(EXTLIB)/lib/lib$1$2$3\""
@@ -542,7 +540,7 @@ case "$CXX_TMP:$SYS" in
   ;;
   *clang*:"Droid")
     LINK_START_GROUP="-Wl,--start-group"
-    LINK_END_GROUP="--end-group"
+    LINK_END_GROUP="-Wl,--end-group"
     EXTRACFLAGS="$EXTRACFLAGS -fPIC"
     EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DDROID"
     EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -shared -static-libstdc++"

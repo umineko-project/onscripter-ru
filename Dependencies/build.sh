@@ -321,7 +321,7 @@ verify_file() {
     fi
 
     if [ "$nhash" != "$hash" ]; then
-        echo "$file has wrong hash $nhash, expected $hash."
+        error_out "%s has wrong hash %s, expected %s." "$file" "$nhash" "$hash"
     fi
 }
 
@@ -405,31 +405,27 @@ extract_sources() {
 
         case "$filetype" in
             *application/x-tar*)
-                cmd="tar"
-                cmd_flags=('--strip-components=1' "--one-top-level=$pkgname-$pkgver" '-xf');;
+                cmd='tar -xf';;
             *application/x-zip*|*application/zip*)
-                cmd='unzip'
-                cmd_flags='-q';;
+                cmd='unzip -q';;
             *)
                 # MinGW32 has broken mime types in 'file' command, fall back on the
                 # extension to work around
                 case "$ext" in
                     bz2|gz|tar|xz)
                         # should look one more level in, to see if tar is there...
-                        cmd='tar'
-                        cmd_flags=('--strip-components=1' "--one-top-level=$pkgname-$pkgver" '-xf');;
+                        cmd='tar -xf';;
                     zip)
                         # should look one more level in, to see if tar is there...
-                        cmd='unzip'
-                        cmd_flags='-q';;
+                        cmd='unzip -q';;
                     *)
                         continue;;
                 esac;;
         esac
 
         local ret=0
-        echo Extracting $file with "$cmd" "${cmd_flags[@]}"
-        $cmd "${cmd_flags[@]}" "$file" || ret=$?
+        msg2 "Extracting %s with %s" "$file" "$cmd"
+        $cmd "$file" || ret=$?
 
         if (( ret )); then
             error_out "Failed to extract %s" "$file"
@@ -458,7 +454,7 @@ apply_patch() {
         local logfile="$logdir/$pkgname.$(get_filename "$patchfile").log"
         msg2 "Applying %s" "$patchfile"
         local ret=0
-        patch --binary -p1 < "$patchpath" >$logfile || ret=$?
+        patch -p1 < "$patchpath" >$logfile || ret=$?
         if (( $ret )); then
             error "Failed to apply %s" "$patchfile"
             exit 1

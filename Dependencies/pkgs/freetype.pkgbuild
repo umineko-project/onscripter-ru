@@ -2,10 +2,11 @@ pkgname=freetype
 pkgver=2.12.1
 pkgrel=2
 sources=("http://download.savannah.gnu.org/releases/freetype/freetype-${pkgver}.tar.xz") #http://mirror.downloadvn.com/nongnu/freetype/
-hashes=('fccc62928c65192fff6c98847233b28eb7ce05f12d2fea3f6cc90e8b4e5fbe06')
+hashes=('4766f20157cc4cf0cd292f80bf917f92d1c439b243ac3018debf6b9140c41a7f')
 
 if [ -e "$outdir/.pkgs/harfbuzz" ]; then
     configopts=(
+        '--disable-shared'
         '--without-brotli'
         "--libdir=$outdir/lib"
         '--enable-freetype-config'
@@ -17,6 +18,7 @@ if [ -e "$outdir/.pkgs/harfbuzz" ]; then
     )
 elif [ $(( $PKGBUILD_RECURSION_DEPTH )) -ge 1 ]; then
     configopts=(
+        '--disable-shared'
         '--without-brotli'
         "--libdir=$outdir/lib"
         '--without-harfbuzz'

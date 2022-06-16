@@ -23,7 +23,7 @@ hashes=(
     'f0c076b46522bfbd02f86b4a7dfbd53816bbbc2cd4dd3cba50116f96ef521087'
     'c806a4ffa327be5c0430ee59f67092c59f13ed1bac59aea027fc4bc288bc4db0'
     '3b02223f320a236894a2134da0d5b2953148e3c81ad1c24e5ab25d96fc84a9f5'
-    'sss'
+    'f51e9a9eece74d10501d939050e673e104ba1c15f1f49ab3a79ec7c84359467d'
 )
 addcrossopt=false
 
@@ -95,6 +95,9 @@ configopts_droid=(
 cflags_linux="-D__STDC_CONSTANT_MACROS"
 cflags_win32="-D__STDC_CONSTANT_MACROS -m32 -march=i686"
 configopts=(
+    #static build
+    '--enable-static'
+    '--disable-shared'
     '--enable-pic'
     #optimise size
     '--enable-small'

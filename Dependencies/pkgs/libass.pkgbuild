@@ -11,13 +11,14 @@ sources=(
 )
 
 hashes=(
-    '881f2382af48aead75b7a0e02e65d88c5ebd369fe46bc77d9270a94aa8fd38a2'
-    '2482308db0690ec34248cc12d5a7ca3d9e9c7cb8db4273e61a205637d7dfc6fd'
-    '71e38cb4c8ec7e4bc62af64f0c5a6576e7cf2fc750ca43bac725198f2c214fa0'
-    '45988f43b494f4e512b5a3d0b23906edc8ff2a8a8d0b6717656080c5be7c5cbf'
+    '1b2a54dda819ef84fa2dee3069cf99748a886363d2adb630fde87fe046e2d1d5'
+    '91ba052ac85f55a6f740643a53e5d1d9cb6d2750a4d96655f8d2e6a5c46e08ab'
+    'ebb8b308869098800f2125dc5e7ce56cd473989e1ef450aeba8372ec8dedc296'
+    '2c49d5294f8b47298c3af8810b27712f8d92a66b67ce85470c3daa859c5505ca'
 )
 
 configopts=(
+    '--disable-shared'
     '--disable-fontconfig'
     '--disable-dependency-tracking'
     '--disable-require-system-font-provider'

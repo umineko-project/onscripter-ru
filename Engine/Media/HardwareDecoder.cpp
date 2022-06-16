@@ -244,7 +244,7 @@ AVCodec *MediaProcController::HardwareDecoderIFace::findDecoder(AVCodecContext *
 #if defined(IOS) || defined(MACOSX)
 	return HardwareDecoderVT::findDecoder(context);
 #elif defined(DROID)
-	return const_cast<AVCodec *>(HardwareDecoderMC::findDecoder(context)); //this is very dirty and I do not like it one bit
+	return HardwareDecoderMC::findDecoder(context);
 #else
 	(void)context;
 	return nullptr;

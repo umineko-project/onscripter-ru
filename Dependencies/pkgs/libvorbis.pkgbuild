@@ -7,7 +7,7 @@ sources=(
     'libvorbis-droid-flags.patch'
 )
 hashes=(
-    'af00bb5a784e7c9e69f56823de4637c350643deedaf333d0fa86ecdba6fcb415'
+    '0e982409a9c3fc82ee06e08205b1355e5c6aa4c36bca58146ef399621b0ce5ab'
     '4066a7fcab3c75a3c48b589f712edb0ec2107a5ebac7c955fe0c7c7deb376c37'
 )
 
@@ -16,6 +16,7 @@ cflags_win32="-mstackrealign"
 configopts=(
     '--disable-dependency-tracking'
     "--libdir=$outdir/lib"
+    '--disable-shared'
 )
 
 prebuild() {

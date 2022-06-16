@@ -7,8 +7,8 @@ sources=(
     'SDL2_image-no-programs.patch'
 )
 hashes=(
-    'e74ec49c2402eb242fbfa16f2f43a19582a74c2eabfbfb873f00d4250038ceac'
-    'de84e8ba37cc07dd73cc778a9803b46fe7a4dcc23e81b1608e608d91a9dc4f6a'
+    'bdd5f6e026682f7d7e1be0b6051b209da2f402a2dd8bd1c4bd9c25ad263108d0'
+    'f6ceb9ea2787232e8c0e6f132c8bd287c50c4941e8189915203ec408e8fd6a2b'
 )
 
 cflags="-O3"
@@ -17,6 +17,7 @@ cppflags_win32="-I$outdir/include -I$outdir/include/SDL2"
 
 configopts=(
     '--disable-dependency-tracking'
+    '--disable-shared'
     '--enable-static'
     '--disable-lbm'
     '--disable-pcx'
@@ -26,8 +27,8 @@ configopts=(
     '--disable-xcf'
     '--disable-xv'
     '--disable-webp'
-    '--disable-jpg-static'
-    '--disable-png-static'
+    '--disable-jpg-shared'
+    '--disable-png-shared'
     '--disable-sdltest'
     "--libdir=$outdir/lib"
     "--with-sdl-prefix=$outdir"
@@ -43,7 +44,7 @@ configopts_ios_extra=(
 
 prebuild() {
     pushd "$pkgname-${pkgver}" &>/dev/null
-   
+
     apply_patch "${sources[1]}"
 
     export LIBPNG_LIBS="-L$outdir/lib -lpng"

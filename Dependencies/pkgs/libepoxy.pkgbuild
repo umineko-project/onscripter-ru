@@ -9,13 +9,14 @@ mesonopts=(
 if [ "$(getTarget)" == "win32" ]; then
     mesonopts+=('-Dx11=false' '-Dglx=no' '--cross-file=../../../download/linux-mingw-w64-32bit.txt')
 fi
+
 sources=(
-    "https://github.com/anholt/libepoxy/archive/refs/tags/${pkgver}.tar.gz" #https://github.com/anholt/libepoxy/releases/latest
+    "https://download.gnome.org/sources/libepoxy/1.5/libepoxy-1.5.10.tar.xz"
     'https://raw.githubusercontent.com/mesonbuild/meson/master/cross/linux-mingw-w64-32bit.txt'
 )
 hashes=(
-    '0b808a06c9685a62fca34b680abb8bc7fb2fda074478e329b063c1f872b826f6'
-    'ss'
+    '072cda4b59dd098bba8c2363a6247299db1fa89411dc221c8b81b8ee8192e623'
+    '4ad5d54af3b158ef9ff464466df2a3a62fc43783dec1fda35a8c8432ca59e638'
 )
 
 prebuild() {
@@ -27,6 +28,14 @@ build() {
     meson_configure
     ninja_install
     postbuild
+}
+
+postbuild() {
+    popd &>/dev/null
+    # needed to link statically, can't just build static because of x11 linking errors
+    rm "$outdir/lib/libepoxy.so"
+    rm "$outdir/lib/libepoxy.so.0"
+    rm "$outdir/lib/libepoxy.so.0.0.0"
 }
 
 # vim: set syntax=sh:

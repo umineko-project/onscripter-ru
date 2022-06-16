@@ -1554,7 +1554,7 @@ int ScriptParser::arcCommand() {
 		delete script_h.reader;
 		script_h.reader = new SarReader(archive_path);
 		if (script_h.reader->open(buf)) {
-			std::snprintf(script_h.errbuf, MIN_ERRBUF_LEN,
+			std::snprintf(script_h.errbuf, MAX_ERRBUF_LEN,
 			              "arc: couldn't open archive '%s'", buf);
 			errorAndCont(script_h.errbuf);
 		}
