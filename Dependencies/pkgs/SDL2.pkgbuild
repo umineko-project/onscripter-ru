@@ -1,5 +1,5 @@
 pkgname=SDL2
-pkgver=2.0.20
+pkgver=2.0.22
 pkgrel=2
 sources=(
     "https://github.com/libsdl-org/SDL/releases/download/release-${pkgver}/SDL2-${pkgver}.tar.gz" #https://github.com/libsdl-org/SDL/releases/latest
@@ -11,8 +11,8 @@ sources=(
     'SDL2-sensor-ios.patch'
 )
 hashes=(
-    'c56aba1d7b5b0e7e999e4a7698c70b63a3394ff9704b5f6e1c57e0c16f04dd06'
-    'd3ad2d4622329aa20b44656db68966149659241becdfb82ab31d36ced8ead46f'
+    'fe7cbf3127882e3fc7259a75a0cb585620272c51745d3852ab9dd87960697f2e'
+    'f2b8a20a42caf25f48ec486a12e9c71a9708efb1c7fdf46372590422a379d19b'
     'b6089984c729590b20aa876d90d3738295a57087fe3894b309850c7afd6ff28f'
     'd2360b18140c871442e0b4b7a12462aea1e1cd9dae72b454359e4d808a0f6223'
     '8d86b718ec4ebea6cc49d7457d02cc23eef90a73ef325dadf462e03bc15673b6'
