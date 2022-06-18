@@ -32,10 +32,12 @@ build() {
 
 postbuild() {
     popd &>/dev/null
-    # needed to link statically, can't just build static because of x11 linking errors
-    rm "$outdir/lib/libepoxy.so"
-    rm "$outdir/lib/libepoxy.so.0"
-    rm "$outdir/lib/libepoxy.so.0.0.0"
+    if [ "$(getTarget)" == "linux-like" ]; then
+        # needed to link statically, can't just build static because of x11 linking errors
+        rm "$outdir/lib/libepoxy.so"
+        rm "$outdir/lib/libepoxy.so.0"
+        rm "$outdir/lib/libepoxy.so.0.0.0"
+    fi
 }
 
 # vim: set syntax=sh:

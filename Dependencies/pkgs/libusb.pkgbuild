@@ -1,12 +1,12 @@
 pkgname=libusb
-pkgver=1.0.25
+pkgver=1.0.26
 pkgrel=2
 sources=(
     "https://github.com/libusb/libusb/releases/download/v${pkgver}/libusb-${pkgver}.tar.bz2" #https://github.com/libusb/libusb/releases/latest
     'libusb-guid-mingw.patch'
 )
 hashes=(
-    '8a28ef197a797ebac2702f095e81975e2b02b2eeff2774fa909c78a74ef50849'
+    '12ce7a61fc9854d1d2a1ffe095f7b5fac19ddba095c259e6067a46500381b5a5'
     '654fb8f00ecaf616fa03440bc6783ae4a0f7d336368ff16f71c9b09a8087459d'
 )
 
