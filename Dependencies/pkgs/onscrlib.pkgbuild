@@ -3,7 +3,7 @@ pkgver=1.0
 pkgrel=1
 type=meta
 
-depends+=(
+depends=(
     'bzip2'
     'zlib'
     'libpng'
