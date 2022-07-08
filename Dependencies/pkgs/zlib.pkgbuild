@@ -2,7 +2,7 @@ pkgname=zlib
 pkgver=1.2.12
 pkgrel=1
 sources=(
-    "https://www.zlib.net/zlib-${pkgver}.tar.gz" #https://sourceforge.net/projects/libpng/files/latest/download
+    "https://github.com/m3t4f1v3/onscripter-deps-updated/raw/master/archives/${pkgname}-${pkgver}.tar.gz" #https://sourceforge.net/projects/libpng/files/latest/download
     'zlib-windows-configure.patch'
 )
 CFLAGS="$CFLAGS ${cflags[@]} -fPIC"

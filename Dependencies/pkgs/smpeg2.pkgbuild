@@ -3,7 +3,7 @@ pkgver=2.0.0
 pkgrel=2
 depends=('SDL2')
 sources=(
-    'https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/smpeg2-2.0.0.tar.gz'
+    "https://github.com/m3t4f1v3/onscripter-deps-updated/raw/master/archives/${pkgname}-${pkgver}.tar.gz"
     'smpeg2-svn-r413.patch'
     'smpeg2-assembler-flags.patch'
     'smpeg2-sdl2-config-path.patch'

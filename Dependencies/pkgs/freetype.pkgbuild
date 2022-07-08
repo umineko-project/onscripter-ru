@@ -1,7 +1,7 @@
 pkgname=freetype
 pkgver=2.12.1
 pkgrel=2
-sources=("http://download.savannah.gnu.org/releases/freetype/freetype-${pkgver}.tar.xz") #http://mirror.downloadvn.com/nongnu/freetype/
+sources=("https://github.com/m3t4f1v3/onscripter-deps-updated/raw/master/archives/${pkgname}-${pkgver}.tar.xz") #http://mirror.downloadvn.com/nongnu/freetype/
 hashes=('4766f20157cc4cf0cd292f80bf917f92d1c439b243ac3018debf6b9140c41a7f')
 
 if [ -e "$outdir/.pkgs/harfbuzz" ]; then

@@ -4,7 +4,7 @@ pkgrel=1
 depends=('harfbuzz' 'fribidi')
 
 sources=(
-    "https://github.com/libass/libass/releases/download/${pkgver}/libass-${pkgver}.tar.gz" #https://github.com/libass/libass/latest
+    "https://github.com/m3t4f1v3/onscripter-deps-updated/raw/master/archives/${pkgname}-${pkgver}.tar.gz" #https://github.com/libass/libass/latest
     'libass-ignore-iconv.patch'
     'libass-unicode-font-path-win.patch'
     'libass-unicode-fontdir-path-win.patch'

@@ -3,7 +3,7 @@ pkgver=4.2.1
 pkgrel=1
 depends=('freetype')
 sources=(
-    "https://github.com/harfbuzz/harfbuzz/releases/download/${pkgver}/harfbuzz-${pkgver}.tar.xz" #https://github.com/harfbuzz/harfbuzz/releases/latest
+    "https://github.com/m3t4f1v3/onscripter-deps-updated/raw/master/archives/${pkgname}-${pkgver}.tar.xz" #https://github.com/harfbuzz/harfbuzz/releases/latest
     'harfbuzz-multithread-mingw.patch'
 )
 hashes=(

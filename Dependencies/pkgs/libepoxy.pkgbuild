@@ -11,7 +11,7 @@ if [ "$(getTarget)" == "win32" ]; then
 fi
 
 sources=(
-    "https://download.gnome.org/sources/libepoxy/1.5/libepoxy-1.5.10.tar.xz"
+    "https://github.com/m3t4f1v3/onscripter-deps-updated/raw/master/archives/${pkgname}-${pkgver}.tar.xz"
     'https://raw.githubusercontent.com/mesonbuild/meson/master/cross/linux-mingw-w64-32bit.txt'
 )
 hashes=(

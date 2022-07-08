@@ -2,7 +2,7 @@ pkgname=bzip2
 pkgver=1.0.8
 pkgrel=1
 sources=(
-    "https://sourceware.org/pub/bzip2/bzip2-${pkgver}.tar.gz" #https://sourceware.org/pub/bzip2/bzip2-latest.tar.gz
+    "https://github.com/m3t4f1v3/onscripter-deps-updated/raw/master/archives/${pkgname}-${pkgver}.tar.gz" #https://sourceware.org/pub/bzip2/bzip2-latest.tar.gz
     'bzip2-cflags.patch'
     'bzip2-install.patch'
     'bzip2-clang.patch'

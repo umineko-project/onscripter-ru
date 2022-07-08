@@ -25,12 +25,13 @@ compile() {
     # todo: use SHAREDLIB from configure file
     if [ "$(getTarget)" == "win32" ]; then
         FILEEXTENSION=.dll
+	EXTRALINKAGES=-lwinpthread
     elif [ "$(getTarget)" == "linux-like" ]; then
         FILEEXTENSION=.so
     else
         FILEEXTENSION=.dylib
     fi
-    $CXX -o libdiscordsdk$FILEEXTENSION *.cpp -g -shared -L$outdir/lib/ -static-libgcc -static-libstdc++ -ldiscord_game_sdk -fPIC -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive &>"$logfile" || ret=$?
+    $CXX -o libdiscordsdk$FILEEXTENSION *.cpp -g -shared -L$outdir/lib/ -static-libgcc -static-libstdc++ -ldiscord_game_sdk -fPIC -Wl,-Bstatic,--whole-archive $EXTRALINKAGES -Wl,--no-whole-archive &>"$logfile" || ret=$?
     if (( $ret )); then
         tail -n 20 "$logfile"
         error "Compiling %s failed" "$pkgname"
@@ -45,13 +46,6 @@ copy() {
     local ret=0
     cp libdiscordsdk$FILEEXTENSION $outdir/lib/ &>"$logfile" || ret=$?
     cp *.h $outdir/include/discord/ &>"$logfile" || ret=$?
-
-    # gotta reverse it for some awful reason
-    mv $outdir/lib/libdiscord_game_sdk.bundle $outdir/lib/discord_game_sdk.bundle &>"$logfile" || ret=$?
-    mv $outdir/lib/libdiscord_game_sdk.dylib $outdir/lib/discord_game_sdk.dylib &>"$logfile" || ret=$?
-    mv $outdir/lib/libdiscord_game_sdk.so $outdir/lib/discord_game_sdk.so &>"$logfile" || ret=$?
-    mv $outdir/lib/libdiscord_game_sdk.dll $outdir/lib/discord_game_sdk.dll &>"$logfile" || ret=$?
-    mv $outdir/lib/libdiscord_game_sdk.lib $outdir/lib/discord_game_sdk.lib &>"$logfile" || ret=$?
 
     if (( $ret )); then
         tail -n 20 "$logfile"

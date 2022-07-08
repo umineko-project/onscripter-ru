@@ -1,7 +1,7 @@
 pkgname=lua
 pkgver=5.4.4
 pkgrel=1
-sources=("https://www.lua.org/ftp/lua-${pkgver}.tar.gz") #https://www.lua.org/ftp/
+sources=("https://github.com/m3t4f1v3/onscripter-deps-updated/raw/master/archives/${pkgname}-${pkgver}.tar.gz") #https://www.lua.org/ftp/
 hashes=('164c7849653b80ae67bec4b7473b884bf5cc8d2dca05653475ec2ed27b9ebf61')
 
 build() {

@@ -1,7 +1,7 @@
 pkgname=jpeg
 pkgver=9e
 pkgrel=1
-sources=("http://www.ijg.org/files/jpegsrc.v${pkgver}.tar.gz") #http://www.ijg.org/files/
+sources=("https://github.com/m3t4f1v3/onscripter-deps-updated/raw/master/archives/${pkgname}src.v${pkgver}.tar.gz") #http://www.ijg.org/files/
 hashes=('4077d6a6a75aeb01884f708919d25934c93305e49f7e3f36db9129320e6f4f3d')
 
 configopts=(
