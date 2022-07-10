@@ -34,36 +34,7 @@ jobs:
       run: sudo apt install yasm libreadline-dev libasound-dev libgl1-mesa-dev libegl1-mesa-dev libxrandr-dev python3-pip autopoint po4a binutils-mingw-w64-i686 gcc-mingw-w64-i686
     - name: Install meson via pip
       run: pip3 install meson ninja
-    - name: Configure linux (dev)
-      run: ./configure
-    - name: Make linux (dev)
-      run: make -j $(getconf _NPROCESSORS_ONLN)
-    - name: Upload (dev)
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: DerivedData/Posix-x86_64/onscripter-ru
-        asset_name: onscripter-ru-linux-r${{ env.BUILD }}-dev
-        asset_content_type: application/x-pie-executable
-    - name: Configure linux (release)
-      run: ./configure --release-build --strip-binary
-    - name: Make linux (release)
-      run: make -j $(getconf _NPROCESSORS_ONLN)
-    - name: Upload (release)
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: DerivedData/Posix-x86_64/onscripter-ru
-        asset_name: onscripter-ru-linux-r${{ env.BUILD }}-release
-        asset_content_type: application/x-pie-executable
-    - name: Clean
-      run: |
-        make clean
-        make onscrlibclean
+
     - name: Configure linux (dev) (discord)
       run: ./configure --with-discord
     - name: Make linux (dev) (discord)
@@ -77,6 +48,7 @@ jobs:
         asset_path: DerivedData/Posix-x86_64/onscripter-ru
         asset_name: onscripter-ru-linux-r${{ env.BUILD }}-dev-discord
         asset_content_type: application/x-pie-executable
+    
     - name: Configure linux (release) (discord)
       run: ./configure --release-build --strip-binary --with-discord
     - name: Make linux (release) (discord)
@@ -89,4 +61,37 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: DerivedData/Posix-x86_64/onscripter-ru
         asset_name: onscripter-ru-linux-r${{ env.BUILD }}-release-discord
+        asset_content_type: application/x-pie-executable
+
+    - name: Clean
+      run: |
+        make clean
+        rm DerivedData/Posix-x86_64/Dependencies/onscrlib/.pkgs/onscrlib
+
+    - name: Configure linux (dev)
+      run: ./configure
+    - name: Make linux (dev)
+      run: make -j $(getconf _NPROCESSORS_ONLN)
+    - name: Upload (dev)
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: DerivedData/Posix-x86_64/onscripter-ru
+        asset_name: onscripter-ru-linux-r${{ env.BUILD }}-dev
+        asset_content_type: application/x-pie-executable
+    
+    - name: Configure linux (release)
+      run: ./configure --release-build --strip-binary
+    - name: Make linux (release)
+      run: make -j $(getconf _NPROCESSORS_ONLN)
+    - name: Upload (release)
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: DerivedData/Posix-x86_64/onscripter-ru
+        asset_name: onscripter-ru-linux-r${{ env.BUILD }}-release
         asset_content_type: application/x-pie-executable
