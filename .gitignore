@@ -21,3 +21,4 @@ build
 # IDEA
 .idea
 cmake-build-*/
+.vscode
