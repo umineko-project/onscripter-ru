@@ -38,7 +38,7 @@ jobs:
     - name: Configure linux (dev) (discord)
       run: ./configure --with-discord
     - name: Make linux (dev) (discord)
-      run: make -j $(getconf _NPROCESSORS_ONLN)
+      run: make -j $(getconf _NPROCESSORS_ONLN) || ls DerivedData/Posix-x86_64/Dependencies/onscrlib/lib/
     - name: Zip the necessary files
       run: zip -j linux-dev-discord.zip DerivedData/Posix-x86_64/onscripter-ru DerivedData/Posix-x86_64/Dependencies/onscrlib/lib/libdiscordsdk.so DerivedData/Posix-x86_64/Dependencies/onscrlib/lib/libdiscord_game_sdk.so 
 
