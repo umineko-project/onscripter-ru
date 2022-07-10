@@ -161,7 +161,6 @@ do
       --with-werror | -with-werror)
         EXTRAOSCFLAGS="$EXTRAOSCFLAGS -Werror" ;;
       --with-discord | -with-discord)
-        DISCORDFLAGS="-ldiscord_game_sdk -ldiscordsdk"
         EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DDISCORD"
         USEDISCORD=true ;;
       --unsupported-compiler | -unsupported-compiler)
@@ -635,7 +634,7 @@ genlink swscale
 genlink swresample
 genlink ass
 if [[ $USEDISCORD ]]; then
-  genlink discordsdk $SHAREDLIB
+  genlink discordsdk
   genlink discord_game_sdk $SHAREDLIB
 fi
 genlink fribidi
@@ -950,7 +949,6 @@ export PATH     := \$(EXTLIB)/bin:\$(PATH)
 export CFLAGS   := -I\$(EXTLIB)/include \$(CFLAGS) $EXTRACFLAGS
 export CPPFLAGS := -I\$(EXTLIB)/include \$(CPPFLAGS) $EXTRACFLAGS
 export LDFLAGS  := -L\$(EXTLIB)/lib \$(LDFLAGS) $EXTRALDFLAGS
-export DISCORDFLAGS := $DISCORDFLAGS
 export USEDISCORD := $USEDISCORD
 export CSTD     := $CSTD
 export CXXSTD   := $CXXSTD
@@ -990,7 +988,7 @@ LIBS = \$(EXTRAOSLDFLAGS) -L\$(EXTLIB)/lib $LINK_START_GROUP \\
 	$LINKSDL2_mixer $LINKogg $LINKvorbis $LINKvorbisfile \\
 	$LINKSDL2_gpu $LINKepoxy $LINKbz2 \\
 	$LINKavutil $LINKavformat $LINKavcodec $LINKswscale $LINKswresample \\
-	$LINKass $LINKusb $LINKfribidi $LINKharfbuzz $LINKunwind $LINK_END_GROUP
+	$LINKass $LINKusb $LINKfribidi $LINKharfbuzz $LINKunwind $LINKdiscordsdk $LINKdiscord_game_sdk $LINK_END_GROUP
 
 .SUFFIXES:
 .SUFFIXES: $OBJ .cpp .h .c
@@ -1036,7 +1034,7 @@ cat >> "$BUILD_PATH/Makefile" <<_EOF
 
 \$(BUILD_PATH)/\$(TARGET)\$(EXESUFFIX): \$(ONSCRIPTER_OBJS)
 	@echo "[LINK] \$(BUILD_PATH)/\$(TARGET)\$(EXESUFFIX)"
-	@\$(CXX) -o \$@ \$(LDFLAGS) \$(DISCORDFLAGS) \$(ONSCRIPTER_OBJS) \$(LIBS)
+	@\$(CXX) -o \$@ \$(LDFLAGS) \$(ONSCRIPTER_OBJS) \$(LIBS)
 
 \$(BUILD_PATH)/%\$(OBJSUFFIX): \$(PROJECT)/%.cpp
 	@echo "[CXX] \$<"
