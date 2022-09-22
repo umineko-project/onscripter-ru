@@ -127,6 +127,9 @@ public:
 
 		bool no_break{false};
 
+		bool word_border{false};
+		int word_border_size{0};
+
 		int font_size{0};
 
 		std::string ruby_text;
@@ -168,6 +171,8 @@ public:
                 shadow_distance[1] = props.shadow_distance[1];
             shadow_color = props.shadow_color;
             no_break     = props.no_break;
+			word_border  = props.word_border;
+			word_border_size = props.word_border_size;
             if (props.font_size != -1)
                 font_size = props.font_size;
             character_spacing = props.character_spacing;

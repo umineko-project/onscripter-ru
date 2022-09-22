@@ -391,6 +391,7 @@ private:
 	bool addFittingChars(DialoguePiece &piece, std::u16string &rhs, const std::u16string &original, std::deque<DialoguePiece> *rubyPieces = nullptr, bool measure = false);
 	void addCharToRenderBuffer(DialoguePiece &piece, char16_t codepoint, Fontinfo &fontInfo, bool measure = false);
 	void renderAddedChars(TextRenderingState &state, DialoguePiece &p, bool renderBorder = false, bool renderShadow = false);
+	void renderBorderedWord(TextRenderingState &state, SDL_Color &wordBorderColor, GPU_Rect &borderRect, int wordBorderSize) ;
 
 	// temps with preallocated buffers
 	std::u16string layoutPieceTmpFreshText;
