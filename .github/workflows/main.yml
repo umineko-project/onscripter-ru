@@ -105,7 +105,7 @@ jobs:
         asset_content_type: application/x-pie-executable
     - name: Setup MinGW
       run: |
-        export CC=i686-w64-mingw32-gcc                                                                                                                                                                                                                                                                                 09:11:37
+        export CC=i686-w64-mingw32-gcc
         export CXX=i686-w64-mingw32-g++
         export LD=i686-w64-mingw32-ld
         export AR=i686-w64-mingw32-ar
