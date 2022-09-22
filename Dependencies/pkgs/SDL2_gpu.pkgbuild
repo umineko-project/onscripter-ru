@@ -53,9 +53,6 @@ build() {
     local logfile="$logdir/$pkgname.cmake.log"
     
     export SDL2DIR=$outdir
-    #if [ "$(getTarget)" == "win32" ]; then
-    #    cflags+="-I$outdir/include/khronos"
-    #fi
     
     lcf="$CFLAGS ${cflags[@]} $CFLAGS_EXTRA"
     lcxf="$CPPFLAGS ${cppflags[@]} $CPPFLAGS_EXTRA"

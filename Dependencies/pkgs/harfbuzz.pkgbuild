@@ -32,7 +32,6 @@ fi
 
 prebuild() {
     pushd "$pkgname-$pkgver" &>/dev/null
-    #apply_patch "${sources[1]}"
 
     # harfbuzz requires insisting on our architecture, all configure options, cflags and ldflags are ignored 
     case $(getTarget) in

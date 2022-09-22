@@ -19,10 +19,6 @@ hashes=(
     'c6d55102340644da8f5a54779fd12f457522f9af72e0db7ef9b7113e339f9266'
     'c83dee5c1c52806e582d46a7ae7aa85ae89fd74c07d6575fc3d3f2a49923a136'
     '613b290b2f00aa2084884e558218265171dc6533fd280cbbb7921054b6613dc0'
-    'lol'
-    'lol'
-    'lol'
-    'lol'
 )
 
 build() {

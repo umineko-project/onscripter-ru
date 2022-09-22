@@ -1,29 +1,37 @@
 pkgname=discord
-pkgver=2.5.6
+pkgver=3.2.1
 pkgrel=1
 
 sources=(
     "https://dl-game-sdk.discordapp.net/${pkgver}/discord_game_sdk.zip" #https://discord.com/developers/docs/game-sdk/sdk-starter-guide
     'discord-fix-std-int.patch'
+    'discord-fix-windows-include.patch'
 )
 
 hashes=(
-    '426eb5fa70647d884f461c63825b63668349efb4bc68a16e70bc4a24e119b92e'
-    '7d0e78923050876becd558f8601457f7faf2d73aeaf2469350af3ccfdc3f1d7c'
+    '6757bb4a1f5b42aa7b6707cbf2158420278760ac5d80d40ca708bb01d20ae6b4'
+    '0ef8527a49aa33cd7401b95177d09e98465bc8db0e9b20f0a2d575c0efeeaeb0'
+    'bc444a0cba43373c9b39c72590dbe6b5afbaa939eaaadf293a2351ccd5ce00a1'
 )
 
-noextract='discord-fix-std-int.patch'
+noextract=(
+    'discord-fix-std-int.patch'
+    'discord-fix-windows-include.patch'
+)
 
 prebuild() {
     pushd "$pkgname-$pkgver/cpp" &>/dev/null
     apply_patch "${sources[1]}"
+    if [ "$(getTarget)" == "win32" ]; then
+        apply_patch "${sources[2]}"
+    fi
 }
 
 compile() {
     local logfile="$logdir/$pkgname.compile.log"
     local ret=0
 
-    $CXX -c *.cpp -g -static &>"$logfile" || ret=$?
+    $CXX -c *.cpp -g -static -fpermissive &>"$logfile" || ret=$?
     $AR rvs libdiscordsdk.a *.o &>>"$logfile" || ret=$?
     if (( $ret )); then
         tail -n 20 "$logfile"

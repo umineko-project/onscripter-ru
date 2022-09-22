@@ -1484,7 +1484,7 @@ int ONScripter::movieCommand() {
 			//PARAMS: filename, click, no_loop, alpha=0, audio=1, subtitles=0, sub_file=""
 
 			std::string vidfile(script_h.readFilePath());
-	
+			
 			video_skip_mode = script_h.readInt() == 1 ? VideoSkip::Normal : VideoSkip::Trap;
 			bool loop       = script_h.readInt() == 0;
 

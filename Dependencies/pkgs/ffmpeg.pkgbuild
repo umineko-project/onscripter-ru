@@ -93,7 +93,7 @@ configopts_droid=(
 )
 
 cflags_linux="-D__STDC_CONSTANT_MACROS"
-cflags_win32="-D__STDC_CONSTANT_MACROS -m32 -march=i686"
+cflags_win32="-D__STDC_CONSTANT_MACROS -m32 -march=i686 -I$outdir/include/"
 configopts=(
     #static build
     '--enable-static'
@@ -235,7 +235,7 @@ if $CROSS_BUILD; then
     )
     configopts_win32+=(
         '--target-os=mingw32'
-	    '--cross-prefix=i686-w64-mingw32-'
+        '--cross-prefix=i686-w64-mingw32-'
     )
     configopts_ios+=(
         '--target-os=darwin'
@@ -271,9 +271,6 @@ prebuild() {
         apply_patch "${sources[4]}"
     ;;
     esac
-    # fixed in 4361293fcf59edb56879c36edcd25f0a91e0edf8
-    #apply_patch "${sources[3]}"
-
 }
 
 # vim: set syntax=sh:

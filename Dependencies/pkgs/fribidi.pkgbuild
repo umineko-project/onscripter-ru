@@ -19,9 +19,11 @@ configopts=(
     "--libdir=$outdir/lib"
 )
 
+host=$($CC -dumpmachine)
+
 configopts_droid=(
     '--target=aarch64-unknown-linux-android'
-    '--host=x86_64-unknown-linux-gnu'
+    '--host=$host'
 )
 
 prebuild() {

@@ -1,3 +1,12 @@
+/**
+ *  DiscordEvents.hpp
+ *  ONScripter-RU
+ *
+ *  Core functions for the discord api.
+ *
+ *  Consult LICENSE file for licensing terms and copyright holders.
+ */
+
 #pragma once
 
 void initDiscord(const char* id);

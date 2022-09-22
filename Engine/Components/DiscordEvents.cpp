@@ -1,3 +1,12 @@
+/**
+ *  DiscordEvents.cpp
+ *  ONScripter-RU
+ *
+ *  Core functions for the discord api.
+ *
+ *  Consult LICENSE file for licensing terms and copyright holders.
+ */
+
 #if defined(DISCORD)
 #include <discord/discord.h>
 #include "Support/FileIO.hpp"

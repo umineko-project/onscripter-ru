@@ -6,7 +6,7 @@ diff -rupN a/configure b/configure
 
 
 -printf "%s\n" "#define CONFIG_ICONV 1" >>confdefs.h
-+#printf "%s\n" "Ignoring ivonv"
++#printf "%s\n" "Ignoring iconv"
 
 
  fi

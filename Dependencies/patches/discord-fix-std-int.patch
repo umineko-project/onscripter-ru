@@ -1,6 +1,6 @@
---- a/achievement_manager.cpp	2019-11-05 01:30:40.000000000 +1100
-+++ b/achievement_manager.cpp	2022-07-10 14:46:21.776270741 +1000
-@@ -30,7 +30,7 @@ IDiscordAchievementEvents AchievementMan
+--- a/achievement_manager.cpp	2022-04-27 00:13:22.000000000 +1000
++++ b/achievement_manager.cpp	2022-09-22 13:18:25.069935911 +1000
+@@ -31,7 +31,7 @@ IDiscordAchievementEvents AchievementMan
  };
  
  void AchievementManager::SetUserAchievement(Snowflake achievementId,
@@ -9,7 +9,7 @@
                                              std::function<void(Result)> callback)
  {
      static auto wrapper = [](void* callbackData, EDiscordResult result) -> void {
-@@ -62,7 +62,7 @@ void AchievementManager::FetchUserAchiev
+@@ -63,7 +63,7 @@ void AchievementManager::FetchUserAchiev
      internal_->fetch_user_achievements(internal_, cb.release(), wrapper);
  }
  
@@ -18,7 +18,7 @@
  {
      if (!count) {
          return;
-@@ -83,7 +83,7 @@ Result AchievementManager::GetUserAchiev
+@@ -84,7 +84,7 @@ Result AchievementManager::GetUserAchiev
      return static_cast<Result>(result);
  }
  
@@ -27,8 +27,8 @@
                                                  UserAchievement* userAchievement)
  {
      if (!userAchievement) {
---- a/achievement_manager.h	2019-11-05 01:30:40.000000000 +1100
-+++ b/achievement_manager.h	2022-07-10 14:46:21.776270741 +1000
+--- a/achievement_manager.h	2022-04-27 00:13:22.000000000 +1000
++++ b/achievement_manager.h	2022-09-22 13:18:25.069935911 +1000
 @@ -9,12 +9,12 @@ public:
      ~AchievementManager() = default;
  
@@ -45,8 +45,8 @@
  
      Event<UserAchievement const&> OnUserAchievementUpdate;
  
---- a/activity_manager.cpp	2019-11-05 01:30:40.000000000 +1100
-+++ b/activity_manager.cpp	2022-07-10 14:46:21.776270741 +1000
+--- a/activity_manager.cpp	2022-04-27 00:13:22.000000000 +1000
++++ b/activity_manager.cpp	2022-09-22 13:18:25.069935911 +1000
 @@ -76,7 +76,7 @@ Result ActivityManager::RegisterCommand(
      return static_cast<Result>(result);
  }
@@ -56,8 +56,8 @@
  {
      auto result = internal_->register_steam(internal_, steamId);
      return static_cast<Result>(result);
---- a/activity_manager.h	2019-11-05 01:30:40.000000000 +1100
-+++ b/activity_manager.h	2022-07-10 14:46:21.776270741 +1000
+--- a/activity_manager.h	2022-04-27 00:13:22.000000000 +1000
++++ b/activity_manager.h	2022-09-22 13:18:25.069935911 +1000
 @@ -9,7 +9,7 @@ public:
      ~ActivityManager() = default;
  
@@ -67,8 +67,8 @@
      void UpdateActivity(Activity const& activity, std::function<void(Result)> callback);
      void ClearActivity(std::function<void(Result)> callback);
      void SendRequestReply(UserId userId,
---- a/core.cpp	2019-11-05 01:30:40.000000000 +1100
-+++ b/core.cpp	2022-07-10 14:46:21.776270741 +1000
+--- a/core.cpp	2022-04-27 00:13:22.000000000 +1000
++++ b/core.cpp	2022-09-22 13:18:25.071935914 +1000
 @@ -9,7 +9,7 @@
  
  namespace discord {
@@ -78,8 +78,8 @@
  {
      if (!instance) {
          return Result::InternalError;
---- a/core.h	2019-11-05 01:30:40.000000000 +1100
-+++ b/core.h	2022-07-10 14:46:21.776270741 +1000
+--- a/core.h	2022-04-27 00:13:22.000000000 +1000
++++ b/core.h	2022-09-22 13:18:25.071935914 +1000
 @@ -18,7 +18,7 @@ namespace discord {
  
  class Core final {
@@ -89,8 +89,8 @@
  
      ~Core();
  
---- a/image_manager.cpp	2019-11-05 01:30:40.000000000 +1100
-+++ b/image_manager.cpp	2022-07-10 14:46:21.776270741 +1000
+--- a/image_manager.cpp	2022-04-27 00:13:22.000000000 +1000
++++ b/image_manager.cpp	2022-09-22 13:18:25.071935914 +1000
 @@ -45,7 +45,7 @@ Result ImageManager::GetDimensions(Image
      return static_cast<Result>(result);
  }
@@ -100,8 +100,8 @@
  {
      auto result = internal_->get_data(internal_,
                                        *reinterpret_cast<DiscordImageHandle const*>(&handle),
---- a/image_manager.h	2019-11-05 01:30:40.000000000 +1100
-+++ b/image_manager.h	2022-07-10 14:46:21.776270741 +1000
+--- a/image_manager.h	2022-04-27 00:13:22.000000000 +1000
++++ b/image_manager.h	2022-09-22 13:18:25.071935914 +1000
 @@ -10,7 +10,7 @@ public:
  
      void Fetch(ImageHandle handle, bool refresh, std::function<void(Result, ImageHandle)> callback);
@@ -111,9 +111,9 @@
  
  private:
      friend class Core;
---- a/lobby_manager.cpp	2019-11-05 01:30:40.000000000 +1100
-+++ b/lobby_manager.cpp	2022-07-10 14:46:21.776270741 +1000
-@@ -294,7 +294,7 @@ Result LobbyManager::GetLobbyMetadataVal
+--- a/lobby_manager.cpp	2022-04-27 00:13:22.000000000 +1000
++++ b/lobby_manager.cpp	2022-09-22 13:18:25.071935914 +1000
+@@ -301,7 +301,7 @@ Result LobbyManager::GetLobbyMetadataVal
      return static_cast<Result>(result);
  }
  
@@ -122,7 +122,7 @@
  {
      if (!key) {
          return Result::InternalError;
-@@ -305,7 +305,7 @@ Result LobbyManager::GetLobbyMetadataKey
+@@ -312,7 +312,7 @@ Result LobbyManager::GetLobbyMetadataKey
      return static_cast<Result>(result);
  }
  
@@ -131,7 +131,7 @@
  {
      if (!count) {
          return Result::InternalError;
-@@ -316,7 +316,7 @@ Result LobbyManager::LobbyMetadataCount(
+@@ -323,7 +323,7 @@ Result LobbyManager::LobbyMetadataCount(
      return static_cast<Result>(result);
  }
  
@@ -140,7 +140,7 @@
  {
      if (!count) {
          return Result::InternalError;
-@@ -326,7 +326,7 @@ Result LobbyManager::MemberCount(LobbyId
+@@ -333,7 +333,7 @@ Result LobbyManager::MemberCount(LobbyId
      return static_cast<Result>(result);
  }
  
@@ -149,7 +149,7 @@
  {
      if (!userId) {
          return Result::InternalError;
-@@ -368,7 +368,7 @@ Result LobbyManager::GetMemberMetadataVa
+@@ -375,7 +375,7 @@ Result LobbyManager::GetMemberMetadataVa
  
  Result LobbyManager::GetMemberMetadataKey(LobbyId lobbyId,
                                            UserId userId,
@@ -158,7 +158,7 @@
                                            char key[256])
  {
      if (!key) {
-@@ -380,7 +380,7 @@ Result LobbyManager::GetMemberMetadataKe
+@@ -387,7 +387,7 @@ Result LobbyManager::GetMemberMetadataKe
      return static_cast<Result>(result);
  }
  
@@ -167,7 +167,7 @@
  {
      if (!count) {
          return Result::InternalError;
-@@ -415,8 +415,8 @@ void LobbyManager::UpdateMember(LobbyId
+@@ -422,8 +422,8 @@ void LobbyManager::UpdateMember(LobbyId
  }
  
  void LobbyManager::SendLobbyMessage(LobbyId lobbyId,
@@ -178,7 +178,7 @@
                                      std::function<void(Result)> callback)
  {
      static auto wrapper = [](void* callbackData, EDiscordResult result) -> void {
-@@ -459,7 +459,7 @@ void LobbyManager::Search(LobbySearchQue
+@@ -466,7 +466,7 @@ void LobbyManager::Search(LobbySearchQue
        internal_, const_cast<LobbySearchQuery&>(query).Internal(), cb.release(), wrapper);
  }
  
@@ -187,7 +187,7 @@
  {
      if (!count) {
          return;
-@@ -468,7 +468,7 @@ void LobbyManager::LobbyCount(std::int32
+@@ -475,7 +475,7 @@ void LobbyManager::LobbyCount(std::int32
      internal_->lobby_count(internal_, reinterpret_cast<int32_t*>(count));
  }
  
@@ -196,7 +196,7 @@
  {
      if (!lobbyId) {
          return Result::InternalError;
-@@ -526,7 +526,7 @@ Result LobbyManager::FlushNetwork()
+@@ -533,7 +533,7 @@ Result LobbyManager::FlushNetwork()
      return static_cast<Result>(result);
  }
  
@@ -205,7 +205,7 @@
  {
      auto result =
        internal_->open_network_channel(internal_, lobbyId, channelId, (reliable ? 1 : 0));
-@@ -535,9 +535,9 @@ Result LobbyManager::OpenNetworkChannel(
+@@ -542,9 +542,9 @@ Result LobbyManager::OpenNetworkChannel(
  
  Result LobbyManager::SendNetworkMessage(LobbyId lobbyId,
                                          UserId userId,
@@ -218,8 +218,8 @@
  {
      auto result = internal_->send_network_message(
        internal_, lobbyId, userId, channelId, reinterpret_cast<uint8_t*>(data), dataLength);
---- a/lobby_manager.h	2019-11-05 01:30:40.000000000 +1100
-+++ b/lobby_manager.h	2022-07-10 14:46:21.776270741 +1000
+--- a/lobby_manager.h	2022-04-27 00:13:22.000000000 +1000
++++ b/lobby_manager.h	2022-09-22 13:18:25.071935914 +1000
 @@ -28,49 +28,49 @@ public:
      Result GetLobby(LobbyId lobbyId, Lobby* lobby);
      Result GetLobbyActivitySecret(LobbyId lobbyId, char secret[128]);
@@ -292,8 +292,8 @@
  
  private:
      friend class Core;
---- a/network_manager.cpp	2019-11-05 01:30:40.000000000 +1100
-+++ b/network_manager.cpp	2022-07-10 14:46:21.776270741 +1000
+--- a/network_manager.cpp	2022-04-27 00:13:22.000000000 +1000
++++ b/network_manager.cpp	2022-09-22 13:18:25.071935914 +1000
 @@ -92,8 +92,8 @@ Result NetworkManager::CloseChannel(Netw
  
  Result NetworkManager::SendMessage(NetworkPeerId peerId,
@@ -305,8 +305,8 @@
  {
      auto result = internal_->send_message(
        internal_, peerId, channelId, reinterpret_cast<uint8_t*>(data), dataLength);
---- a/network_manager.h	2019-11-05 01:30:40.000000000 +1100
-+++ b/network_manager.h	2022-07-10 14:46:21.776270741 +1000
+--- a/network_manager.h	2022-04-27 00:13:22.000000000 +1000
++++ b/network_manager.h	2022-09-22 13:18:25.071935914 +1000
 @@ -41,10 +41,10 @@ public:
       */
      Result SendMessage(NetworkPeerId peerId,
@@ -321,9 +321,124 @@
      Event<char const*> OnRouteUpdate;
  
  private:
---- a/relationship_manager.cpp	2019-11-05 01:30:40.000000000 +1100
-+++ b/relationship_manager.cpp	2022-07-10 14:46:21.776270741 +1000
-@@ -55,7 +55,7 @@ void RelationshipManager::Filter(std::fu
+--- a/overlay_manager.cpp	2022-04-27 00:13:22.000000000 +1000
++++ b/overlay_manager.cpp	2022-09-22 13:18:25.071935914 +1000
+@@ -139,17 +139,17 @@ void OverlayManager::CharEvent(char cons
+     internal_->char_event(internal_, const_cast<char*>(character));
+ }
+ 
+-void OverlayManager::MouseButtonEvent(std::uint8_t down,
+-                                      std::int32_t clickCount,
++void OverlayManager::MouseButtonEvent(uint8_t down,
++                                      int32_t clickCount,
+                                       MouseButton which,
+-                                      std::int32_t x,
+-                                      std::int32_t y)
++                                      int32_t x,
++                                      int32_t y)
+ {
+     internal_->mouse_button_event(
+       internal_, down, clickCount, static_cast<EDiscordMouseButton>(which), x, y);
+ }
+ 
+-void OverlayManager::MouseMotionEvent(std::int32_t x, std::int32_t y)
++void OverlayManager::MouseMotionEvent(int32_t x, int32_t y)
+ {
+     internal_->mouse_motion_event(internal_, x, y);
+ }
+@@ -161,9 +161,9 @@ void OverlayManager::ImeCommitText(char
+ 
+ void OverlayManager::ImeSetComposition(char const* text,
+                                        ImeUnderline* underlines,
+-                                       std::uint32_t underlinesLength,
+-                                       std::int32_t from,
+-                                       std::int32_t to)
++                                       uint32_t underlinesLength,
++                                       int32_t from,
++                                       int32_t to)
+ {
+     internal_->ime_set_composition(internal_,
+                                    const_cast<char*>(text),
+@@ -179,7 +179,7 @@ void OverlayManager::ImeCancelCompositio
+ }
+ 
+ void OverlayManager::SetImeCompositionRangeCallback(
+-  std::function<void(std::int32_t, std::int32_t, Rect*, std::uint32_t)>
++  std::function<void(int32_t, int32_t, Rect*, uint32_t)>
+     onImeCompositionRangeChanged)
+ {
+     static auto wrapper = [](void* callbackData,
+@@ -187,16 +187,16 @@ void OverlayManager::SetImeCompositionRa
+                              int32_t to,
+                              DiscordRect* bounds,
+                              uint32_t boundsLength) -> void {
+-        std::unique_ptr<std::function<void(std::int32_t, std::int32_t, Rect*, std::uint32_t)>> cb(
+-          reinterpret_cast<std::function<void(std::int32_t, std::int32_t, Rect*, std::uint32_t)>*>(
++        std::unique_ptr<std::function<void(int32_t, int32_t, Rect*, uint32_t)>> cb(
++          reinterpret_cast<std::function<void(int32_t, int32_t, Rect*, uint32_t)>*>(
+             callbackData));
+         if (!cb || !(*cb)) {
+             return;
+         }
+         (*cb)(from, to, reinterpret_cast<Rect*>(bounds), boundsLength);
+     };
+-    std::unique_ptr<std::function<void(std::int32_t, std::int32_t, Rect*, std::uint32_t)>> cb{};
+-    cb.reset(new std::function<void(std::int32_t, std::int32_t, Rect*, std::uint32_t)>(
++    std::unique_ptr<std::function<void(int32_t, int32_t, Rect*, uint32_t)>> cb{};
++    cb.reset(new std::function<void(int32_t, int32_t, Rect*, uint32_t)>(
+       std::move(onImeCompositionRangeChanged)));
+     internal_->set_ime_composition_range_callback(internal_, cb.release(), wrapper);
+ }
+@@ -220,7 +220,7 @@ void OverlayManager::SetImeSelectionBoun
+     internal_->set_ime_selection_bounds_callback(internal_, cb.release(), wrapper);
+ }
+ 
+-bool OverlayManager::IsPointInsideClickZone(std::int32_t x, std::int32_t y)
++bool OverlayManager::IsPointInsideClickZone(int32_t x, int32_t y)
+ {
+     auto result = internal_->is_point_inside_click_zone(internal_, x, y);
+     return (result != 0);
+--- a/overlay_manager.h	2022-04-27 00:13:22.000000000 +1000
++++ b/overlay_manager.h	2022-09-22 13:18:25.071935914 +1000
+@@ -19,25 +19,25 @@ public:
+     void ForwardMessage(MSG* message);
+     void KeyEvent(bool down, char const* keyCode, KeyVariant variant);
+     void CharEvent(char const* character);
+-    void MouseButtonEvent(std::uint8_t down,
+-                          std::int32_t clickCount,
++    void MouseButtonEvent(uint8_t down,
++                          int32_t clickCount,
+                           MouseButton which,
+-                          std::int32_t x,
+-                          std::int32_t y);
+-    void MouseMotionEvent(std::int32_t x, std::int32_t y);
++                          int32_t x,
++                          int32_t y);
++    void MouseMotionEvent(int32_t x, int32_t y);
+     void ImeCommitText(char const* text);
+     void ImeSetComposition(char const* text,
+                            ImeUnderline* underlines,
+-                           std::uint32_t underlinesLength,
+-                           std::int32_t from,
+-                           std::int32_t to);
++                           uint32_t underlinesLength,
++                           int32_t from,
++                           int32_t to);
+     void ImeCancelComposition();
+     void SetImeCompositionRangeCallback(
+-      std::function<void(std::int32_t, std::int32_t, Rect*, std::uint32_t)>
++      std::function<void(int32_t, int32_t, Rect*, uint32_t)>
+         onImeCompositionRangeChanged);
+     void SetImeSelectionBoundsCallback(
+       std::function<void(Rect, Rect, bool)> onImeSelectionBoundsChanged);
+-    bool IsPointInsideClickZone(std::int32_t x, std::int32_t y);
++    bool IsPointInsideClickZone(int32_t x, int32_t y);
+ 
+     Event<bool> OnToggle;
+ 
+--- a/relationship_manager.cpp	2022-04-27 00:13:22.000000000 +1000
++++ b/relationship_manager.cpp	2022-09-22 13:18:25.071935914 +1000
+@@ -56,7 +56,7 @@ void RelationshipManager::Filter(std::fu
      internal_->filter(internal_, cb.get(), wrapper);
  }
  
@@ -332,7 +447,7 @@
  {
      if (!count) {
          return Result::InternalError;
-@@ -76,7 +76,7 @@ Result RelationshipManager::Get(UserId u
+@@ -77,7 +77,7 @@ Result RelationshipManager::Get(UserId u
      return static_cast<Result>(result);
  }
  
@@ -341,8 +456,8 @@
  {
      if (!relationship) {
          return Result::InternalError;
---- a/relationship_manager.h	2019-11-05 01:30:40.000000000 +1100
-+++ b/relationship_manager.h	2022-07-10 14:46:21.776270741 +1000
+--- a/relationship_manager.h	2022-04-27 00:13:22.000000000 +1000
++++ b/relationship_manager.h	2022-09-22 13:18:25.071935914 +1000
 @@ -9,9 +9,9 @@ public:
      ~RelationshipManager() = default;
  
@@ -355,368 +470,8 @@
  
      Event<> OnRefresh;
      Event<Relationship const&> OnRelationshipUpdate;
---- a/stdstuff.patch	1970-01-01 10:00:00.000000000 +1000
-+++ b/stdstuff.patch	2022-07-10 16:48:59.500052034 +1000
-@@ -0,0 +1,357 @@
-+--- a/achievement_manager.cpp	2019-11-05 01:30:40.000000000 +1100
-++++ b/achievement_manager.cpp	2022-07-10 14:46:21.776270741 +1000
-+@@ -30,7 +30,7 @@ IDiscordAchievementEvents AchievementMan
-+ };
-+ 
-+ void AchievementManager::SetUserAchievement(Snowflake achievementId,
-+-                                            std::uint8_t percentComplete,
-++                                            uint8_t percentComplete,
-+                                             std::function<void(Result)> callback)
-+ {
-+     static auto wrapper = [](void* callbackData, EDiscordResult result) -> void {
-+@@ -62,7 +62,7 @@ void AchievementManager::FetchUserAchiev
-+     internal_->fetch_user_achievements(internal_, cb.release(), wrapper);
-+ }
-+ 
-+-void AchievementManager::CountUserAchievements(std::int32_t* count)
-++void AchievementManager::CountUserAchievements(int32_t* count)
-+ {
-+     if (!count) {
-+         return;
-+@@ -83,7 +83,7 @@ Result AchievementManager::GetUserAchiev
-+     return static_cast<Result>(result);
-+ }
-+ 
-+-Result AchievementManager::GetUserAchievementAt(std::int32_t index,
-++Result AchievementManager::GetUserAchievementAt(int32_t index,
-+                                                 UserAchievement* userAchievement)
-+ {
-+     if (!userAchievement) {
-+--- a/achievement_manager.h	2019-11-05 01:30:40.000000000 +1100
-++++ b/achievement_manager.h	2022-07-10 14:46:21.776270741 +1000
-+@@ -9,12 +9,12 @@ public:
-+     ~AchievementManager() = default;
-+ 
-+     void SetUserAchievement(Snowflake achievementId,
-+-                            std::uint8_t percentComplete,
-++                            uint8_t percentComplete,
-+                             std::function<void(Result)> callback);
-+     void FetchUserAchievements(std::function<void(Result)> callback);
-+-    void CountUserAchievements(std::int32_t* count);
-++    void CountUserAchievements(int32_t* count);
-+     Result GetUserAchievement(Snowflake userAchievementId, UserAchievement* userAchievement);
-+-    Result GetUserAchievementAt(std::int32_t index, UserAchievement* userAchievement);
-++    Result GetUserAchievementAt(int32_t index, UserAchievement* userAchievement);
-+ 
-+     Event<UserAchievement const&> OnUserAchievementUpdate;
-+ 
-+--- a/activity_manager.cpp	2019-11-05 01:30:40.000000000 +1100
-++++ b/activity_manager.cpp	2022-07-10 14:46:21.776270741 +1000
-+@@ -76,7 +76,7 @@ Result ActivityManager::RegisterCommand(
-+     return static_cast<Result>(result);
-+ }
-+ 
-+-Result ActivityManager::RegisterSteam(std::uint32_t steamId)
-++Result ActivityManager::RegisterSteam(uint32_t steamId)
-+ {
-+     auto result = internal_->register_steam(internal_, steamId);
-+     return static_cast<Result>(result);
-+--- a/activity_manager.h	2019-11-05 01:30:40.000000000 +1100
-++++ b/activity_manager.h	2022-07-10 14:46:21.776270741 +1000
-+@@ -9,7 +9,7 @@ public:
-+     ~ActivityManager() = default;
-+ 
-+     Result RegisterCommand(char const* command);
-+-    Result RegisterSteam(std::uint32_t steamId);
-++    Result RegisterSteam(uint32_t steamId);
-+     void UpdateActivity(Activity const& activity, std::function<void(Result)> callback);
-+     void ClearActivity(std::function<void(Result)> callback);
-+     void SendRequestReply(UserId userId,
-+--- a/core.cpp	2019-11-05 01:30:40.000000000 +1100
-++++ b/core.cpp	2022-07-10 14:46:21.776270741 +1000
-+@@ -9,7 +9,7 @@
-+ 
-+ namespace discord {
-+ 
-+-Result Core::Create(ClientId clientId, std::uint64_t flags, Core** instance)
-++Result Core::Create(ClientId clientId, uint64_t flags, Core** instance)
-+ {
-+     if (!instance) {
-+         return Result::InternalError;
-+--- a/core.h	2019-11-05 01:30:40.000000000 +1100
-++++ b/core.h	2022-07-10 14:46:21.776270741 +1000
-+@@ -18,7 +18,7 @@ namespace discord {
-+ 
-+ class Core final {
-+ public:
-+-    static Result Create(ClientId clientId, std::uint64_t flags, Core** instance);
-++    static Result Create(ClientId clientId, uint64_t flags, Core** instance);
-+ 
-+     ~Core();
-+ 
-+--- a/image_manager.cpp	2019-11-05 01:30:40.000000000 +1100
-++++ b/image_manager.cpp	2022-07-10 14:46:21.776270741 +1000
-+@@ -45,7 +45,7 @@ Result ImageManager::GetDimensions(Image
-+     return static_cast<Result>(result);
-+ }
-+ 
-+-Result ImageManager::GetData(ImageHandle handle, std::uint8_t* data, std::uint32_t dataLength)
-++Result ImageManager::GetData(ImageHandle handle, uint8_t* data, uint32_t dataLength)
-+ {
-+     auto result = internal_->get_data(internal_,
-+                                       *reinterpret_cast<DiscordImageHandle const*>(&handle),
-+--- a/image_manager.h	2019-11-05 01:30:40.000000000 +1100
-++++ b/image_manager.h	2022-07-10 14:46:21.776270741 +1000
-+@@ -10,7 +10,7 @@ public:
-+ 
-+     void Fetch(ImageHandle handle, bool refresh, std::function<void(Result, ImageHandle)> callback);
-+     Result GetDimensions(ImageHandle handle, ImageDimensions* dimensions);
-+-    Result GetData(ImageHandle handle, std::uint8_t* data, std::uint32_t dataLength);
-++    Result GetData(ImageHandle handle, uint8_t* data, uint32_t dataLength);
-+ 
-+ private:
-+     friend class Core;
-+--- a/lobby_manager.cpp	2019-11-05 01:30:40.000000000 +1100
-++++ b/lobby_manager.cpp	2022-07-10 14:46:21.776270741 +1000
-+@@ -294,7 +294,7 @@ Result LobbyManager::GetLobbyMetadataVal
-+     return static_cast<Result>(result);
-+ }
-+ 
-+-Result LobbyManager::GetLobbyMetadataKey(LobbyId lobbyId, std::int32_t index, char key[256])
-++Result LobbyManager::GetLobbyMetadataKey(LobbyId lobbyId, int32_t index, char key[256])
-+ {
-+     if (!key) {
-+         return Result::InternalError;
-+@@ -305,7 +305,7 @@ Result LobbyManager::GetLobbyMetadataKey
-+     return static_cast<Result>(result);
-+ }
-+ 
-+-Result LobbyManager::LobbyMetadataCount(LobbyId lobbyId, std::int32_t* count)
-++Result LobbyManager::LobbyMetadataCount(LobbyId lobbyId, int32_t* count)
-+ {
-+     if (!count) {
-+         return Result::InternalError;
-+@@ -316,7 +316,7 @@ Result LobbyManager::LobbyMetadataCount(
-+     return static_cast<Result>(result);
-+ }
-+ 
-+-Result LobbyManager::MemberCount(LobbyId lobbyId, std::int32_t* count)
-++Result LobbyManager::MemberCount(LobbyId lobbyId, int32_t* count)
-+ {
-+     if (!count) {
-+         return Result::InternalError;
-+@@ -326,7 +326,7 @@ Result LobbyManager::MemberCount(LobbyId
-+     return static_cast<Result>(result);
-+ }
-+ 
-+-Result LobbyManager::GetMemberUserId(LobbyId lobbyId, std::int32_t index, UserId* userId)
-++Result LobbyManager::GetMemberUserId(LobbyId lobbyId, int32_t index, UserId* userId)
-+ {
-+     if (!userId) {
-+         return Result::InternalError;
-+@@ -368,7 +368,7 @@ Result LobbyManager::GetMemberMetadataVa
-+ 
-+ Result LobbyManager::GetMemberMetadataKey(LobbyId lobbyId,
-+                                           UserId userId,
-+-                                          std::int32_t index,
-++                                          int32_t index,
-+                                           char key[256])
-+ {
-+     if (!key) {
-+@@ -380,7 +380,7 @@ Result LobbyManager::GetMemberMetadataKe
-+     return static_cast<Result>(result);
-+ }
-+ 
-+-Result LobbyManager::MemberMetadataCount(LobbyId lobbyId, UserId userId, std::int32_t* count)
-++Result LobbyManager::MemberMetadataCount(LobbyId lobbyId, UserId userId, int32_t* count)
-+ {
-+     if (!count) {
-+         return Result::InternalError;
-+@@ -415,8 +415,8 @@ void LobbyManager::UpdateMember(LobbyId
-+ }
-+ 
-+ void LobbyManager::SendLobbyMessage(LobbyId lobbyId,
-+-                                    std::uint8_t* data,
-+-                                    std::uint32_t dataLength,
-++                                    uint8_t* data,
-++                                    uint32_t dataLength,
-+                                     std::function<void(Result)> callback)
-+ {
-+     static auto wrapper = [](void* callbackData, EDiscordResult result) -> void {
-+@@ -459,7 +459,7 @@ void LobbyManager::Search(LobbySearchQue
-+       internal_, const_cast<LobbySearchQuery&>(query).Internal(), cb.release(), wrapper);
-+ }
-+ 
-+-void LobbyManager::LobbyCount(std::int32_t* count)
-++void LobbyManager::LobbyCount(int32_t* count)
-+ {
-+     if (!count) {
-+         return;
-+@@ -468,7 +468,7 @@ void LobbyManager::LobbyCount(std::int32
-+     internal_->lobby_count(internal_, reinterpret_cast<int32_t*>(count));
-+ }
-+ 
-+-Result LobbyManager::GetLobbyId(std::int32_t index, LobbyId* lobbyId)
-++Result LobbyManager::GetLobbyId(int32_t index, LobbyId* lobbyId)
-+ {
-+     if (!lobbyId) {
-+         return Result::InternalError;
-+@@ -526,7 +526,7 @@ Result LobbyManager::FlushNetwork()
-+     return static_cast<Result>(result);
-+ }
-+ 
-+-Result LobbyManager::OpenNetworkChannel(LobbyId lobbyId, std::uint8_t channelId, bool reliable)
-++Result LobbyManager::OpenNetworkChannel(LobbyId lobbyId, uint8_t channelId, bool reliable)
-+ {
-+     auto result =
-+       internal_->open_network_channel(internal_, lobbyId, channelId, (reliable ? 1 : 0));
-+@@ -535,9 +535,9 @@ Result LobbyManager::OpenNetworkChannel(
-+ 
-+ Result LobbyManager::SendNetworkMessage(LobbyId lobbyId,
-+                                         UserId userId,
-+-                                        std::uint8_t channelId,
-+-                                        std::uint8_t* data,
-+-                                        std::uint32_t dataLength)
-++                                        uint8_t channelId,
-++                                        uint8_t* data,
-++                                        uint32_t dataLength)
-+ {
-+     auto result = internal_->send_network_message(
-+       internal_, lobbyId, userId, channelId, reinterpret_cast<uint8_t*>(data), dataLength);
-+--- a/lobby_manager.h	2019-11-05 01:30:40.000000000 +1100
-++++ b/lobby_manager.h	2022-07-10 14:46:21.776270741 +1000
-+@@ -28,49 +28,49 @@ public:
-+     Result GetLobby(LobbyId lobbyId, Lobby* lobby);
-+     Result GetLobbyActivitySecret(LobbyId lobbyId, char secret[128]);
-+     Result GetLobbyMetadataValue(LobbyId lobbyId, MetadataKey key, char value[4096]);
-+-    Result GetLobbyMetadataKey(LobbyId lobbyId, std::int32_t index, char key[256]);
-+-    Result LobbyMetadataCount(LobbyId lobbyId, std::int32_t* count);
-+-    Result MemberCount(LobbyId lobbyId, std::int32_t* count);
-+-    Result GetMemberUserId(LobbyId lobbyId, std::int32_t index, UserId* userId);
-++    Result GetLobbyMetadataKey(LobbyId lobbyId, int32_t index, char key[256]);
-++    Result LobbyMetadataCount(LobbyId lobbyId, int32_t* count);
-++    Result MemberCount(LobbyId lobbyId, int32_t* count);
-++    Result GetMemberUserId(LobbyId lobbyId, int32_t index, UserId* userId);
-+     Result GetMemberUser(LobbyId lobbyId, UserId userId, User* user);
-+     Result GetMemberMetadataValue(LobbyId lobbyId,
-+                                   UserId userId,
-+                                   MetadataKey key,
-+                                   char value[4096]);
-+-    Result GetMemberMetadataKey(LobbyId lobbyId, UserId userId, std::int32_t index, char key[256]);
-+-    Result MemberMetadataCount(LobbyId lobbyId, UserId userId, std::int32_t* count);
-++    Result GetMemberMetadataKey(LobbyId lobbyId, UserId userId, int32_t index, char key[256]);
-++    Result MemberMetadataCount(LobbyId lobbyId, UserId userId, int32_t* count);
-+     void UpdateMember(LobbyId lobbyId,
-+                       UserId userId,
-+                       LobbyMemberTransaction const& transaction,
-+                       std::function<void(Result)> callback);
-+     void SendLobbyMessage(LobbyId lobbyId,
-+-                          std::uint8_t* data,
-+-                          std::uint32_t dataLength,
-++                          uint8_t* data,
-++                          uint32_t dataLength,
-+                           std::function<void(Result)> callback);
-+     Result GetSearchQuery(LobbySearchQuery* query);
-+     void Search(LobbySearchQuery const& query, std::function<void(Result)> callback);
-+-    void LobbyCount(std::int32_t* count);
-+-    Result GetLobbyId(std::int32_t index, LobbyId* lobbyId);
-++    void LobbyCount(int32_t* count);
-++    Result GetLobbyId(int32_t index, LobbyId* lobbyId);
-+     void ConnectVoice(LobbyId lobbyId, std::function<void(Result)> callback);
-+     void DisconnectVoice(LobbyId lobbyId, std::function<void(Result)> callback);
-+     Result ConnectNetwork(LobbyId lobbyId);
-+     Result DisconnectNetwork(LobbyId lobbyId);
-+     Result FlushNetwork();
-+-    Result OpenNetworkChannel(LobbyId lobbyId, std::uint8_t channelId, bool reliable);
-++    Result OpenNetworkChannel(LobbyId lobbyId, uint8_t channelId, bool reliable);
-+     Result SendNetworkMessage(LobbyId lobbyId,
-+                               UserId userId,
-+-                              std::uint8_t channelId,
-+-                              std::uint8_t* data,
-+-                              std::uint32_t dataLength);
-++                              uint8_t channelId,
-++                              uint8_t* data,
-++                              uint32_t dataLength);
-+ 
-+-    Event<std::int64_t> OnLobbyUpdate;
-+-    Event<std::int64_t, std::uint32_t> OnLobbyDelete;
-+-    Event<std::int64_t, std::int64_t> OnMemberConnect;
-+-    Event<std::int64_t, std::int64_t> OnMemberUpdate;
-+-    Event<std::int64_t, std::int64_t> OnMemberDisconnect;
-+-    Event<std::int64_t, std::int64_t, std::uint8_t*, std::uint32_t> OnLobbyMessage;
-+-    Event<std::int64_t, std::int64_t, bool> OnSpeaking;
-+-    Event<std::int64_t, std::int64_t, std::uint8_t, std::uint8_t*, std::uint32_t> OnNetworkMessage;
-++    Event<int64_t> OnLobbyUpdate;
-++    Event<int64_t, uint32_t> OnLobbyDelete;
-++    Event<int64_t, int64_t> OnMemberConnect;
-++    Event<int64_t, int64_t> OnMemberUpdate;
-++    Event<int64_t, int64_t> OnMemberDisconnect;
-++    Event<int64_t, int64_t, uint8_t*, uint32_t> OnLobbyMessage;
-++    Event<int64_t, int64_t, bool> OnSpeaking;
-++    Event<int64_t, int64_t, uint8_t, uint8_t*, uint32_t> OnNetworkMessage;
-+ 
-+ private:
-+     friend class Core;
-+--- a/network_manager.cpp	2019-11-05 01:30:40.000000000 +1100
-++++ b/network_manager.cpp	2022-07-10 14:46:21.776270741 +1000
-+@@ -92,8 +92,8 @@ Result NetworkManager::CloseChannel(Netw
-+ 
-+ Result NetworkManager::SendMessage(NetworkPeerId peerId,
-+                                    NetworkChannelId channelId,
-+-                                   std::uint8_t* data,
-+-                                   std::uint32_t dataLength)
-++                                   uint8_t* data,
-++                                   uint32_t dataLength)
-+ {
-+     auto result = internal_->send_message(
-+       internal_, peerId, channelId, reinterpret_cast<uint8_t*>(data), dataLength);
-+--- a/network_manager.h	2019-11-05 01:30:40.000000000 +1100
-++++ b/network_manager.h	2022-07-10 14:46:21.776270741 +1000
-+@@ -41,10 +41,10 @@ public:
-+      */
-+     Result SendMessage(NetworkPeerId peerId,
-+                        NetworkChannelId channelId,
-+-                       std::uint8_t* data,
-+-                       std::uint32_t dataLength);
-++                       uint8_t* data,
-++                       uint32_t dataLength);
-+ 
-+-    Event<NetworkPeerId, NetworkChannelId, std::uint8_t*, std::uint32_t> OnMessage;
-++    Event<NetworkPeerId, NetworkChannelId, uint8_t*, uint32_t> OnMessage;
-+     Event<char const*> OnRouteUpdate;
-+ 
-+ private:
-+--- a/relationship_manager.cpp	2019-11-05 01:30:40.000000000 +1100
-++++ b/relationship_manager.cpp	2022-07-10 14:46:21.776270741 +1000
-+@@ -55,7 +55,7 @@ void RelationshipManager::Filter(std::fu
-+     internal_->filter(internal_, cb.get(), wrapper);
-+ }
-+ 
-+-Result RelationshipManager::Count(std::int32_t* count)
-++Result RelationshipManager::Count(int32_t* count)
-+ {
-+     if (!count) {
-+         return Result::InternalError;
-+@@ -76,7 +76,7 @@ Result RelationshipManager::Get(UserId u
-+     return static_cast<Result>(result);
-+ }
-+ 
-+-Result RelationshipManager::GetAt(std::uint32_t index, Relationship* relationship)
-++Result RelationshipManager::GetAt(uint32_t index, Relationship* relationship)
-+ {
-+     if (!relationship) {
-+         return Result::InternalError;
-+--- a/relationship_manager.h	2019-11-05 01:30:40.000000000 +1100
-++++ b/relationship_manager.h	2022-07-10 14:46:21.776270741 +1000
-+@@ -9,9 +9,9 @@ public:
-+     ~RelationshipManager() = default;
-+ 
-+     void Filter(std::function<bool(Relationship const&)> filter);
-+-    Result Count(std::int32_t* count);
-++    Result Count(int32_t* count);
-+     Result Get(UserId userId, Relationship* relationship);
-+-    Result GetAt(std::uint32_t index, Relationship* relationship);
-++    Result GetAt(uint32_t index, Relationship* relationship);
-+ 
-+     Event<> OnRefresh;
-+     Event<Relationship const&> OnRelationshipUpdate;
---- a/storage_manager.cpp	2019-11-05 01:30:40.000000000 +1100
-+++ b/storage_manager.cpp	2022-07-10 14:46:21.776270741 +1000
+--- a/storage_manager.cpp	2022-04-27 00:13:22.000000000 +1000
++++ b/storage_manager.cpp	2022-09-22 13:18:25.071935914 +1000
 @@ -12,9 +12,9 @@
  namespace discord {
  
@@ -819,8 +574,8 @@
  {
      if (!stat) {
          return Result::InternalError;
---- a/storage_manager.h	2019-11-05 01:30:40.000000000 +1100
-+++ b/storage_manager.h	2022-07-10 14:46:21.776270741 +1000
+--- a/storage_manager.h	2022-04-27 00:13:22.000000000 +1000
++++ b/storage_manager.h	2022-09-22 13:18:25.071935914 +1000
 @@ -9,25 +9,25 @@ public:
      ~StorageManager() = default;
  
@@ -859,9 +614,9 @@
      Result GetPath(char path[4096]);
  
  private:
---- a/store_manager.cpp	2019-11-05 01:30:40.000000000 +1100
-+++ b/store_manager.cpp	2022-07-10 14:46:21.776270741 +1000
-@@ -56,7 +56,7 @@ void StoreManager::FetchSkus(std::functi
+--- a/store_manager.cpp	2022-04-27 00:13:22.000000000 +1000
++++ b/store_manager.cpp	2022-09-22 13:18:25.071935914 +1000
+@@ -58,7 +58,7 @@ void StoreManager::FetchSkus(std::functi
      internal_->fetch_skus(internal_, cb.release(), wrapper);
  }
  
@@ -870,7 +625,7 @@
  {
      if (!count) {
          return;
-@@ -75,7 +75,7 @@ Result StoreManager::GetSku(Snowflake sk
+@@ -77,7 +77,7 @@ Result StoreManager::GetSku(Snowflake sk
      return static_cast<Result>(result);
  }
  
@@ -879,7 +634,7 @@
  {
      if (!sku) {
          return Result::InternalError;
-@@ -100,7 +100,7 @@ void StoreManager::FetchEntitlements(std
+@@ -102,7 +102,7 @@ void StoreManager::FetchEntitlements(std
      internal_->fetch_entitlements(internal_, cb.release(), wrapper);
  }
  
@@ -888,7 +643,7 @@
  {
      if (!count) {
          return;
-@@ -120,7 +120,7 @@ Result StoreManager::GetEntitlement(Snow
+@@ -122,7 +122,7 @@ Result StoreManager::GetEntitlement(Snow
      return static_cast<Result>(result);
  }
  
@@ -897,8 +652,8 @@
  {
      if (!entitlement) {
          return Result::InternalError;
---- a/store_manager.h	2019-11-05 01:30:40.000000000 +1100
-+++ b/store_manager.h	2022-07-10 14:46:21.776270741 +1000
+--- a/store_manager.h	2022-04-27 00:13:22.000000000 +1000
++++ b/store_manager.h	2022-09-22 13:18:25.073935917 +1000
 @@ -9,13 +9,13 @@ public:
      ~StoreManager() = default;
  
@@ -917,8 +672,8 @@
      Result HasSkuEntitlement(Snowflake skuId, bool* hasEntitlement);
      void StartPurchase(Snowflake skuId, std::function<void(Result)> callback);
  
---- a/types.cpp	2019-11-05 01:30:40.000000000 +1100
-+++ b/types.cpp	2022-07-10 14:46:21.777270743 +1000
+--- a/types.cpp	2022-04-27 00:13:22.000000000 +1000
++++ b/types.cpp	2022-09-22 13:18:25.073935917 +1000
 @@ -104,42 +104,42 @@ ImageType ImageHandle::GetType() const
      return static_cast<ImageType>(internal_.type);
  }
@@ -997,7 +752,7 @@
  {
      return internal_.max_size;
  }
-@@ -292,12 +292,12 @@ ActivityType Activity::GetType() const
+@@ -302,12 +302,12 @@ ActivityType Activity::GetType() const
      return static_cast<ActivityType>(internal_.type);
  }
  
@@ -1012,7 +767,22 @@
  {
      return internal_.application_id;
  }
-@@ -476,12 +476,12 @@ LobbySecret Lobby::GetSecret() const
+@@ -395,12 +395,12 @@ bool Activity::GetInstance() const
+     return internal_.instance != 0;
+ }
+ 
+-void Activity::SetSupportedPlatforms(std::uint32_t supportedPlatforms)
++void Activity::SetSupportedPlatforms(uint32_t supportedPlatforms)
+ {
+     internal_.supported_platforms = supportedPlatforms;
+ }
+ 
+-std::uint32_t Activity::GetSupportedPlatforms() const
++uint32_t Activity::GetSupportedPlatforms() const
+ {
+     return internal_.supported_platforms;
+ }
+@@ -496,12 +496,12 @@ LobbySecret Lobby::GetSecret() const
      return internal_.secret;
  }
  
@@ -1027,7 +797,109 @@
  {
      return internal_.capacity;
  }
-@@ -507,22 +507,22 @@ char const* FileStat::GetFilename() cons
+@@ -516,42 +516,42 @@ bool Lobby::GetLocked() const
+     return internal_.locked != 0;
+ }
+ 
+-void ImeUnderline::SetFrom(std::int32_t from)
++void ImeUnderline::SetFrom(int32_t from)
+ {
+     internal_.from = from;
+ }
+ 
+-std::int32_t ImeUnderline::GetFrom() const
++int32_t ImeUnderline::GetFrom() const
+ {
+     return internal_.from;
+ }
+ 
+-void ImeUnderline::SetTo(std::int32_t to)
++void ImeUnderline::SetTo(int32_t to)
+ {
+     internal_.to = to;
+ }
+ 
+-std::int32_t ImeUnderline::GetTo() const
++int32_t ImeUnderline::GetTo() const
+ {
+     return internal_.to;
+ }
+ 
+-void ImeUnderline::SetColor(std::uint32_t color)
++void ImeUnderline::SetColor(uint32_t color)
+ {
+     internal_.color = color;
+ }
+ 
+-std::uint32_t ImeUnderline::GetColor() const
++uint32_t ImeUnderline::GetColor() const
+ {
+     return internal_.color;
+ }
+ 
+-void ImeUnderline::SetBackgroundColor(std::uint32_t backgroundColor)
++void ImeUnderline::SetBackgroundColor(uint32_t backgroundColor)
+ {
+     internal_.background_color = backgroundColor;
+ }
+ 
+-std::uint32_t ImeUnderline::GetBackgroundColor() const
++uint32_t ImeUnderline::GetBackgroundColor() const
+ {
+     return internal_.background_color;
+ }
+@@ -566,42 +566,42 @@ bool ImeUnderline::GetThick() const
+     return internal_.thick != 0;
+ }
+ 
+-void Rect::SetLeft(std::int32_t left)
++void Rect::SetLeft(int32_t left)
+ {
+     internal_.left = left;
+ }
+ 
+-std::int32_t Rect::GetLeft() const
++int32_t Rect::GetLeft() const
+ {
+     return internal_.left;
+ }
+ 
+-void Rect::SetTop(std::int32_t top)
++void Rect::SetTop(int32_t top)
+ {
+     internal_.top = top;
+ }
+ 
+-std::int32_t Rect::GetTop() const
++int32_t Rect::GetTop() const
+ {
+     return internal_.top;
+ }
+ 
+-void Rect::SetRight(std::int32_t right)
++void Rect::SetRight(int32_t right)
+ {
+     internal_.right = right;
+ }
+ 
+-std::int32_t Rect::GetRight() const
++int32_t Rect::GetRight() const
+ {
+     return internal_.right;
+ }
+ 
+-void Rect::SetBottom(std::int32_t bottom)
++void Rect::SetBottom(int32_t bottom)
+ {
+     internal_.bottom = bottom;
+ }
+ 
+-std::int32_t Rect::GetBottom() const
++int32_t Rect::GetBottom() const
+ {
+     return internal_.bottom;
+ }
+@@ -617,22 +617,22 @@ char const* FileStat::GetFilename() cons
      return internal_.filename;
  }
  
@@ -1054,7 +926,7 @@
  {
      return internal_.last_modified;
  }
-@@ -557,12 +557,12 @@ Snowflake Entitlement::GetSkuId() const
+@@ -667,12 +667,12 @@ Snowflake Entitlement::GetSkuId() const
      return internal_.sku_id;
  }
  
@@ -1069,7 +941,7 @@
  {
      return internal_.amount;
  }
-@@ -660,12 +660,12 @@ Snowflake UserAchievement::GetAchievemen
+@@ -770,12 +770,12 @@ Snowflake UserAchievement::GetAchievemen
      return internal_.achievement_id;
  }
  
@@ -1084,7 +956,7 @@
  {
      return internal_.percent_complete;
  }
-@@ -693,7 +693,7 @@ Result LobbyTransaction::SetOwner(UserId
+@@ -803,7 +803,7 @@ Result LobbyTransaction::SetOwner(UserId
      return static_cast<Result>(result);
  }
  
@@ -1093,7 +965,7 @@
  {
      auto result = internal_->set_capacity(internal_, capacity);
      return static_cast<Result>(result);
-@@ -753,7 +753,7 @@ Result LobbySearchQuery::Sort(MetadataKe
+@@ -863,7 +863,7 @@ Result LobbySearchQuery::Sort(MetadataKe
      return static_cast<Result>(result);
  }
  
@@ -1102,9 +974,9 @@
  {
      auto result = internal_->limit(internal_, limit);
      return static_cast<Result>(result);
---- a/types.h	2019-11-05 01:30:40.000000000 +1100
-+++ b/types.h	2022-07-10 14:46:21.777270743 +1000
-@@ -164,10 +164,10 @@ enum class InputModeType {
+--- a/types.h	2022-04-27 00:13:22.000000000 +1000
++++ b/types.h	2022-09-22 13:18:25.073935917 +1000
+@@ -192,10 +192,10 @@ enum class InputModeType {
      PushToTalk,
  };
  
@@ -1119,7 +991,7 @@
  using UserId = Snowflake;
  using Locale = char const*;
  using Branch = char const*;
-@@ -175,8 +175,8 @@ using LobbyId = Snowflake;
+@@ -203,8 +203,8 @@ using LobbyId = Snowflake;
  using LobbySecret = char const*;
  using MetadataKey = char const*;
  using MetadataValue = char const*;
@@ -1127,10 +999,10 @@
 -using NetworkChannelId = std::uint8_t;
 +using NetworkPeerId = uint64_t;
 +using NetworkChannelId = uint8_t;
- using Path = char const*;
- using DateTime = char const*;
- 
-@@ -214,10 +214,10 @@ class ImageHandle final {
+ #ifdef __APPLE__
+ using IDXGISwapChain = void;
+ #endif
+@@ -254,10 +254,10 @@ class ImageHandle final {
  public:
      void SetType(ImageType type);
      ImageType GetType() const;
@@ -1145,7 +1017,7 @@
  
  private:
      DiscordImageHandle internal_;
-@@ -225,10 +225,10 @@ private:
+@@ -265,10 +265,10 @@ private:
  
  class ImageDimensions final {
  public:
@@ -1160,7 +1032,7 @@
  
  private:
      DiscordImageDimensions internal_;
-@@ -262,10 +262,10 @@ private:
+@@ -302,10 +302,10 @@ private:
  
  class PartySize final {
  public:
@@ -1175,7 +1047,7 @@
  
  private:
      DiscordPartySize internal_;
-@@ -299,8 +299,8 @@ class Activity final {
+@@ -341,8 +341,8 @@ class Activity final {
  public:
      void SetType(ActivityType type);
      ActivityType GetType() const;
@@ -1186,7 +1058,18 @@
      void SetName(char const* name);
      char const* GetName() const;
      void SetState(char const* state);
-@@ -356,8 +356,8 @@ public:
+@@ -359,8 +359,8 @@ public:
+     ActivitySecrets const& GetSecrets() const;
+     void SetInstance(bool instance);
+     bool GetInstance() const;
+-    void SetSupportedPlatforms(std::uint32_t supportedPlatforms);
+-    std::uint32_t GetSupportedPlatforms() const;
++    void SetSupportedPlatforms(uint32_t supportedPlatforms);
++    uint32_t GetSupportedPlatforms() const;
+ 
+ private:
+     DiscordActivity internal_;
+@@ -400,8 +400,8 @@ public:
      UserId GetOwnerId() const;
      void SetSecret(LobbySecret secret);
      LobbySecret GetSecret() const;
@@ -1197,7 +1080,53 @@
      void SetLocked(bool locked);
      bool GetLocked() const;
  
-@@ -369,10 +369,10 @@ class FileStat final {
+@@ -411,14 +411,14 @@ private:
+ 
+ class ImeUnderline final {
+ public:
+-    void SetFrom(std::int32_t from);
+-    std::int32_t GetFrom() const;
+-    void SetTo(std::int32_t to);
+-    std::int32_t GetTo() const;
+-    void SetColor(std::uint32_t color);
+-    std::uint32_t GetColor() const;
+-    void SetBackgroundColor(std::uint32_t backgroundColor);
+-    std::uint32_t GetBackgroundColor() const;
++    void SetFrom(int32_t from);
++    int32_t GetFrom() const;
++    void SetTo(int32_t to);
++    int32_t GetTo() const;
++    void SetColor(uint32_t color);
++    uint32_t GetColor() const;
++    void SetBackgroundColor(uint32_t backgroundColor);
++    uint32_t GetBackgroundColor() const;
+     void SetThick(bool thick);
+     bool GetThick() const;
+ 
+@@ -428,14 +428,14 @@ private:
+ 
+ class Rect final {
+ public:
+-    void SetLeft(std::int32_t left);
+-    std::int32_t GetLeft() const;
+-    void SetTop(std::int32_t top);
+-    std::int32_t GetTop() const;
+-    void SetRight(std::int32_t right);
+-    std::int32_t GetRight() const;
+-    void SetBottom(std::int32_t bottom);
+-    std::int32_t GetBottom() const;
++    void SetLeft(int32_t left);
++    int32_t GetLeft() const;
++    void SetTop(int32_t top);
++    int32_t GetTop() const;
++    void SetRight(int32_t right);
++    int32_t GetRight() const;
++    void SetBottom(int32_t bottom);
++    int32_t GetBottom() const;
+ 
+ private:
+     DiscordRect internal_;
+@@ -445,10 +445,10 @@ class FileStat final {
  public:
      void SetFilename(char const* filename);
      char const* GetFilename() const;
@@ -1212,7 +1141,7 @@
  
  private:
      DiscordFileStat internal_;
-@@ -393,8 +393,8 @@ private:
+@@ -469,8 +469,8 @@ private:
  
  class SkuPrice final {
  public:
@@ -1223,7 +1152,7 @@
      void SetCurrency(char const* currency);
      char const* GetCurrency() const;
  
-@@ -434,8 +434,8 @@ public:
+@@ -510,8 +510,8 @@ public:
      Snowflake GetUserId() const;
      void SetAchievementId(Snowflake achievementId);
      Snowflake GetAchievementId() const;
@@ -1234,7 +1163,7 @@
      void SetUnlockedAt(DateTime unlockedAt);
      DateTime GetUnlockedAt() const;
  
-@@ -447,7 +447,7 @@ class LobbyTransaction final {
+@@ -523,7 +523,7 @@ class LobbyTransaction final {
  public:
      Result SetType(LobbyType type);
      Result SetOwner(UserId ownerId);
@@ -1243,7 +1172,7 @@
      Result SetMetadata(MetadataKey key, MetadataValue value);
      Result DeleteMetadata(MetadataKey key);
      Result SetLocked(bool locked);
-@@ -478,7 +478,7 @@ public:
+@@ -554,7 +554,7 @@ public:
                    LobbySearchCast cast,
                    MetadataValue value);
      Result Sort(MetadataKey key, LobbySearchCast cast, MetadataValue value);
@@ -1252,8 +1181,8 @@
      Result Distance(LobbySearchDistance distance);
  
      IDiscordLobbySearchQuery** Receive() { return &internal_; }
---- a/voice_manager.cpp	2019-11-05 01:30:40.000000000 +1100
-+++ b/voice_manager.cpp	2022-07-10 14:46:21.777270743 +1000
+--- a/voice_manager.cpp	2022-04-27 00:13:22.000000000 +1000
++++ b/voice_manager.cpp	2022-09-22 13:18:25.073935917 +1000
 @@ -104,7 +104,7 @@ Result VoiceManager::SetLocalMute(Snowfl
      return static_cast<Result>(result);
  }
@@ -1272,8 +1201,8 @@
  {
      auto result = internal_->set_local_volume(internal_, userId, volume);
      return static_cast<Result>(result);
---- a/voice_manager.h	2019-11-05 01:30:40.000000000 +1100
-+++ b/voice_manager.h	2022-07-10 14:46:21.777270743 +1000
+--- a/voice_manager.h	2022-04-27 00:13:22.000000000 +1000
++++ b/voice_manager.h	2022-09-22 13:18:25.073935917 +1000
 @@ -16,8 +16,8 @@ public:
      Result SetSelfDeaf(bool deaf);
      Result IsLocalMute(Snowflake userId, bool* mute);

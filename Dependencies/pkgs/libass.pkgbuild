@@ -12,7 +12,7 @@ sources=(
 
 hashes=(
     '1b2a54dda819ef84fa2dee3069cf99748a886363d2adb630fde87fe046e2d1d5'
-    '91ba052ac85f55a6f740643a53e5d1d9cb6d2750a4d96655f8d2e6a5c46e08ab'
+    '84f08e2f440c77259dddfcc1d2b304d0d03c8890888d61be9a66adfad6f80342'
     'ebb8b308869098800f2125dc5e7ce56cd473989e1ef450aeba8372ec8dedc296'
     '2c49d5294f8b47298c3af8810b27712f8d92a66b67ce85470c3daa859c5505ca'
 )
@@ -33,15 +33,17 @@ configopts=(
     "HARFBUZZ_LIBS=-L$outdir/lib"    
 )
 
+host=$($CC -dumpmachine)
+
 configopts_win32=(
     '--build=i686-pc-mingw32'
-    '--host=x86_64-unknown-linux-gnu'
+    '--host=$host'
     '--disable-directwrite'
 )
 
 configopts_droid=(
     '--target=aarch64-unknown-linux-android'
-    '--host=x86_64-unknown-linux-gnu'
+    '--host=$host'
 )
 
 configopts_ios=( )
