@@ -1335,7 +1335,10 @@ void DialogueController::addCharToRenderBuffer(DialoguePiece &piece, char16_t co
 void DialogueController::renderAddedChars(TextRenderingState &state, DialoguePiece &p, bool renderBorder, bool renderShadow) {
 	float x         = 0;
 	auto fiIterator = p.fontInfos.begin();
-
+	bool wordBorder = false;
+	SDL_Color wordBorderColor;
+	GPU_Rect borderRect = GPU_MakeRect(0, INT_MAX, 0, 0);
+	int wordBorderSize = 0;
 	// We only need a copy of the fontInfo in the renderShadow case.
 	cmp::optional<Fontinfo> opt;
 
@@ -1366,6 +1369,29 @@ void DialogueController::renderAddedChars(TextRenderingState &state, DialoguePie
 
 		// For border/shadow, only do the draw if the fontInfo style says we are supposed to
 		auto &style = fontInfo.style();
+		if (style.word_border) {
+			if (!wordBorder) {
+				// bordered word init
+				wordBorder      = true;
+				wordBorder      = style.word_border;
+				borderRect.x    = x + state.offset.x + p.position.x;
+				borderRect.y    = SDL_min(borderRect.y, p.baseline + state.offset.y + p.position.y - glyph->maxy);
+				wordBorderColor = fontInfo.getGlyphParams().glyph_color;
+				wordBorderSize  = style.word_border_size;
+			}
+			borderRect.h = SDL_max(borderRect.h, glyph->maxy - glyph->miny);
+		}
+		if (wordBorder && !style.word_border) {
+			if (!renderBorder && !renderShadow) {
+				// render word border
+				borderRect.w = x + state.offset.x + p.position.x - borderRect.x;
+				renderBorderedWord(state, wordBorderColor, borderRect, wordBorderSize);
+			}
+			// reset border word status
+			borderRect = GPU_MakeRect(0, INT_MAX, 0, 0);
+			wordBorder = false;
+		}
+
 		if (renderReady && !(renderBorder && !style.is_border) && !(renderShadow && !style.is_shadow)) {
 			int alpha{255};
 
@@ -1385,6 +1411,39 @@ void DialogueController::renderAddedChars(TextRenderingState &state, DialoguePie
 		x += glyph->advance;
 		//TODO: These 3 lines are code duplication, see addCharToRenderBuffer; extract them into a float Fontinfo::getTotalAdvance(wchar_t codepoint) method.
 		// (maybe there is a better name...)
+	}
+	if (wordBorder) {
+		if (!renderBorder && !renderShadow) {
+			// if pieces end and border inited, render it
+			borderRect.w = x + state.offset.x + p.position.x - borderRect.x;
+			renderBorderedWord(state, wordBorderColor, borderRect, wordBorderSize);
+		}
+	}
+}
+
+void DialogueController::renderBorderedWord(TextRenderingState &state, SDL_Color &wordBorderColor, GPU_Rect &borderRect, int wordBorderSize) {
+	if (state.dst.target) {
+		for (int i = 0; i < wordBorderSize; ++i) {
+			GPU_Rectangle2(state.dst.target, borderRect, wordBorderColor);
+			borderRect.x -= 1;
+			borderRect.w += 2;
+			borderRect.y -= 1;
+			borderRect.h += 2;
+		}
+	} else {
+		for (int i = 0; i < wordBorderSize; ++i) {
+			auto images = state.dst.bigImage->getImagesForArea(borderRect);
+			for (auto &image : images) {
+				GPU_Target *target = image.first->target;
+				GPU_Rectangle(target, borderRect.x - image.second.x, borderRect.y - image.second.y,
+				              borderRect.x - image.second.x + borderRect.w, borderRect.y - image.second.y + borderRect.h,
+				              wordBorderColor);
+			}
+			borderRect.x -= 1;
+			borderRect.w += 2;
+			borderRect.y -= 1;
+			borderRect.h += 2;
+		}
 	}
 }
 

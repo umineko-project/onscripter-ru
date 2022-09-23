@@ -55,6 +55,7 @@
 
 #include <cmath>
 #include <cstring>
+#include <limits>
 
 const int MAX_SPRITE_NUM = 1000;
 const int MAX_TEXT_TREES = 50;

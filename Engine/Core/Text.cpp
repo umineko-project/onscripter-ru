@@ -457,6 +457,13 @@ bool ONScripter::executeInlineTextCommand(std::string &command, std::string &par
 		return false;
 	};
 
+	auto processWordBorder = [](std::string & /* command */, std::string &param /* param */, Fontinfo &info) {
+		info.changeStyle().no_break = true;
+		info.changeStyle().word_border = true;
+		info.changeStyle().word_border_size = std::stoi(param);
+		return false;
+	};
+
 	if (processFuncs.empty()) {
 		processFuncs["italic"] = processFuncs["i"] = processItalic;
 		processFuncs["bold"] = processFuncs["b"] = processBold;
@@ -494,6 +501,8 @@ bool ONScripter::executeInlineTextCommand(std::string &command, std::string &par
 		processFuncs["color"] = processFuncs["colour"] = processFuncs["c"] = processColour;
 		processFuncs["shadowcolor"] = processFuncs["shadowcolour"] = processFuncs["v"] = processShadowColour;
 		processFuncs["bordercolor"] = processFuncs["bordercolour"] = processFuncs["r"] = processBorderColour;
+
+		processFuncs["wborder"] = processWordBorder;
 	}
 
 	auto cmd = processFuncs.find(command);
