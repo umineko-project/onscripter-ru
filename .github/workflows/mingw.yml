@@ -45,7 +45,7 @@ jobs:
         chmod a+x configure
 
     - name: Configure windows (dev) (discord)
-      run: ./configure --cross=i686-w64-mingw32 --with-discord
+      run: ./configure --cross=i686-w64-mingw32 --unsupported-compiler --with-discord
     - name: Make windows (dev) (discord)
       run: make -j $(getconf _NPROCESSORS_ONLN)
     - name: Zip the necessary files
