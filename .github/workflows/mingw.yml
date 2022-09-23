@@ -100,7 +100,7 @@ jobs:
         asset_content_type: application/x-pie-executable
     
     - name: Configure windows (release)
-      run: ./configure --release-build --strip-binary
+      run: ./configure --cross=i686-w64-mingw32 --release-build --strip-binary
     - name: Make windows (release)
       run: make -j $(getconf _NPROCESSORS_ONLN)
     - name: Upload (release)
