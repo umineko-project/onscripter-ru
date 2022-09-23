@@ -1337,7 +1337,7 @@ void DialogueController::renderAddedChars(TextRenderingState &state, DialoguePie
 	auto fiIterator = p.fontInfos.begin();
 	bool wordBorder = false;
 	SDL_Color wordBorderColor;
-	GPU_Rect borderRect;
+	GPU_Rect borderRect = GPU_MakeRect(0, INT_MAX, 0, 0);
 	int wordBorderSize = 0;
 	// We only need a copy of the fontInfo in the renderShadow case.
 	cmp::optional<Fontinfo> opt;
