@@ -31,7 +31,7 @@ jobs:
         draft: false
         prerelease: false
     - name: Install required packages
-      run: sudo apt install binutils-mingw-w64-i686 gcc-mingw-w64-i686 g++-mingw-w64-i686
+      run: sudo apt install yasm binutils-mingw-w64-i686 gcc-mingw-w64-i686 g++-mingw-w64-i686
     - name: Install meson via pip
       run: pip3 install meson ninja
     - name: Setup MinGW
