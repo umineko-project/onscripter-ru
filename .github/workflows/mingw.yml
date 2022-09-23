@@ -31,7 +31,7 @@ jobs:
         draft: false
         prerelease: false
     - name: Install required packages
-      run: sudo apt install binutils-mingw-w64-i686 gcc-mingw-w64-i686
+      run: sudo apt install binutils-mingw-w64-i686 gcc-mingw-w64-i686 g++-mingw-w64-i686
     - name: Install meson via pip
       run: pip3 install meson ninja
     - name: Setup MinGW
@@ -45,7 +45,7 @@ jobs:
         chmod a+x configure
 
     - name: Configure windows (dev) (discord)
-      run: ./configure --cross=i686-w64-mingw32 --unsupported-compiler --with-discord
+      run: ./configure --cross=i686-w64-mingw32 --with-discord
     - name: Make windows (dev) (discord)
       run: make -j $(getconf _NPROCESSORS_ONLN)
     - name: Zip the necessary files
