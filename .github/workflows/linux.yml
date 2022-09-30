@@ -70,4 +70,5 @@ jobs:
           allowUpdates: true
           replacesArtifacts: false
           tag: z${{ env.BUILD }}
+          name: ONScripter-ru r${{ env.BUILD }}
           artifacts: "*.zip"
