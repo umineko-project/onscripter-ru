@@ -22,7 +22,7 @@ jobs:
           echo "TODAY=${TODAY}" >> "$GITHUB_ENV"
           echo "Build number ${BUILD}"
       - name: Install required packages
-        run: sudo brew install automake autoconf yasm pkgconfig gmake cmake
+        run: brew install automake autoconf yasm pkgconfig gmake cmake
       - name: Install meson via pip
         run: pip3 install meson ninja
 
