@@ -1,4 +1,4 @@
-name: Linux CI
+name: MacOS CI
 
 on:
   push:
@@ -23,7 +23,7 @@ jobs:
           echo "Build number ${BUILD}"
 
       - name: Install required packages
-        run: sudo apt install yasm libreadline-dev libasound-dev libgl1-mesa-dev libegl1-mesa-dev libxrandr-dev python3-pip autopoint po4a binutils-mingw-w64-i686 gcc-mingw-w64-i686
+        run: sudo port install automake autoconf yasm pkgconfig gmake cmake
       - name: Install meson via pip
         run: pip3 install meson ninja
 
