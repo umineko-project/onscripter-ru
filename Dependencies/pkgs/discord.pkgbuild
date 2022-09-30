@@ -21,7 +21,7 @@ noextract=(
 
 prebuild() {
     pushd "$pkgname-$pkgver/cpp" &>/dev/null
-    patch -p1 < ../discord-fix-windows-include.patch > $logdir/$pkgname/discord-fix-windows-include.patch.log
+    patch -p1 < discord-fix-windows-include.patch > $logdir/$pkgname/discord-fix-windows-include.patch.log
     
     if [ "$(getTarget)" == "win32" ]; then
         apply_patch "${sources[2]}"
