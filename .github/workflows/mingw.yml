@@ -71,8 +71,8 @@ jobs:
       run: zip -j windows-release.zip DerivedData/MinGW-i686/onscripter-ru.exe
 
     - name: Upload files
-      - uses: ncipollo/release-action@v1
-        with:
+      uses: ncipollo/release-action@v1
+      with:
         allowUpdates: true
         replacesArtifacts: false
         name: z${{ env.BUILD }}

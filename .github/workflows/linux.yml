@@ -64,9 +64,9 @@ jobs:
         run: zip -j linux-release.zip DerivedData/Posix-x86_64/onscripter-ru
 
       - name: Upload files
-      - uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@v1
         with:
-        allowUpdates: true
-        replacesArtifacts: false
-        name: z${{ env.BUILD }}
-        artifacts: "*.zip"
+          allowUpdates: true
+          replacesArtifacts: false
+          name: z${{ env.BUILD }}
+          artifacts: "*.zip"
