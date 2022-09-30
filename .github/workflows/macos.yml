@@ -21,12 +21,8 @@ jobs:
           echo "BUILD=${BUILD}" >> "$GITHUB_ENV"
           echo "TODAY=${TODAY}" >> "$GITHUB_ENV"
           echo "Build number ${BUILD}"
-      - name: Install MacPorts
-        run: |
-          aria2c https://github.com/macports/macports-base/releases/download/v2.7.2/MacPorts-2.7.2-11-BigSur.pkg
-          sudo installer -pkg MacPorts-2.7.2-11-BigSur.pkg -target /
       - name: Install required packages
-        run: sudo port install automake autoconf yasm pkgconfig gmake cmake
+        run: sudo brew install automake autoconf yasm pkgconfig gmake cmake
       - name: Install meson via pip
         run: pip3 install meson ninja
 
