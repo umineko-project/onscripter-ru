@@ -21,7 +21,8 @@ noextract=(
 
 prebuild() {
     pushd "$pkgname-$pkgver/cpp" &>/dev/null
-    apply_patch "${sources[1]}"
+    apply_patch "${sources[1]}" || cat $logdir/$pkgname/discord-fix-windows-include.patch.log
+    
     if [ "$(getTarget)" == "win32" ]; then
         apply_patch "${sources[2]}"
     fi
@@ -32,7 +33,7 @@ compile() {
     local ret=0
 
     $CXX -c *.cpp -g -static -fpermissive &>"$logfile" || ret=$?
-    $AR rvs libdiscordsdk.a *.o &>>"$logfile" || ret=$?
+    $AR rvs libdiscordsdk.a *.o >>"$logfile" || ret=$?
     if (( $ret )); then
         tail -n 20 "$logfile"
         error "Compiling %s failed" "$pkgname"
