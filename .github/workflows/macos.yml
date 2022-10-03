@@ -21,16 +21,20 @@ jobs:
           echo "BUILD=${BUILD}" >> "$GITHUB_ENV"
           echo "TODAY=${TODAY}" >> "$GITHUB_ENV"
           echo "Build number ${BUILD}"
+          
       - name: Install required packages
         run: brew install automake autoconf yasm pkgconfig make cmake
+        
       - name: Install meson via pip
         run: pip3 install meson ninja
-      - uses: actions/checkout@v2
+        
       - name: Setup upterm session
         uses: lhotari/action-upterm@v1
+        
       - name: Configure linux (dev) (discord)
         run: ./configure --with-discord
       - name: Make linux (dev) (discord)
+      
         run: make -j $(getconf _NPROCESSORS_ONLN)
       - name: Zip the necessary files
         run: zip -j linux-dev-discord.zip DerivedData/Posix-x86_64/onscripter-ru DerivedData/Posix-x86_64/Dependencies/onscrlib/lib/libdiscord_game_sdk.so
