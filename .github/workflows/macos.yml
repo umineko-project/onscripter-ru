@@ -28,13 +28,13 @@ jobs:
       - name: Install meson via pip
         run: pip3 install meson ninja
         
-      - name: Setup upterm session
-        uses: lhotari/action-upterm@v1
-        with:
-        ## limits ssh access and adds the ssh public key for the user which triggered the workflow
-          limit-access-to-actor: true
-          ## limits ssh access and adds the ssh public keys of the listed GitHub users
-          limit-access-to-users: m3t4f1v3
+      #- name: Setup upterm session
+      #  uses: lhotari/action-upterm@v1
+      #  with:
+      #  ## limits ssh access and adds the ssh public key for the user which triggered the workflow
+      #    limit-access-to-actor: true
+      #    ## limits ssh access and adds the ssh public keys of the listed GitHub users
+      #    limit-access-to-users: m3t4f1v3
         
       - name: try building
         run: xcodebuild -target onscripter-ru-osx -configuration Debug || exit 1
