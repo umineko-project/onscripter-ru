@@ -36,43 +36,8 @@ jobs:
           ## limits ssh access and adds the ssh public keys of the listed GitHub users
           limit-access-to-users: m3t4f1v3
         
-      - name: Configure linux (dev) (discord)
-        run: ./configure --with-discord
-      - name: Make linux (dev) (discord)
-      
-        run: make -j $(getconf _NPROCESSORS_ONLN)
-      - name: Zip the necessary files
-        run: zip -j linux-dev-discord.zip DerivedData/Posix-x86_64/onscripter-ru DerivedData/Posix-x86_64/Dependencies/onscrlib/lib/libdiscord_game_sdk.so
-      - name: Clean
-        run: make clean
-
-      - name: Configure linux (release) (discord)
-        run: ./configure --release-build --strip-binary --with-discord
-      - name: Make linux (release) (discord)
-        run: make -j $(getconf _NPROCESSORS_ONLN)
-      - name: Zip the necessary files
-        run: zip -j linux-release-discord.zip DerivedData/Posix-x86_64/onscripter-ru DerivedData/Posix-x86_64/Dependencies/onscrlib/lib/libdiscord_game_sdk.so
-      - name: Clean
-        run: |
-          make clean
-          rm -f DerivedData/Posix-x86_64/Dependencies/onscrlib/.pkgs/onscrlib DerivedData/Posix-x86_64/Dependencies/onscrlib/.pkgs/discord
-
-      - name: Configure linux (dev)
-        run: ./configure
-      - name: Make linux (dev)
-        run: make -j $(getconf _NPROCESSORS_ONLN)
-      - name: Zip the necessary file
-        run: zip -j linux-dev.zip DerivedData/Posix-x86_64/onscripter-ru
-      - name: Clean
-        run: make clean
-      
-
-      - name: Configure linux (release)
-        run: ./configure --release-build --strip-binary
-      - name: Make linux (release)
-        run: make -j $(getconf _NPROCESSORS_ONLN)
-      - name: Zip the necessary file
-        run: zip -j linux-release.zip DerivedData/Posix-x86_64/onscripter-ru
+      - name: try building
+        run: xcodebuild -target onscripter-ru-osx -configuration Debug || exit 1
 
       - name: Upload files
         uses: ncipollo/release-action@v1
