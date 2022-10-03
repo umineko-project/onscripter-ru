@@ -33,7 +33,7 @@ compile() {
     local logfile="$logdir/$pkgname.compile.log"
     local ret=0
 
-    $CXX -c *.cpp -g -static -fpermissive &>"$logfile" || ret=$?
+    $CXX -c *.cpp -g -static -fpermissive -Wl,-Bdynamic -ldiscord_game_sdk &>"$logfile" || ret=$?
     $AR rvs libdiscordsdk.a *.o >>"$logfile" || ret=$?
     if (( $ret )); then
         tail -n 20 "$logfile"
