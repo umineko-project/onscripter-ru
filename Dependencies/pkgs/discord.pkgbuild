@@ -22,7 +22,6 @@ noextract=(
 prebuild() {
     pushd "$pkgname-$pkgver/cpp" &>/dev/null
     apply_patch "${sources[1]}"
-    cat $logdir/"${sources[1]}"
     
     if [ "$(getTarget)" == "win32" ]; then
         apply_patch "${sources[2]}"
@@ -33,7 +32,7 @@ compile() {
     local logfile="$logdir/$pkgname.compile.log"
     local ret=0
 
-    $CXX -c *.cpp -g -static -fpermissive -Wl,-Bdynamic -ldiscord_game_sdk &>"$logfile" || ret=$?
+    $CXX -c *.cpp -g -static -fpermissive -ldiscord_game_sdk &>"$logfile" || ret=$?
     $AR rvs libdiscordsdk.a *.o >>"$logfile" || ret=$?
     if (( $ret )); then
         tail -n 20 "$logfile"
