@@ -2,9 +2,9 @@ name: Release
 
 on:
   push:
-    branches: [ "github_action" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "github_action" ]
+    branches: [ "master" ]
  
 jobs:
   Windows:
