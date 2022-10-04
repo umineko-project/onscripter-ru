@@ -65,7 +65,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y yasm libreadline-dev libasound-dev libgl1-mesa-dev libegl1-mesa-dev libxrandr-dev python3-pip 
-          pip3 install meson
+          pip3 install ninja
       - name: Env setup
         run: |
           BUILD=$(($(git rev-list --count --first-parent HEAD)+3500))
