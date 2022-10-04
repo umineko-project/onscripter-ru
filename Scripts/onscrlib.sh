@@ -65,7 +65,7 @@ export PATH="/opt/local/bin:/opt/local/sbin:/usr/local/bin/:/usr/local/sbin/:$PA
 
 # Fixes bz2 unpack issues
 function tar() {
-  /opt/local/bin/gnutar "$@"
+  /usr/bin/tar "$@"
 }
 export -f tar
 
