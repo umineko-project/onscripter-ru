@@ -1647,7 +1647,7 @@
 		};
 		1C9F26D91ADB101C00138E84 /* onscrlib32 */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = "\"${PROJECT_DIR}/Scripts/onscrlib.sh\" i386 \"${PROJECT_DIR}\" $(ACTION)";
+			buildArgumentsString = "\"${PROJECT_DIR}/Scripts/onscrlib.sh\" arm64 \"${PROJECT_DIR}\" $(ACTION)";
 			buildConfigurationList = 1C9F26DA1ADB101C00138E84 /* Build configuration list for PBXLegacyTarget "onscrlib32" */;
 			buildPhases = (
 			);
