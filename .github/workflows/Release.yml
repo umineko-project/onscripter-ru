@@ -19,7 +19,7 @@ jobs:
     env:
       dev: ${{ matrix.BUILD_TYPE == 'debug' && '_dev' || '' }}
       cmd: ${{ matrix.BUILD_TYPE == 'release' && '--release-build --strip-binary' || '' }}
-      discord: ${{ matrix.DISCORD_INTEGRATION == 'using discord epically' && '--discord-integration' || '' }}
+      discord: ${{ matrix.DISCORD_INTEGRATION == 'using discord epically' && '--with-discord' || '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -62,7 +62,7 @@ jobs:
     env:
       dev: ${{ matrix.BUILD_TYPE == 'debug' && '_dev' || '' }}
       cmd: ${{ matrix.BUILD_TYPE == 'release' && '--release-build --strip-binary' || '' }}
-      discord: ${{ matrix.DISCORD_INTEGRATION == 'using discord epically' && '--discord-integration' || '' }}
+      discord: ${{ matrix.DISCORD_INTEGRATION == 'using discord epically' && '--with-discord' || '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
