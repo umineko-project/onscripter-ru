@@ -25,7 +25,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y binutils-mingw-w64-i686 gcc-mingw-w64-i686 g++-mingw-w64-i686 yasm python3-pip
-          pip3 install ninja
+          pip3 install meson ninja
       - name: Env setup
         run: |
           BUILD=$(($(git rev-list --count --first-parent HEAD)+3500))
@@ -66,7 +66,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y yasm libreadline-dev libasound-dev libgl1-mesa-dev libegl1-mesa-dev libxrandr-dev python3-pip
-          pip3 install ninja
+          pip3 install meson ninja
       - name: Env setup
         run: |
           BUILD=$(($(git rev-list --count --first-parent HEAD)+3500))
@@ -99,7 +99,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Install deps
         run: |
-          brew install yasm ninja
+          brew install yasm meson ninja
 
       - name: Build
         run: |
