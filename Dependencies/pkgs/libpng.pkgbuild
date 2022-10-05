@@ -15,7 +15,8 @@ configopts=(
 
 cppflags_mac_extra=(
     "-I$outdir/include"
-    "-I/usr/include/"
+    #not clean in the slightest
+    "-I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.7.sdk"
 )
 
 # vim: set syntax=sh:
