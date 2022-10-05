@@ -2,10 +2,10 @@ name: Release
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master" ]
- 
+    branches: ["master"]
+
 jobs:
   Windows:
     # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
@@ -13,11 +13,13 @@ jobs:
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
     runs-on: ubuntu-20.04
     strategy:
-      matrix: 
-        BUILD_TYPE: ["debug","release"]
+      matrix:
+        BUILD_TYPE: ["debug", "release"]
+        DISCORD_INTEGRATION: ["true", "false"]
     env:
       dev: ${{ matrix.BUILD_TYPE == 'debug' && '_dev' || '' }}
       cmd: ${{ matrix.BUILD_TYPE == 'release' && '--release-build --strip-binary' || '' }}
+      discord: ${{ matrix.DISCORD_INTEGRATION == 'true' && '--discord-integration' || '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -40,13 +42,13 @@ jobs:
           AR: i686-w64-mingw32-ar
           RANLIB: i686-w64-mingw32-ranlib
           AS: i686-w64-mingw32-as
-        run: ./configure --cross=i686-w64-mingw32 ${{env.cmd}}
+        run: ./configure --cross=i686-w64-mingw32 ${{env.cmd}} ${{env.discord}}
       - name: Build
         run: |
           make clean
           make -j$(nproc)
           mv DerivedData/MinGW-i686/onscripter-ru.exe ciout ; cp -r Resources/Windows/dlls ciout/dlls ; cd ciout
-          zip -qry onscripter-ru_win_r${BUILD}${{env.dev}}.zip onscripter-ru.exe dlls 
+          zip -qry onscripter-ru_win_r${BUILD}${{env.dev}}.zip onscripter-ru.exe dlls
 
   Linux:
     # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
@@ -54,11 +56,13 @@ jobs:
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
     runs-on: ubuntu-20.04
     strategy:
-      matrix: 
-        BUILD_TYPE: ["debug","release"]
+      matrix:
+        BUILD_TYPE: ["debug", "release"]
+        DISCORD_INTEGRATION: ["true", "false"]
     env:
       dev: ${{ matrix.BUILD_TYPE == 'debug' && '_dev' || '' }}
       cmd: ${{ matrix.BUILD_TYPE == 'release' && '--release-build --strip-binary' || '' }}
+      discord: ${{ matrix.DISCORD_INTEGRATION == 'true' && '--discord-integration' || '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -74,7 +78,7 @@ jobs:
           echo "BUILD=${BUILD}" >> $GITHUB_ENV
           mkdir -p ciout
       - name: Configure
-        run: ./configure ${{env.cmd}}
+        run: ./configure ${{env.cmd}} ${{env.discord}}
       - name: Build
         run: |
           make clean
@@ -89,8 +93,8 @@ jobs:
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
     runs-on: macos-11
     strategy:
-      matrix: 
-        BUILD_TYPE: ["Debug","Release"]
+      matrix:
+        BUILD_TYPE: ["Debug", "Release"]
     env:
       HOMEBREW_NO_AUTO_UPDATE: 1
       dev: ${{ matrix.BUILD_TYPE == 'Debug' && '_dbg' || '' }}
