@@ -107,7 +107,7 @@ jobs:
 
       - name: Build
         run: |
-          xcodebuild -target onscripter-ru-osx -configuration ${{matrix.BUILD_TYPE}} || exit 1
+          xcodebuild ARCHS=arm64 ONLY_ACTIVE_ARCH=NO -target onscripter-ru-osx -configuration ${{matrix.BUILD_TYPE}} || exit 1
           mv build/${{matrix.BUILD_TYPE}}/onscripter-ru-osx.app ciout ; cd ciout
           zip -qry onscripter-ru_osx_r${BUILD}${{env.dev}}.zip onscripter-ru-osx.app || exit 1
           rm -rf onscripter-ru-osx.app ; cd -
