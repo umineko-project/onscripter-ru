@@ -30,7 +30,7 @@ jobs:
           pip3 install meson ninja
       - name: Env setup
         run: |
-          BUILD=expr $(git rev-list --count --first-parent HEAD) + 3500
+          BUILD=$(($(git rev-list --count --first-parent HEAD) + 3500))
           TODAY=$(date +"%d.%m.%y")
           echo "BUILD=${BUILD}" >> "$GITHUB_ENV"
           echo "TODAY=${TODAY}" >> "$GITHUB_ENV"
@@ -84,7 +84,7 @@ jobs:
           pip3 install meson ninja
       - name: Env setup
         run: |
-          BUILD=$(($(git rev-list --count --first-parent HEAD)+3500))
+          BUILD=$(($(git rev-list --count --first-parent HEAD) + 3500))
           echo "Build number ${BUILD}"
           echo "BUILD=${BUILD}" >> $GITHUB_ENV
           mkdir -p ciout
@@ -123,7 +123,12 @@ jobs:
       - name: Install deps
         run: |
           brew install yasm meson ninja
-
+      - name: Env setup
+        run: |
+          BUILD=$(($(git rev-list --count --first-parent HEAD) + 3500))
+          echo "Build number ${BUILD}"
+          echo "BUILD=${BUILD}" >> $GITHUB_ENV
+          mkdir -p ciout
       - name: Build
         run: |
           xcodebuild ARCHS=x86_64 ONLY_ACTIVE_ARCH=NO -target onscripter-ru-osx -configuration ${{matrix.BUILD_TYPE}} || exit 1
