@@ -33,9 +33,7 @@ jobs:
       - name: Env setup
         run: |
           BUILD=$(($(git rev-list --count --first-parent HEAD)+3500))
-          TODAY=$(date +"%d.%m.%y")
           echo "BUILD=${BUILD}" >> "$GITHUB_ENV"
-          echo "TODAY=${TODAY}" >> "$GITHUB_ENV"
           echo "Build number ${BUILD}"
           mkdir -p ciout
           
@@ -53,7 +51,7 @@ jobs:
           make clean
           make -j$(nproc)
           mv DerivedData/MinGW-i686/onscripter-ru.exe ciout ; cp -r Resources/Windows/dlls ciout/dlls ; cd ciout
-          zip -qry onscripter-ru_win_r${BUILD}${{env.dev}}.zip onscripter-ru.exe dlls
+          zip -qry onscripter-ru_win_r${BUILD}${{env.dev}}${{env.discord}}.zip onscripter-ru.exe dlls
       - name: Upload files
         uses: ncipollo/release-action@v1
         with:
@@ -99,7 +97,7 @@ jobs:
           make clean
           make -j$(nproc)
           mv DerivedData/Posix-x86_64/onscripter-ru ciout ; cd ciout
-          zip -qry onscripter-ru_linux64_r${BUILD}${{env.dev}}.zip onscripter-ru || exit 1
+          zip -qry onscripter-ru_linux64_r${BUILD}${{env.dev}}${{env.discord}}.zip onscripter-ru || exit 1
           rm onscripter-ru ; cd ..
       - name: Upload files
         uses: ncipollo/release-action@v1
@@ -139,7 +137,7 @@ jobs:
         run: |
           xcodebuild ARCHS=x86_64 ONLY_ACTIVE_ARCH=NO -target onscripter-ru-osx -configuration ${{matrix.BUILD_TYPE}} || exit 1
           mv build/${{matrix.BUILD_TYPE}}/onscripter-ru-osx.app ciout ; cd ciout
-          zip -qry onscripter-ru_osx_r${BUILD}${{env.dev}}.zip onscripter-ru-osx.app || exit 1
+          zip -qry onscripter-ru_osx_r${BUILD}${{env.dev}}${{env.discord}}.zip onscripter-ru-osx.app || exit 1
           rm -rf onscripter-ru-osx.app ; cd -
       - name: Upload files
         uses: ncipollo/release-action@v1
