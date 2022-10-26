@@ -56,7 +56,7 @@ jobs:
           replacesArtifacts: false
           tag: z${{ env.BUILD }}
           name: ONScripter-ru r${{ env.BUILD }}
-          artifacts: "*.zip"
+          artifacts: "ciout/*.zip"
 
   Linux:
     # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
@@ -101,7 +101,7 @@ jobs:
           replacesArtifacts: false
           tag: z${{ env.BUILD }}
           name: ONScripter-ru r${{ env.BUILD }}
-          artifacts: "*.zip"
+          artifacts: "ciout/*.zip"
 
   macOS:
     # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
@@ -134,4 +134,4 @@ jobs:
           replacesArtifacts: false
           tag: z${{ env.BUILD }}
           name: ONScripter-ru r${{ env.BUILD }}
-          artifacts: "*.zip"
+          artifacts: "ciout/*.zip"
