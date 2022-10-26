@@ -30,10 +30,13 @@ jobs:
           pip3 install meson ninja
       - name: Env setup
         run: |
-          BUILD=$(($(git rev-list --count --first-parent HEAD)+3500))
+          BUILD=expr $(git rev-list --count --first-parent HEAD) + 3500
+          TODAY=$(date +"%d.%m.%y")
+          echo "BUILD=${BUILD}" >> "$GITHUB_ENV"
+          echo "TODAY=${TODAY}" >> "$GITHUB_ENV"
           echo "Build number ${BUILD}"
-          echo "BUILD=${BUILD}" >> $GITHUB_ENV
           mkdir -p ciout
+          
       - name: Configure
         env:
           CC: i686-w64-mingw32-gcc
