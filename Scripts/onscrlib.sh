@@ -22,15 +22,15 @@ fi
 if [ "${ARCH}" == "x86_64h" ]; then
   DST="${PROJECT_DIR}/DerivedData/Xcode/onscrlib64h"
   BLD_ARCH="x86_64"
-  VERMIN="10.7"
+  VERMIN="10.8"
 elif [ "${ARCH}" == "x86_64" ]; then
   DST="${PROJECT_DIR}/DerivedData/Xcode/onscrlib64"
   BLD_ARCH="x86_64"
-  VERMIN="10.6"
+  VERMIN="10.8"
 elif [ "${ARCH}" == "i386" ]; then
   DST="${PROJECT_DIR}/DerivedData/Xcode/onscrlib32"
   BLD_ARCH="i386"
-  VERMIN="10.6"
+  VERMIN="10.8"
 elif [ "${ARCH}" == "armv7" ]; then
   DST="${PROJECT_DIR}/DerivedData/Xcode/onscrlib-armv7"
   BLD_ARCH="armv7"

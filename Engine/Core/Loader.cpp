@@ -13,7 +13,9 @@
 #include "Support/FileIO.hpp"
 #include "Support/Unicode.hpp"
 #include "Resources/Support/Version.hpp"
-
+#if defined(DISCORD)
+#include "Engine/Components/DiscordEvents.hpp"
+#endif
 #include <unistd.h>
 #ifdef WIN32
 #include <windows.h>
@@ -27,7 +29,6 @@ void *__real_SDL_LoadObject(const char *sofile);
 void *__wrap_SDL_LoadObject(const char *sofile);
 }
 #endif
-
 #include <cstdio>
 
 ControllerCollection ctrl;
@@ -101,6 +102,10 @@ void *__wrap_SDL_LoadObject(const char *sofile) {
 	printf("     --cdaudio                    use CD audio if available\n");
 #ifdef WIN32
 	printf("     --waveout-audio              use the windows waveform audio driver (instead of Direct Sound)\n");
+#endif
+#if defined(DISCORD)
+	printf("     --discord                    use discord integration\n");
+	printf("     --discord-id id              set discord id for integration (REQUIRED)\n");
 #endif
 	printf("     --match-audiodevice-to-bgm   reset audio to match bgm specs\n");
 	printf("     --nomatch-audiodevice-to-bgm don't reset audio to match bgm specs (default)\n");
@@ -228,6 +233,16 @@ static void parseOptions(int argc, char **argv, bool &hasArchivePath) {
 				argc--;
 				argv++;
 				ons.ons_cfg_options["d3dcompiler"] = argv[0];
+#if defined(DISCORD)
+			}
+			else if (!std::strcmp(argv[0] + 1, "-discord")) {
+				ons.ons_cfg_options["discord"] = "noval";
+			}
+			else if (!std::strcmp(argv[0] + 1, "-discord-id")) {
+				argc--;
+				argv++;
+				ons.ons_cfg_options["discord-id"] = argv[0];
+#endif
 			} else if (!std::strcmp(argv[0] + 1, "-match-audiodevice-to-bgm")) {
 				ons.setMatchBgmAudio(true);
 				ons.ons_cfg_options["match-audiodevice-to-bgm"] = "noval";
@@ -766,7 +781,6 @@ CONSTRUCTOR setupCrashReporter() {
 
 int main(int argc, char **argv) {
 	initFileIO();
-
 #ifdef DROID
 	// Attempt to launch an already running ons (by tapping on the icon) right after the installation
 	// will cause the library not to be loaded and reused without state initialisation.
@@ -842,7 +856,19 @@ int main(int argc, char **argv) {
 	} else if (FileIO::getLogMode() == FileIO::LogMode::Console) {
 		FileIO::prepareConsole(150, 30);
 	}
-
+#if defined(DISCORD)
+	if (opts.find("discord") != opts.end()) {
+		
+		// needed to be set once to make sure that the discord integration does not fail
+		//sendToLog(LogLevel::Info, opts.find("discord-id")->second);
+		auto it = opts.find("discord-id");
+		if (it != opts.end() && !(it->second).empty()) {
+			initDiscord(it->second.c_str());
+		} else {
+			sendToLog(LogLevel::Error, "Discord integration failed! You NEED to set discord-id!\n");
+		}
+	}
+#endif
 	sendToLog(LogLevel::Info, "Available crash reporter features error code %d\n", crashReporterError);
 
 	// ONScripter is based on a set of dependent controllers that are
@@ -866,6 +892,12 @@ int main(int argc, char **argv) {
 	//  DynamicPropertyController
 	// }
 	// Deinitialisation is done automatically by ctrl.quit(exit_code);
+
+#if defined(DISCORD)
+	if (opts.find("discord") != opts.end()) {
+		shutdownDiscord();
+	}
+#endif
 
 	if (ons.init())
 		ctrl.quit(-1);

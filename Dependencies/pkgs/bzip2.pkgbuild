@@ -1,8 +1,8 @@
 pkgname=bzip2
-pkgver=1.0.6
+pkgver=1.0.8
 pkgrel=1
 sources=(
-    "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/bzip2-1.0.6.tar.gz"
+    "https://github.com/m3t4f1v3/onscripter-deps-updated/raw/master/archives/${pkgname}-${pkgver}.tar.gz" #https://sourceware.org/pub/bzip2/bzip2-latest.tar.gz
     'bzip2-cflags.patch'
     'bzip2-install.patch'
     'bzip2-clang.patch'
@@ -12,7 +12,7 @@ sources=(
 )
 
 hashes=(
-    'a2848f34fcd5d6cf47def00461fcb528a0484d8edef8208d6d2e2909dc61d9cd'
+    'ab5a03176ee106d3f0fa90e381da478ddae405918153cca248e682cd0c4a2269'
     '50f5a99456f59760bc7010e9459d318b882831cb561f485d6cc373ac92ceec51'
     '87089aaa0f2dff30b20d69517144e380bb934235483434753056f19b55715116'
     '07683f24017e6ff5379c53c39830e0c52a6de881693ca6ad29f91ca9c83347db'
@@ -33,12 +33,12 @@ build() {
     elif [ "$(getCC)" != "gcc" ]; then
         apply_patch "${sources[5]}"
     fi
-    
     apply_patch "${sources[4]}"
-    apply_patch "${sources[6]}"
+    #fixed by 53f3d0d71c3c445bc4ac413d42c4386381e47b49
+    #apply_patch "${sources[6]}"
 
     msg "Compiling %s" "$pkgname"
-    export CFLAGS="$CFLAGS ${cflags[@]}"
+    export CFLAGS="$CFLAGS ${cflags[@]} -fPIC"
     export LDFLAGS="$LDFLAGS ${ldflags[@]}"
     compile
 
@@ -46,7 +46,7 @@ build() {
     local ret=0
     local logfile="$logdir/$pkgname.install.log"
     make $MAKEOPTS install PREFIX="$outdir" &>"$logfile" || ret=$?
-   
+    
     if (( $ret )); then
         tail -n 20 "$logfile"
         error "Installing %s failed" "$pkgname"

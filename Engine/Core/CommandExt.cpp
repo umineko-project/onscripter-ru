@@ -9,6 +9,9 @@
 
 #include "Engine/Core/ONScripter.hpp"
 #include "Engine/Components/Async.hpp"
+#if defined(DISCORD)
+#include "Engine/Components/DiscordEvents.hpp"
+#endif
 #include "Engine/Components/Joystick.hpp"
 #include "Engine/Components/Window.hpp"
 #include "Engine/Layers/ObjectFall.hpp"
@@ -2360,6 +2363,24 @@ int ONScripter::getLogDataCommand() {
 
 	return RET_CONTINUE;
 }
+
+#if defined(DISCORD)
+int ONScripter::setDiscordRPCCommand() {
+	std::string state = script_h.readStr();
+	std::string details = script_h.readStr();
+	std::string largeImageKey = script_h.readStr();
+	std::string largeImageText = script_h.readStr();
+	std::string smallImageKey = script_h.readStr();
+	std::string smallImageText = script_h.readStr();
+	std::string startTimestamp = script_h.readStr();
+	std::string endTimestamp = script_h.readStr();
+	auto it = ons.ons_cfg_options.find("discord");
+	if (it != ons.ons_cfg_options.end()) {
+		setPresence(state.c_str(), details.c_str(), largeImageKey.c_str(), largeImageText.c_str(), smallImageKey.c_str(), smallImageText.c_str(), startTimestamp.c_str(), endTimestamp.c_str());
+	}
+	return RET_CONTINUE;
+}
+#endif
 
 int ONScripter::getUniqueLogEntryIndexCommand() {
 	// Gets the log entry index for a label. Only to be used for labels that appear just once in the log!

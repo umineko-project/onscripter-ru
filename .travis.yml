@@ -12,7 +12,8 @@ matrix:
   - os: osx
     name: "macOS build debug"
     # It is important to use Xcode 9.4 as we need 32-bit support.
-    osx_image: xcode9.4
+    #Unfortunately it seems that travis uses older versions of brew if you choose a old xcode version
+    osx_image: xcode13.4.1
     compiler: clang
     script:
       # Preparatory actions
@@ -92,6 +93,12 @@ matrix:
         - libgl1-mesa-dev
         - libegl1-mesa-dev
         - libxrandr-dev
+        - python3
+        - python3-pip
+        - python3-setuptools
+        - python3-wheel
+        - ninja-build
+
 
     script:
       - BUILD=$(($(git rev-list --count --first-parent HEAD)+3500))

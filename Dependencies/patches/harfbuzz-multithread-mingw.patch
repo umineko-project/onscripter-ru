@@ -1,12 +1,12 @@
 diff -rupN a/src/hb-mutex.hh b/src/hb-mutex.hh
 --- a/src/hb-mutex.hh	2019-06-07 20:50:11.000000000 +0300
 +++ b/src/hb-mutex.hh	2019-06-30 01:52:33.000000000 +0300
-@@ -48,7 +48,7 @@
+@@ -47,7 +47,7 @@
  /* Defined externally, i.e. in config.h; must have typedef'ed hb_mutex_impl_t as well. */
- 
- 
--#elif !defined(HB_NO_MT) && (defined(HAVE_PTHREAD) || defined(__APPLE__))
-+#elif !defined(HB_NO_MT) && (defined(HAVE_PTHREAD) || defined(__APPLE__)) && !defined(_WIN32)
- 
+
+
+-#elif !defined(HB_NO_MT) && !defined(HB_MUTEX_IMPL_STD_MUTEX) && (defined(HAVE_PTHREAD) || defined(__APPLE__))
++#elif !defined(HB_NO_MT) && !defined(HB_MUTEX_IMPL_STD_MUTEX) && (defined(HAVE_PTHREAD) || defined(__APPLE__)) && !defined(_WIN32)
+
  #include <pthread.h>
  typedef pthread_mutex_t hb_mutex_impl_t;

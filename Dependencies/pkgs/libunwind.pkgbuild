@@ -1,8 +1,8 @@
 pkgname=libunwind
-pkgver=1.2
+pkgver=1.6.2 # not really
 pkgrel=1
-giturl='https://android.googlesource.com/platform/external/libunwind'
-githash='0c1a9cab2ffc52d4969d6148539f8b6f67387d00'
+giturl='https://github.com/libunwind/libunwind.git'
+githash='e07b43c02d5cf1ea060c018fdf2e2ad34b7c7d80' #look above for latest git
 sources=(
     'libunwind-droid-macro-ctypes.patch'
     'libunwind-droid-os.patch'
@@ -14,9 +14,13 @@ hashes=(
 
 configopts=(
     '--disable-dependency-tracking'
-    '--disable-shared'
     '--disable-coredump'
     '--enable-ptrace'
+)
+
+configopts_droid=(
+    '--target=aarch64'
+    '--host=x86_64'
 )
 
 cflags_droid=(
@@ -31,14 +35,14 @@ prebuild() {
     local logfile="$logdir/$pkgname.gitclone.log"
     msg2 "Cloning %s from GIT" "$pkgname"
     local ret=0
-    git clone "$giturl" "$pkgname-$pkgver" &>"$logfile" || ret=$?
+    git clone "$giturl" "$pkgname-${pkgver}" &>"$logfile" || ret=$?
     if (( $ret )); then
         tail -n 20 "$logfile"
         error "GIT clone failed"
         exit 1
     fi
 
-    pushd "$pkgname-$pkgver" &>/dev/null
+    pushd "$pkgname-${pkgver}" &>/dev/null
 
     local logfile="$logdir/$pkgname.version.log"
     msg2 "Switching to %s commit" "$githash"
@@ -76,7 +80,7 @@ build() {
 
     # Do not build tests
     popd &>/dev/null
-    pushd "$pkgname-$pkgver/src" &>/dev/null
+    pushd "$pkgname-${pkgver}/src" &>/dev/null
 
     msg "Compiling %s" "$pkgname"
     compile

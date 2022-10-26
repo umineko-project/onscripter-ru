@@ -53,6 +53,7 @@ build() {
     local logfile="$logdir/$pkgname.cmake.log"
     
     export SDL2DIR=$outdir
+    
     lcf="$CFLAGS ${cflags[@]} $CFLAGS_EXTRA"
     lcxf="$CPPFLAGS ${cppflags[@]} $CPPFLAGS_EXTRA"
 
@@ -62,9 +63,9 @@ build() {
     case $(getTarget) in
         win32)
             if $CROSS_BUILD; then
-                cmake -G "Unix Makefiles" -DCMAKE_SYSTEM_NAME=Windows -DSDL_gpu_USE_SYSTEM_EPOXY=ON -DSDL_gpu_DISABLE_GLES=OFF -DSDL_gpu_DISABLE_GLES_1=ON -DSDL_gpu_DYNAMIC_GLES_2=ON -DSDL_gpu_DYNAMIC_GLES_3=ON -DCMAKE_C_FLAGS="$lcf" -DCMAKE_CXX_FLAGS="$lcxf" &>"$logfile" || ret=$?
+                cmake -G "Unix Makefiles" -DCMAKE_SYSTEM_NAME=Windows -DSDL_gpu_USE_SYSTEM_EPOXY=ON -DSDL_gpu_DISABLE_GLES=ON -DSDL_gpu_DISABLE_GLES_1=ON -DSDL_gpu_DYNAMIC_GLES_2=ON -DSDL_gpu_DYNAMIC_GLES_3=ON -DCMAKE_C_FLAGS="$lcf" -DCMAKE_CXX_FLAGS="$lcxf" &>"$logfile" || ret=$?
             else
-                cmake -G "MSYS Makefiles" -DSDL_gpu_USE_SYSTEM_EPOXY=ON -DSDL_gpu_DISABLE_GLES=OFF -DSDL_gpu_DISABLE_GLES_1=ON -DSDL_gpu_DYNAMIC_GLES_2=ON -DSDL_gpu_DYNAMIC_GLES_3=ON -DCMAKE_C_FLAGS="$lcf" -DCMAKE_CXX_FLAGS="$lcxf" &>"$logfile" || ret=$?
+                cmake -G "MSYS Makefiles" -DSDL_gpu_DISABLE_GLES=OFF -DSDL_gpu_DISABLE_GLES_1=ON -DSDL_gpu_DYNAMIC_GLES_2=ON -DSDL_gpu_DYNAMIC_GLES_3=ON -DCMAKE_C_FLAGS="$lcf" -DCMAKE_CXX_FLAGS="$lcxf" &>"$logfile" || ret=$?
             fi
         ;;
         darwin-macOS)

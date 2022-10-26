@@ -1,22 +1,43 @@
 pkgname=libepoxy
-pkgver=1.4.3
+pkgver=1.5.10
 pkgrel=1
-# TODO: Upgrade libepoxy in some future, but this will require patches:
-# 1.5.x branch till 1.5.3 is pretty much broken:
-# - https://github.com/anholt/libepoxy/issues/160
-# - https://github.com/anholt/libepoxy/issues/180
-# 1.5.0 and newer do not have configure, and autoreconf requires xorg macros.
-# As they switched to meson, upgrading to 1.5.3 will require supporting meson
-# in onscrlib rather than attempting to work around no longer supported autotools.
-sources=(
-    "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/$pkgname-$pkgver.tar.xz"
-)
-hashes=(
-    '0b808a06c9685a62fca34b680abb8bc7fb2fda074478e329b063c1f872b826f6'
+
+mesonopts=(
+    '--default-library=both'
 )
 
-configopts=(
-    '--disable-shared'
+if [ "$(getTarget)" == "win32" ]; then
+    mesonopts+=('-Dx11=false' '-Dglx=no' '--cross-file=../../../download/linux-mingw-w64-32bit.txt')
+fi
+
+sources=(
+    "https://github.com/m3t4f1v3/onscripter-deps-updated/raw/master/archives/${pkgname}-${pkgver}.tar.xz"
+    'https://raw.githubusercontent.com/mesonbuild/meson/master/cross/linux-mingw-w64-32bit.txt'
 )
+hashes=(
+    '072cda4b59dd098bba8c2363a6247299db1fa89411dc221c8b81b8ee8192e623'
+    '4ad5d54af3b158ef9ff464466df2a3a62fc43783dec1fda35a8c8432ca59e638'
+)
+
+prebuild() {
+    pushd "$pkgname-${pkgver}" &>/dev/null
+}
+
+build() {
+    prebuild
+    meson_configure
+    ninja_install
+    postbuild
+}
+
+postbuild() {
+    popd &>/dev/null
+    if [ "$(getTarget)" == "linux-like" ]; then
+        # needed to link statically, can't just build static because of x11 linking errors
+        rm "$outdir/lib/libepoxy.so"
+        rm "$outdir/lib/libepoxy.so.0"
+        rm "$outdir/lib/libepoxy.so.0.0.0"
+    fi
+}
 
 # vim: set syntax=sh:

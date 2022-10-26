@@ -9,6 +9,9 @@
 
 #include "Engine/Core/ONScripter.hpp"
 #include "Engine/Components/Async.hpp"
+#if defined(DISCORD)
+#include "Engine/Components/DiscordEvents.hpp"
+#endif
 #include "Engine/Components/Joystick.hpp"
 #include "Engine/Components/Window.hpp"
 #include "Engine/Layers/Media.hpp"
@@ -342,6 +345,12 @@ void ONScripter::waitEvent(int count, bool nopPreferred) {
 		}
 
 		while (true) {
+#if defined(DISCORD)
+			auto it = ons.ons_cfg_options.find("discord");
+			if (it != ons.ons_cfg_options.end()) {
+				runDiscordCallbacks();
+			}
+#endif
 			ticksNow = SDL_GetTicks();
 			if (ticksNow - lastFlipTime >= timeThisFrame) {
 				accumulatedOvershoot += (ticksNow - lastFlipTime) - timeThisFrame;
@@ -376,7 +385,6 @@ void ONScripter::waitEvent(int count, bool nopPreferred) {
 		// On droid it is not necessary and it additionally breaks background app handling in Android_PumpEvents
 		SDL_PollEvent(nullptr);
 #endif
-
 		if (show_fps_counter && !(skip_mode & SKIP_SUPERSKIP)) {
 			static std::deque<uint32_t> ticksList;
 			// display fps counter in title bar averaged over 30 frames
@@ -394,7 +402,7 @@ void ONScripter::waitEvent(int count, bool nopPreferred) {
 			window.setTitle(titlestring);
 			freearr(&titlestring);
 		}
-
+    
 		//sendToLog(LogLevel::Info,"  flipped -- aimed for %i ms, took %i ms\n", constant_refresh_interval, ticksNow - lastFlipTime);
 		lastFlipTime = ticksNow;
 
@@ -415,7 +423,6 @@ void ONScripter::waitEvent(int count, bool nopPreferred) {
 	} while (count > 0 || !timerBreakout); // if we are told not to break out by timer, this is an infinite loop
 	//sendToLog(LogLevel::Info, "-----------------\n");
 	nested_calls--;
-
 	lastExitTime = SDL_GetTicks();
 
 	// New process --
@@ -1327,7 +1334,6 @@ void ONScripter::advanceGameState(uint64_t ns) {
 
 	// update animation clocks
 	advanceAIclocks(ns);
-
 	// should we make this a function?
 	for (auto &ss : spritesets) {
 		if (ss.second.warpAmplitude != 0) {
@@ -1421,7 +1427,6 @@ void ONScripter::constantRefresh() {
 		effect_current = nullptr;
 		event_mode &= ~(WAIT_INPUT_MODE);
 	}
-
 	constant_refresh_mode     = REFRESH_NONE_MODE;
 	constant_refresh_executed = true;
 }
@@ -1443,7 +1448,6 @@ void ONScripter::runEventLoop() {
 	while (true) {
 		event = std::move(localEventQueue.back());
 		localEventQueue.pop_back();
-
 		endOfEventBatch = false;
 
 		if (exitCode.load(std::memory_order_relaxed) != ExitType::None) {

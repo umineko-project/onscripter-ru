@@ -1,22 +1,25 @@
 pkgname=freetype
-pkgver=2.10.0
+pkgver=2.12.1
 pkgrel=2
-sources=("https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/freetype-$pkgver.tar.bz2")
-hashes=('fccc62928c65192fff6c98847233b28eb7ce05f12d2fea3f6cc90e8b4e5fbe06')
+sources=("https://github.com/m3t4f1v3/onscripter-deps-updated/raw/master/archives/${pkgname}-${pkgver}.tar.xz") #http://mirror.downloadvn.com/nongnu/freetype/
+hashes=('4766f20157cc4cf0cd292f80bf917f92d1c439b243ac3018debf6b9140c41a7f')
 
 if [ -e "$outdir/.pkgs/harfbuzz" ]; then
     configopts=(
         '--disable-shared'
+        '--without-brotli'
         "--libdir=$outdir/lib"
         '--enable-freetype-config'
         "HARFBUZZ_CFLAGS=-I$outdir/include/harfbuzz"
         "HARFBUZZ_LIBS=-L$outdir/lib"
         "LIBPNG_CFLAGS=-I$outdir/include/libpng16"
         "LIBPNG_LIBS=-L$outdir/lib"
+        
     )
 elif [ $(( $PKGBUILD_RECURSION_DEPTH )) -ge 1 ]; then
     configopts=(
         '--disable-shared'
+        '--without-brotli'
         "--libdir=$outdir/lib"
         '--without-harfbuzz'
         '--enable-freetype-config'
@@ -26,13 +29,19 @@ elif [ $(( $PKGBUILD_RECURSION_DEPTH )) -ge 1 ]; then
 else
     error_out "Please, install harfbuzz before building freetype manually"
 fi
-
+CFLAGS="$CFLAGS ${cflags[@]} -fPIC"
 cflags_win32="-U__STRICT_ANSI__"
 if [ -e "$outdir/.pkgs/harfbuzz" ]; then
-    ldflags="-L$outdir/lib -lpng -lharfbuzz"
+    ldflags="-L$outdir/lib -lpng -lharfbuzz -lm -lfreetype"
 else
-    ldflags="-L$outdir/lib -lpng"
+    ldflags="-L$outdir/lib -lpng -lm"
 fi
+
+prebuild() {
+    pushd "$pkgname-${pkgver}" &>/dev/null
+    
+    autogenerate
+}
 
 build() {
     msg "Performing pre-build actions"

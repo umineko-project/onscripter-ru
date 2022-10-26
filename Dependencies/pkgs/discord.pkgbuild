@@ -1,0 +1,110 @@
+pkgname=discord
+pkgver=3.2.1
+pkgrel=1
+
+sources=(
+    "https://dl-game-sdk.discordapp.net/${pkgver}/discord_game_sdk.zip" #https://discord.com/developers/docs/game-sdk/sdk-starter-guide
+    'discord-fix-std-int.patch'
+    'discord-fix-windows-include.patch'
+)
+
+hashes=(
+    '6757bb4a1f5b42aa7b6707cbf2158420278760ac5d80d40ca708bb01d20ae6b4'
+    '0ef8527a49aa33cd7401b95177d09e98465bc8db0e9b20f0a2d575c0efeeaeb0'
+    'bc444a0cba43373c9b39c72590dbe6b5afbaa939eaaadf293a2351ccd5ce00a1'
+)
+
+noextract=(
+    'discord-fix-std-int.patch'
+    'discord-fix-windows-include.patch'
+)
+
+prebuild() {
+    pushd "$pkgname-$pkgver/cpp" &>/dev/null
+    apply_patch "${sources[1]}"
+    
+    if [ "$(getTarget)" == "win32" ]; then
+        apply_patch "${sources[2]}"
+    fi
+}
+
+compile() {
+    local logfile="$logdir/$pkgname.compile.log"
+    local ret=0
+
+    $CXX -c *.cpp -g -static -fpermissive -ldiscord_game_sdk &>"$logfile" || ret=$?
+    $AR rvs libdiscordsdk.a *.o >>"$logfile" || ret=$?
+    if (( $ret )); then
+        tail -n 20 "$logfile"
+        error "Compiling %s failed" "$pkgname"
+        error "The last 20 lines of the log are shown above."
+        error "The full log is: %s" "$logfile"
+        exit 1
+    fi
+}
+
+copy() {
+    local logfile="$logdir/$pkgname.install.log"
+    local ret=0
+    cp libdiscordsdk.a $outdir/lib/ &>"$logfile" || ret=$?
+    cp *.h $outdir/include/discord/ &>"$logfile" || ret=$?
+
+    if (( $ret )); then
+        tail -n 20 "$logfile"
+        error "Installing %s failed" "$pkgname"
+        error "The last 20 lines of the log are shown above."
+        error "The full log is: %s" "$logfile"
+        exit 1
+    fi
+}
+
+configure() {
+    local logfile="$logdir/$pkgname.copylibs.log"
+    local ret=0
+    mkdir -p $outdir/lib/ >>"$logfile" || ret=$?
+    mkdir -p $outdir/include/discord/ >>"$logfile" || ret=$?
+    # Not FOSS but shared library so its (copyright) ok?
+    cp ../lib/x86_64/discord_game_sdk.bundle $outdir/lib/libdiscord_game_sdk.bundle >>"$logfile" || ret=$?
+    cp ../lib/x86_64/discord_game_sdk.dylib $outdir/lib/libdiscord_game_sdk.dylib >>"$logfile" || ret=$?
+    cp ../lib/x86_64/discord_game_sdk.so $outdir/lib/libdiscord_game_sdk.so >>"$logfile" || ret=$?
+    # Usually used for win32 but can be swapped out to use 64bit
+    cp ../lib/x86/discord_game_sdk.dll $outdir/lib/libdiscord_game_sdk.dll >>"$logfile" || ret=$?
+    cp ../lib/x86/discord_game_sdk.dll.lib $outdir/lib/libdiscord_game_sdk.lib >>"$logfile" || ret=$?
+    if (( $ret )); then
+        tail -n 20 "$logfile"
+        error "Copying libs %s failed" "$pkgname"
+        error "The last 20 lines of the log are shown above."
+        error "The full log is: %s" "$logfile"
+        exit 1
+    fi
+}
+
+extract_sources() {
+    msg "Extracting sources"
+    pushd $srcdir &>/dev/null
+
+    local netfile
+    for netfile in "${sources[@]}"; do
+        local file=$(get_filename "$netfile")
+        if in_array "$file" "${noextract[@]}"; then
+            continue
+        fi
+
+        local filetype=$(file -bzL --mime "$file")
+        local ext=${file##*.}
+        local cmd='unzip'
+        local cmd_flags=('-qo' "-d$pkgname-$pkgver")
+
+        local ret=0
+        echo Extracting $file with "$cmd" "${cmd_flags[@]}"
+        $cmd "${cmd_flags[@]}" "$file" || ret=$?
+
+        if (( ret )); then
+            error_out "Failed to extract %s" "$file"
+        fi
+    done
+
+    popd &>/dev/null
+}
+
+# vim: set syntax=sh:

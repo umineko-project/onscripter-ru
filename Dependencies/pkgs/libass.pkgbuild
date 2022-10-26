@@ -1,20 +1,20 @@
 pkgname=libass
-pkgver=0.14.0
+pkgver=0.15.2
 pkgrel=1
 depends=('harfbuzz' 'fribidi')
 
 sources=(
-    "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/$pkgname-$pkgver.tar.xz"
+    "https://github.com/m3t4f1v3/onscripter-deps-updated/raw/master/archives/${pkgname}-${pkgver}.tar.gz" #https://github.com/libass/libass/latest
     'libass-ignore-iconv.patch'
     'libass-unicode-font-path-win.patch'
     'libass-unicode-fontdir-path-win.patch'
 )
 
 hashes=(
-    '881f2382af48aead75b7a0e02e65d88c5ebd369fe46bc77d9270a94aa8fd38a2'
-    '2482308db0690ec34248cc12d5a7ca3d9e9c7cb8db4273e61a205637d7dfc6fd'
-    '71e38cb4c8ec7e4bc62af64f0c5a6576e7cf2fc750ca43bac725198f2c214fa0'
-    '45988f43b494f4e512b5a3d0b23906edc8ff2a8a8d0b6717656080c5be7c5cbf'
+    '1b2a54dda819ef84fa2dee3069cf99748a886363d2adb630fde87fe046e2d1d5'
+    '84f08e2f440c77259dddfcc1d2b304d0d03c8890888d61be9a66adfad6f80342'
+    'ebb8b308869098800f2125dc5e7ce56cd473989e1ef450aeba8372ec8dedc296'
+    '2c49d5294f8b47298c3af8810b27712f8d92a66b67ce85470c3daa859c5505ca'
 )
 
 configopts=(
@@ -33,10 +33,17 @@ configopts=(
     "HARFBUZZ_LIBS=-L$outdir/lib"    
 )
 
+host=$($CC -dumpmachine)
+
 configopts_win32=(
     '--build=i686-pc-mingw32'
-    '--host=i686-pc-mingw32'
+    '--host=$host'
     '--disable-directwrite'
+)
+
+configopts_droid=(
+    '--target=aarch64-unknown-linux-android'
+    '--host=$host'
 )
 
 configopts_ios=( )
@@ -57,21 +64,23 @@ else
         "CXX=$(getCXX)"
     )
 fi
-
+ldflags_win32="-lfreetype -lfribidi"
 cflags="-I$outdir/include/fribidi"
 
 prebuild() {
-    pushd "$pkgname-$pkgver" &>/dev/null
+    pushd "$pkgname-${pkgver}" &>/dev/null
     
     apply_patch "${sources[1]}"
-
+    # why is this even needed??
     # libass provides no API to configure file i/o, and thus does not support unicode filenames.
     # This patch enforces utf-8 path support for ass_set_fonts on Windows.
-    if [ "$(getTarget)" == "win32" ]; then
-        apply_patch "${sources[2]}"
-        apply_patch "${sources[3]}"
-    fi
+    #if [ "$(getTarget)" == "win32" ]; then
+    #    apply_patch "${sources[2]}"
+    #    apply_patch "${sources[3]}"
+    #fi
 }
+
+
 
 postbuild() {
     # Is this necessary?

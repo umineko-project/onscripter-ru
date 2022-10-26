@@ -5,23 +5,25 @@ pkgname=ffmpeg
 # 4.0.4 and 4.1.3 are broken on macOS VTDecompressionSessionInvalidate is only
 #                 available on macOS 10.8 or newer
 # Most likely other operating systems are broken as usual.
-pkgver=3.3.9
+pkgver=4.4
 pkgrel=3
 depends=(
     'zlib'
     'bzip2'
 )
 sources=(
-    "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/ffmpeg-$pkgver.tar.bz2"
+    "https://github.com/m3t4f1v3/onscripter-deps-updated/raw/master/archives/${pkgname}-${pkgver}.tar.gz"
     'ffmpeg-compact-unwind.patch'
     'ffmpeg-droid-noebp.patch'
     'ffmpeg-alloc-warning.patch'
+    'ffmpeg-bcrypt-hacky-fix.patch'
 )
 hashes=(
-    '5633c4a3379a504f0b43a20a2222a8fe50f19be7d5a6eb435056c42150cb4905'
+    'a4abede145de22eaf233baa1726e38e137f5698d9edd61b5763cd02b883f3c7c'
     'f0c076b46522bfbd02f86b4a7dfbd53816bbbc2cd4dd3cba50116f96ef521087'
     'c806a4ffa327be5c0430ee59f67092c59f13ed1bac59aea027fc4bc288bc4db0'
     '3b02223f320a236894a2134da0d5b2953148e3c81ad1c24e5ab25d96fc84a9f5'
+    'f51e9a9eece74d10501d939050e673e104ba1c15f1f49ab3a79ec7c84359467d'
 )
 addcrossopt=false
 
@@ -34,7 +36,6 @@ if [ "$APPLE_CPU_FLAG" == "-m32" ]; then
         '--cpu=pentium4'
         "--cc=$(getCC)"
         '--enable-videotoolbox'
-        '--disable-vda'
         '--disable-decoders'
     )
     cflags_ios_extra="-D__STDC_CONSTANT_MACROS"
@@ -44,7 +45,6 @@ if [ "$APPLE_CPU_FLAG" == "-m32" ]; then
             '--cc=clang-armv7s'
             '--as=as-armv7s'
             '--enable-videotoolbox'
-            '--disable-vda'
             '--enable-pic'
             '--enable-thumb'
             '--disable-decoders'
@@ -55,7 +55,6 @@ if [ "$APPLE_CPU_FLAG" == "-m32" ]; then
             '--cc=clang-armv7'
             '--as=as-armv7'
             '--enable-videotoolbox'
-            '--disable-vda'
             '--enable-pic'
             '--enable-thumb'
             '--disable-decoders'
@@ -68,14 +67,12 @@ else
         '--cpu=core2'
         "--cc=$(getCC)"
         '--enable-videotoolbox'
-        '--disable-vda'
         '--disable-decoders'
     )
     cflags_ios_extra="-D__STDC_CONSTANT_MACROS"
     configopts_ios=(
         '--cc=clang-arm64'
         '--enable-videotoolbox'
-        '--disable-vda'
         '--enable-pic'
         '--enable-thumb'
         '--disable-decoders'
@@ -92,15 +89,16 @@ configopts_droid=(
     '--disable-decoders'
     '--enable-decoder=h264_mediacodec'
     '--enable-decoder=mpeg4_mediacodec'
+    '--disable-vulkan'
 )
 
 cflags_linux="-D__STDC_CONSTANT_MACROS"
-cflags_win32="-D__STDC_CONSTANT_MACROS -m32 -march=i686"
-
+cflags_win32="-D__STDC_CONSTANT_MACROS -m32 -march=i686 -I$outdir/include/"
 configopts=(
     #static build
     '--enable-static'
     '--disable-shared'
+    '--enable-pic'
     #optimise size
     '--enable-small'
     #'--disable-logging'
@@ -214,6 +212,7 @@ configopts=(
     '--enable-decoder=mp3'
     '--enable-decoder=flac'
     '--enable-decoder=vorbis'
+    '--disable-decoder=tiff'
     "--libdir=$outdir/lib"
 )
 
@@ -224,15 +223,9 @@ configopts_win32=(
     '--disable-decoders'
 )
 
-if [ "$(getTarget)" == "win32" ] && [ "$(getCC)" != "gcc" ]; then
-    configopts_win32+=('--cc=ccreal')
-fi
-
 configopts_linux=(
     '--extra-libs=-static'
     '--extra-cflags=--static'
-    '--disable-hwaccels'
-    '--disable-decoders'
 )
 
 if $CROSS_BUILD; then
@@ -242,6 +235,7 @@ if $CROSS_BUILD; then
     )
     configopts_win32+=(
         '--target-os=mingw32'
+        '--cross-prefix=i686-w64-mingw32-'
     )
     configopts_ios+=(
         '--target-os=darwin'
@@ -257,7 +251,7 @@ if $CROSS_BUILD; then
 fi
 
 prebuild() {
-    pushd "$pkgname-$pkgver" &>/dev/null
+    pushd "$pkgname-${pkgver}" &>/dev/null
     
     case $(getTarget) in
     darwin*)
@@ -273,9 +267,10 @@ prebuild() {
             apply_patch "${sources[2]}"
         fi
     ;;
+    win32)
+        apply_patch "${sources[4]}"
+    ;;
     esac
-
-    apply_patch "${sources[3]}"
 }
 
 # vim: set syntax=sh:

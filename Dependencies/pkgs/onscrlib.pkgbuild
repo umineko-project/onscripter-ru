@@ -30,6 +30,9 @@ if [ "$(getTarget)" == "droid" ] && [ "$(getTargetCPU)" != "arm" ]; then
     depends=(${depends[@]} 'libunwind');
 fi
 
+if [[ $USEDISCORD ]]; then
+    depends=('discord' ${depends[@]});
+fi
 
 build() {
     msg "onscrlib built successfully."

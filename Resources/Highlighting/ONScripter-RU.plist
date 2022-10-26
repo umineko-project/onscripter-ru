@@ -115,6 +115,7 @@
 		<string>deletemenu</string>
 		<string>deletescreenshot</string>
 		<string>dim</string>
+		<string>discordrpc</string>
 		<string>div</string>
 		<string>draw</string>
 		<string>drawbg</string>
@@ -466,7 +467,7 @@
 		<string>vlsprite</string>
 		<string>vmove</string>
 		<string>vsprite</string>
-		<!-- This part badly needs documenting -->		
+		<!-- This part badly needs documenting -->
 		<string>sprite_mask</string>
 		<string>async_load_cache</string>
 		<string>load_cache</string>
@@ -669,6 +670,6 @@
 		<string>`</string>
 		<key>Close Strings 2</key>
 		<string>`</string>
-	</dict> 
+	</dict>
 </dict>
 </plist>

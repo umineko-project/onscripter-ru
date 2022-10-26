@@ -20,6 +20,7 @@
 #include "Engine/Graphics/GPU.hpp"
 #include "Support/FileDefs.hpp"
 
+#include <epoxy/gl.h>
 #include <SDL2/SDL_gpu_GLES_3.h>
 
 GPU_RendererID GPUController::makeRendererIdANGLE3() {
@@ -46,12 +47,12 @@ void GPUController::printBlitBufferStateANGLE3() {
 }
 
 void GPUController::syncRendererStateANGLE3() {
-	glFinish();
+	epoxy_glFinish();
 }
 
 int GPUController::getMaxTextureSizeANGLE3() {
 	int size;
-	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &size);
+	epoxy_glGetIntegerv(GL_MAX_TEXTURE_SIZE, &size);
 	return size;
 }
 
@@ -80,7 +81,7 @@ void GPUController::syncRendererStateGLES3() {
 
 int GPUController::getMaxTextureSizeGLES3() {
 	int size;
-	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &size);
+	epoxy_glGetIntegerv(GL_MAX_TEXTURE_SIZE, &size);
 	return size;
 }
 

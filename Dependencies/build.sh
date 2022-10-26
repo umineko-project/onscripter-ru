@@ -468,10 +468,45 @@ prebuild() {
     pushd "$pkgname-$pkgver" &>/dev/null
 }
 
+meson_configure() {
+    msg2 "Using meson to configure"
+    local logfile="$logdir/$pkgname.meson.configure.log"
+
+    if [ -z $meson_command ]; then
+    	mkdir _build
+    	cd _build
+    fi
+
+    local ret=0
+    LIBRARY_PATH=$outdir/lib:$LIBRARY_PATH meson --prefix="$outdir" --libdir=lib ${mesonopts[@]} $meson_command >"$logfile" || ret=$?
+    cd ..
+    if (( $ret )); then
+        tail -n 20 "$logfile"
+        error "Meson configure failed"
+        exit 1
+    fi
+}
+
+ninja_install() {
+    msg2 "Using ninja to compile and install"
+    local logfile="$logdir/$pkgname.ninja.log"
+    local ret=0
+
+    cd _build
+    LIBRARY_PATH=$outdir/lib:$LIBRARY_PATH ninja install >>"$logfile" || ret=$?
+    cd ..
+
+    if (( $ret )); then
+        tail -n 20 "$logfile"
+        error "Ninja failed"
+        exit 1
+    fi
+}
+
 # Run a script called "autogen.sh" in the source directory, logging the
 # output and trapping failure.
 
-autogen() {
+autogenerate() {
     msg2 "Generating configure script"
     local logfile="$logdir/$pkgname.autogen.log"
     local ret=0

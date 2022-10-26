@@ -1,7 +1,6 @@
-diff -rupN a/include/libunwind-common.h.in b/include/libunwind-common.h.in
---- a/include/libunwind-common.h.in	2017-02-21 00:19:10.000000000 +0300
-+++ b/include/libunwind-common.h.in	2017-02-21 00:19:22.000000000 +0300
-@@ -204,8 +204,29 @@ typedef struct unw_save_loc
+--- a/include/libunwind-common.h.in	2022-04-12 14:04:08.160648100 +1000
++++ b/include/libunwind-common.h.in	2022-04-12 14:03:58.527219400 +1000
+@@ -231,8 +231,29 @@ typedef struct unw_save_loc
    }
  unw_save_loc_t;
  
@@ -31,26 +30,12 @@ diff -rupN a/include/libunwind-common.h.in b/include/libunwind-common.h.in
  #define unw_local_addr_space	UNW_OBJ(local_addr_space)
  #define unw_create_addr_space	UNW_OBJ(create_addr_space)
  #define unw_destroy_addr_space	UNW_OBJ(destroy_addr_space)
-@@ -224,11 +245,15 @@ unw_save_loc_t;
- #define unw_is_signal_frame	UNW_OBJ(is_signal_frame)
- #define unw_handle_signal_frame	UNW_OBJ(handle_signal_frame)
- #define unw_get_proc_name	UNW_OBJ(get_proc_name)
-+#define unw_get_proc_name_by_ip UNW_OBJ(get_proc_name_by_ip)
- #define unw_set_caching_policy	UNW_OBJ(set_caching_policy)
- #define unw_regname		UNW_ARCH_OBJ(regname)
- #define unw_flush_cache		UNW_ARCH_OBJ(flush_cache)
-+extern int unw_get_proc_name_by_ip (unw_addr_space_t, unw_word_t, char *,
-+            size_t, unw_word_t *, void *);
- #define unw_strerror		UNW_ARCH_OBJ(strerror)
- 
-+extern void unw_local_access_addr_space_init (unw_addr_space_t);
- extern unw_addr_space_t unw_create_addr_space (unw_accessors_t *, int);
- extern void unw_destroy_addr_space (unw_addr_space_t);
- extern unw_accessors_t *unw_get_accessors (unw_addr_space_t);
-@@ -254,4 +279,18 @@ extern int unw_get_proc_name (unw_cursor
+@@ -291,5 +312,18 @@ extern int unw_get_proc_name_by_ip (unw_
+ 				    size_t, unw_word_t *, void *);
  extern const char *unw_strerror (int);
  extern int unw_backtrace (void **, int);
- 
+-
++extern void unw_local_access_addr_space_init (unw_addr_space_t);
 +/* ANDROID support update. */
 +extern int unw_map_local_cursor_valid (unw_map_cursor_t *);
 +extern void unw_map_local_cursor_get (unw_map_cursor_t *);
@@ -64,33 +49,28 @@ diff -rupN a/include/libunwind-common.h.in b/include/libunwind-common.h.in
 +extern void unw_map_cursor_destroy (unw_map_cursor_t *);
 +extern int unw_map_cursor_get_next (unw_map_cursor_t *, unw_map_t *);
 +/* End of ANDROID update. */
-+
  extern unw_addr_space_t unw_local_addr_space;
-diff -rupN a/src/Makefile.am b/src/Makefile.am
---- a/src/Makefile.am	2017-02-20 22:48:18.000000000 +0300
-+++ b/src/Makefile.am	2017-02-21 00:30:54.000000000 +0300
-@@ -427,7 +427,8 @@ endif
+--- a/src/Makefile.am	2022-04-12 14:04:08.175803000 +1000
++++ b/src/Makefile.am	2022-04-12 14:09:47.114685100 +1000
+@@ -559,7 +559,7 @@ endif
  
  if OS_LINUX
   libunwind_la_SOURCES_os	      = $(libunwind_la_SOURCES_os_linux)
 - libunwind_la_SOURCES_os_local	      = $(libunwind_la_SOURCES_os_linux_local)
-+ libunwind_la_SOURCES_os_local	      = $(libunwind_la_SOURCES_os_linux_local) os-common.c os-linux.c Los-common.c mi/Lmap.c mi/map.c ptrace/_UPT_accessors.c ptrace/_UPT_access_fpreg.c ptrace/_UPT_access_mem.c ptrace/_UPT_access_reg.c ptrace/_UPT_create.c ptrace/_UPT_destroy.c ptrace/_UPT_find_proc_info.c ptrace/_UPT_get_dyn_info_list_addr.c ptrace/_UPT_put_unwind_info.c ptrace/_UPT_get_proc_name.c ptrace/_UPT_reg_offset.c ptrace/_UPT_resume.c
-+
++ libunwind_la_SOURCES_os_local	      = $(libunwind_la_SOURCES_os_linux_local) os-linux.c ptrace/_UPT_accessors.c ptrace/_UPT_access_fpreg.c ptrace/_UPT_access_mem.c ptrace/_UPT_access_reg.c ptrace/_UPT_create.c ptrace/_UPT_destroy.c ptrace/_UPT_find_proc_info.c ptrace/_UPT_get_dyn_info_list_addr.c ptrace/_UPT_put_unwind_info.c ptrace/_UPT_get_proc_name.c ptrace/_UPT_reg_offset.c ptrace/_UPT_resume.c
   libunwind_la_SOURCES_x86_os          = x86/Gos-linux.c
   libunwind_x86_la_SOURCES_os	      = x86/getcontext-linux.S
   libunwind_la_SOURCES_x86_os_local    = x86/Los-linux.c
-diff -rupN a/src/elfxx.c b/src/elfxx.c
---- a/src/elfxx.c	2017-02-20 23:46:31.000000000 +0300
-+++ b/src/elfxx.c	2017-02-21 00:23:04.000000000 +0300
-@@ -35,6 +35,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DE
- #include <XzCrc64.h>
+--- a/src/elfxx.c	2022-04-12 14:04:08.195350500 +1000
++++ b/src/elfxx.c	2022-04-12 14:10:50.203103500 +1000
+@@ -34,6 +34,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DE
+ #include <lzma.h>
  #endif /* HAVE_LZMA */
  
 +#ifndef MIN
 +#define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
 +#endif
 +
- // --------------------------------------------------------------------------
- // Functions to read elf data from memory.
- // --------------------------------------------------------------------------
-
+ static Elf_W (Shdr)*
+ elf_w (section_table) (struct elf_image *ei)
+ {

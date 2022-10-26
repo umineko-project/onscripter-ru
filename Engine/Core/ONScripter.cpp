@@ -441,6 +441,9 @@ static std::unordered_map<HashedString, CommandFunc> func_lut{
     {"drawbg2", &ONScripter::drawbg2Command},
     {"drawbg", &ONScripter::drawbgCommand},
     {"draw", &ONScripter::drawCommand},
+#if defined(DISCORD)
+    {"discordrpc", &ONScripter::setDiscordRPCCommand},	  //ons-ru
+#endif
     {"deletescreenshot", &ONScripter::deletescreenshotCommand},
     {"delay", &ONScripter::delayCommand},
     {"definereset", &ONScripter::defineresetCommand},
@@ -1432,7 +1435,6 @@ void ONScripter::printClock(const char *str, bool print_time) {
 }
 
 void ONScripter::flush(int refresh_mode, GPU_Rect *scene_rect, GPU_Rect *hud_rect, bool clear_dirty_flag, bool direct_flag, bool wait_for_cr) {
-
 	if (!(refresh_mode & CONSTANT_REFRESH_MODE)) {
 		refresh_mode &= ~REFRESH_BEFORESCENE_MODE;
 		constant_refresh_mode |= refresh_mode;

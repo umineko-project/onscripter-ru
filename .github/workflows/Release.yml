@@ -1,0 +1,149 @@
+name: Release
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+jobs:
+  Windows:
+    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
+    # You can convert this to a matrix build if you need cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        BUILD_TYPE: ["debug", "release"]
+        DISCORD_INTEGRATION: ["using discord epically", ":Blue_Mad: (not using discord)"]
+    env:
+      dev: ${{ matrix.BUILD_TYPE == 'debug' && '_dev' || '' }}
+      cmd: ${{ matrix.BUILD_TYPE == 'release' && '--release-build --strip-binary' || '' }}
+      discord: ${{ matrix.DISCORD_INTEGRATION == 'using discord epically' && '--with-discord' || '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y binutils-mingw-w64-i686 gcc-mingw-w64-i686 g++-mingw-w64-i686 yasm python3-pip
+          pip3 install meson ninja
+      - name: Env setup
+        run: |
+          BUILD=$(($(git rev-list --count --first-parent HEAD)+3500))
+          echo "BUILD=${BUILD}" >> "$GITHUB_ENV"
+          echo "Build number ${BUILD}"
+          mkdir -p ciout
+          
+      - name: Configure
+        env:
+          CC: i686-w64-mingw32-gcc
+          CXX: i686-w64-mingw32-g++
+          LD: i686-w64-mingw32-ld
+          AR: i686-w64-mingw32-ar
+          RANLIB: i686-w64-mingw32-ranlib
+          AS: i686-w64-mingw32-as
+        run: ./configure --cross=i686-w64-mingw32 ${{env.cmd}} ${{env.discord}}
+      - name: Build
+        run: |
+          make clean
+          make -j$(nproc)
+          mv DerivedData/MinGW-i686/onscripter-ru.exe ciout ; cp -r Resources/Windows/dlls ciout/dlls ; cd ciout
+          zip -qry onscripter-ru_win_r${BUILD}${{env.dev}}${{env.discord}}.zip onscripter-ru.exe dlls
+      - name: Upload files
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          replacesArtifacts: false
+          tag: z${{ env.BUILD }}
+          name: ONScripter-ru r${{ env.BUILD }}
+          artifacts: "ciout/*.zip"
+
+  Linux:
+    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
+    # You can convert this to a matrix build if you need cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        BUILD_TYPE: ["debug", "release"]
+        DISCORD_INTEGRATION: ["using discord epically", ":Blue_Mad: (not using discord)"]
+    env:
+      dev: ${{ matrix.BUILD_TYPE == 'debug' && '_dev' || '' }}
+      cmd: ${{ matrix.BUILD_TYPE == 'release' && '--release-build --strip-binary' || '' }}
+      discord: ${{ matrix.DISCORD_INTEGRATION == 'using discord epically' && '--with-discord' || '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y yasm libreadline-dev libasound-dev libgl1-mesa-dev libegl1-mesa-dev libxrandr-dev python3-pip
+          pip3 install meson ninja
+      - name: Env setup
+        run: |
+          BUILD=$(($(git rev-list --count --first-parent HEAD)+3500))
+          echo "Build number ${BUILD}"
+          echo "BUILD=${BUILD}" >> $GITHUB_ENV
+          mkdir -p ciout
+      - name: Configure
+        run: ./configure ${{env.cmd}} ${{env.discord}}
+      - name: Build
+        run: |
+          make clean
+          make -j$(nproc)
+          mv DerivedData/Posix-x86_64/onscripter-ru ciout ; cd ciout
+          zip -qry onscripter-ru_linux64_r${BUILD}${{env.dev}}${{env.discord}}.zip onscripter-ru || exit 1
+          rm onscripter-ru ; cd ..
+      - name: Upload files
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          replacesArtifacts: false
+          tag: z${{ env.BUILD }}
+          name: ONScripter-ru r${{ env.BUILD }}
+          artifacts: "ciout/*.zip"
+
+  macOS:
+    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
+    # You can convert this to a matrix build if you need cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: macos-11
+    strategy:
+      matrix:
+        BUILD_TYPE: ["Debug", "Release"]
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+      dev: ${{ matrix.BUILD_TYPE == 'Debug' && '_dbg' || '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install deps
+        run: |
+          brew install yasm meson ninja
+      - name: Env setup
+        run: |
+          BUILD=$(($(git rev-list --count --first-parent HEAD)+3500))
+          echo "Build number ${BUILD}"
+          echo "BUILD=${BUILD}" >> $GITHUB_ENV
+          mkdir -p ciout
+      - name: Build
+        run: |
+          xcodebuild ARCHS=x86_64 ONLY_ACTIVE_ARCH=NO -target onscripter-ru-osx -configuration ${{matrix.BUILD_TYPE}} || exit 1
+          mv build/${{matrix.BUILD_TYPE}}/onscripter-ru-osx.app ciout ; cd ciout
+          zip -qry onscripter-ru_osx_r${BUILD}${{env.dev}}${{env.discord}}.zip onscripter-ru-osx.app || exit 1
+          rm -rf onscripter-ru-osx.app ; cd -
+      - name: Upload files
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          replacesArtifacts: false
+          tag: z${{ env.BUILD }}
+          name: ONScripter-ru r${{ env.BUILD }}
+          artifacts: "ciout/*.zip"

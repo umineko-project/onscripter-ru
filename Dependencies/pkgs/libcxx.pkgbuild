@@ -1,9 +1,9 @@
 pkgname=libcxx
-pkgver=8.0.0
+pkgver=14.0.0
 pkgrel=1
 depends=('libcxxabi')
 sources=(
-    "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/${pkgname}-${pkgver}.src.tar.xz"
+    "https://github.com/llvm/llvm-project/releases/download/llvmorg-${pkgver}/libcxx-${pkgver}.src.tar.xz" #https://github.com/llvm/llvm-project/releases/latest
     'libcxx-snow-leo.patch'
 )
 hashes=(
@@ -12,12 +12,12 @@ hashes=(
 )
 
 prebuild() {
-    pushd "$pkgname-$pkgver.src" &>/dev/null
+    pushd "$pkgname-${pkgver}.src" &>/dev/null
     apply_patch "${sources[1]}"
     popd &>/dev/null
 
-    mkdir -p "$pkgname-$pkgver"
-    pushd "$pkgname-$pkgver" &>/dev/null
+    mkdir -p "$pkgname-${pkgver}"
+    pushd "$pkgname-${pkgver}" &>/dev/null
 }
 
 configure() {
@@ -46,7 +46,7 @@ configure() {
         fi
     done
 
-    cmake ../"$pkgname-$pkgver.src" -G "Unix Makefiles" -DCMAKE_C_FLAGS="$lcf -flto=thin -DNDEBUG" -DCMAKE_CXX_FLAGS="$lcxf -flto=thin -DNDEBUG" -DLLVM_CONFIG_PATH="$llvmconfig" \
+    cmake ../"$pkgname-${pkgver}.src" -G "Unix Makefiles" -DCMAKE_C_FLAGS="$lcf -flto=thin -DNDEBUG" -DCMAKE_CXX_FLAGS="$lcxf -flto=thin -DNDEBUG" -DLLVM_CONFIG_PATH="$llvmconfig" \
      -DLLVM_ENABLE_LIBCXX=1 -DLIBCXX_ENABLE_ASSERTIONS=OFF -DLIBCXX_ENABLE_SHARED=OFF -DLIBCXX_ENABLE_EXPERIMENTAL_LIBRARY=OFF -DLIBCXX_INCLUDE_TESTS=OFF -DLIBCXX_INCLUDE_BENCHMARKS=OFF \
      -DLIBCXX_INCLUDE_DOCS=OFF $deploy &>"$logfile" || ret=$?
 

@@ -1,13 +1,13 @@
 pkgname=libvorbis
-pkgver=1.3.6
+pkgver=1.3.7
 pkgrel=1
 depends=('libogg')
 sources=(
-    "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/libvorbis-$pkgver.tar.xz"
+    "https://github.com/m3t4f1v3/onscripter-deps-updated/raw/master/archives/${pkgname}-${pkgver}.tar.gz" #https://ftp.osuosl.org/pub/xiph/releases/vorbis/?C=M;O=D
     'libvorbis-droid-flags.patch'
 )
 hashes=(
-    'af00bb5a784e7c9e69f56823de4637c350643deedaf333d0fa86ecdba6fcb415'
+    '0e982409a9c3fc82ee06e08205b1355e5c6aa4c36bca58146ef399621b0ce5ab'
     '4066a7fcab3c75a3c48b589f712edb0ec2107a5ebac7c955fe0c7c7deb376c37'
 )
 
@@ -15,17 +15,18 @@ cflags_win32="-mstackrealign"
 
 configopts=(
     '--disable-dependency-tracking'
-    '--disable-shared'
     "--libdir=$outdir/lib"
+    '--disable-shared'
 )
 
 prebuild() {
-    pushd "$pkgname-$pkgver" &>/dev/null
+    pushd "$pkgname-${pkgver}" &>/dev/null
     
     if [ "$(getTarget)" == "droid" ]; then
         # Seems to be only necessary for x86-like builds
         apply_patch "${sources[1]}"
     fi
+    autogenerate
 }
 
 # vim: set syntax=sh:

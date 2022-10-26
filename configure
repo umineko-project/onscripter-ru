@@ -17,7 +17,11 @@
 
 # Generate $LINKpackage variable
 genlink() {
-  eval "LINK$1=\"\\\$(EXTLIB)/lib/lib$1$2\\\$(LIBSUFFIX)\""
+  if [ -z $2 ]; then
+    eval "LINK$1=\"\\\$(EXTLIB)/lib/lib$1\\\$(LIBSUFFIX)\""
+  else
+    eval "LINK$1=\"\\\$(EXTLIB)/lib/lib$1$2$3\""
+  fi
 }
 
 # Quick and dirty local header dependency builder.
@@ -92,7 +96,7 @@ pathautofix() {
 
 # ---------- Program begins here ----------
 
-# It may not be a requirement of our own buildsystem, but many onscrlib packages will fail. 
+# It may not be a requirement of our own buildsystem, but many onscrlib packages will fail.
 if [[ "$(pwd)" =~ \  ]]; then
   echo "Error: Running in a directory with spaces or non-ascii characters!"
   echo "You could create a symlink as a workaround."
@@ -108,8 +112,8 @@ VECTORIZE=true
 VECTORIZE_LEVEL=0
 # Removal of __STRICT_ANSI__ is necessary for package compatibility (ffmpeg?).
 # Addition of _ISOC99_SOURCE and _ISOC11_SOURCE fixes printf on MinGW.
-CSTD="-std=c11 -D_ISOC99_SOURCE -D_ISOC11_SOURCE -U__STRICT_ANSI__"
-CXXSTD="-std=c++14 -D_ISOC99_SOURCE -D_ISOC11_SOURCE -U__STRICT_ANSI__"
+CSTD="-std=c11 -D_ISOC99_SOURCE -D_ISOC11_SOURCE"
+CXXSTD="-std=c++14 -D_ISOC99_SOURCE -D_ISOC11_SOURCE"
 
 DEFAULT_CC="gcc"
 DEFAULT_OPT="-Os"
@@ -156,6 +160,9 @@ do
         EXTRAOSCFLAGS="$EXTRAOSCFLAGS -pedantic" ;;
       --with-werror | -with-werror)
         EXTRAOSCFLAGS="$EXTRAOSCFLAGS -Werror" ;;
+      --with-discord | -with-discord)
+        EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DDISCORD"
+        USEDISCORD=true ;;
       --unsupported-compiler | -unsupported-compiler)
         UNSUPPORTED_COMPILER=true ;;
       --unsupported-compiler=* | -unsupported-compiler=*)
@@ -207,7 +214,7 @@ do
 	
 	Build-specific options:
 	  --build-path=DIR         absolute path to build directory (default is DerivedData)
-	  --release-build          build with PUBLIC_RELEASE flag 	
+	  --release-build          build with PUBLIC_RELEASE flag
 	  --strip-binary           strip debug information from the executable
 	  --directx-sdk-path=DIR   enable DirectX 9 SDK support (Windows only)
 	  --prefer-clang           use clang compiler if CC is not specified
@@ -331,8 +338,8 @@ else
   echo -n "Checking C compiler...    "
   CC_TMP=`($CC --version) 2>/dev/null | head -1`
   case "$CC_TMP" in
-    gcc* | *apple*gcc* | *\(GCC\)*) 
-      [[ "$CC_TMP" =~ \ ([0-9](\.[0-9_]+)+)($|\ ) ]] && 
+    gcc* | *apple*gcc* | *\(GCC\)*)
+      [[ "$CC_TMP" =~ \ ([0-9](\.[0-9_]+)+)($|\ ) ]] &&
       CC_VER="${BASH_REMATCH[1]}"; echo "gcc $CC_VER" ;;
     Apple*) CC_VER=`expr "x$CC_TMP" : 'x.*version \([0-9][.][0-9][.][0-9]\)'`; echo "Apple clang $CC_VER" ;;
     *clang*) CC_VER=`expr "x$CC_TMP" : 'x.*version \([0-9][.][0-9]\)'`; echo "clang $CC_VER" ;;
@@ -361,7 +368,7 @@ CXX_TMP=`($CXX --version) 2>/dev/null | head -1`
 if ! $UNSUPPORTED_COMPILER; then
   echo -n "Checking C++ compiler...  "
   case "$CXX_TMP" in
-    g++* | *apple*g++* | *\(GCC\)*) 
+    g++* | *apple*g++* | *\(GCC\)*)
       [[ "$CXX_TMP" =~ \ ([0-9](\.[0-9_]+)+)($|\ ) ]] &&
       CXX_VER="${BASH_REMATCH[1]}"; echo "g++ $CXX_VER" ;;
     Apple*) CXX_VER=`expr "x$CXX_TMP" : 'x.*version \([0-9][.][0-9][.][0-9]\)'`; echo "Apple clang++ $CXX_VER" ;;
@@ -392,7 +399,7 @@ if $VECTORIZE; then
   case "x$ARCH:$CXX_TMP" in
     xx86_64:g++*|xx86_64:*apple*g++*|x*86:g++*|x*86:*apple*g++*|*\(GCC\)*)
       VECFLAGS="-mmmx -msse -msse2 -msse3 -mfpmath=sse,387" ;;
-    xx86_64:*|x*86:*) 
+    xx86_64:*|x*86:*)
       # clang doesn't offer -mfpmath=387
       VECFLAGS="-mmmx -msse -msse2 -msse3 -mfpmath=sse" ;;
     xarm:*)
@@ -411,7 +418,7 @@ if $VECTORIZE; then
       VECFLAGS="-ffast-math -ftree-vectorize $VECFLAGS"
       echo "ok, default level"
     ;;
-    *) 
+    *)
       echo "none"
     ;;
   esac
@@ -495,9 +502,9 @@ fi
 echo -n "Deciding on flags...      "
 
 case "$SYS" in
-Posix)  EXE=     ; OBJ=.o ; LIB=.a ; W32= ;;
-MacOSX) EXE=     ; OBJ=.o ; LIB=.a ; W32= ;;
-MinGW)  EXE=.exe ; OBJ=.o ; LIB=.a ; W32=true ;;
+Posix)  EXE=     ; OBJ=.o ; LIB=.a ; SHAREDLIB=.so; W32= ;;
+MacOSX) EXE=     ; OBJ=.o ; LIB=.a ; SHAREDLIB=.dylib; W32= ;;
+MinGW)  EXE=.exe ; OBJ=.o ; LIB=.a ; SHAREDLIB=.dll; W32=true ;;
 Droid)  EXE=     ; OBJ=.o ; LIB=.a ; W32= ;;
 *)      echo "error"
         echo "Found an unsupported system $SYS!"
@@ -561,7 +568,7 @@ case "$CXX_TMP:$SYS" in
     elif [ "$POSIX" == "Solaris" ]; then
       EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DCONST_ICONV"
       EXTRAOSLDFLAGS="$EXTRAOSLDFLAGS -lX11 -lXext"
-    fi 
+    fi
   ;;
   *apple*g++*)
     EXTRAOSCFLAGS="$EXTRAOSCFLAGS -DMACOSX -D__STDC_CONSTANT_MACROS"
@@ -626,13 +633,17 @@ genlink avcodec
 genlink swscale
 genlink swresample
 genlink ass
+if [[ $USEDISCORD ]]; then
+  genlink discordsdk
+  genlink discord_game_sdk $SHAREDLIB
+fi
 genlink fribidi
 genlink freetype
 genlink harfbuzz
 
 if [ "$SYS" == "Droid" ]; then
   if [ "$ARCH" == "aarch64" ]; then
-    genlink unwind -aarch64
+    genlink unwind -aarch64 "\\\$(LIBSUFFIX)"
     LINKunwindArch="$LINKunwind"
     genlink unwind
     LINKunwind="$LINKunwind $LINKunwindArch"
@@ -646,7 +657,7 @@ if [ "$SYS" == "Droid" ]; then
     LINKunwind="$LINKunwind $LINKunwindArch"
   fi
 else
-	genlink usb -1.0
+	genlink usb -1.0 "\\\$(LIBSUFFIX)"
   genlink epoxy
 fi
 
@@ -669,9 +680,9 @@ if [ "$EMBED_PATH" == "" ]; then
   mkdir -p "${BUILD_PATH}/Tools/embed"
 
   if [ "$EMBED_CC" == "" ]; then
-    command -v gcc >/dev/null 2>&1 
+    command -v gcc >/dev/null 2>&1
     if (( $? )); then
-      command -v clang >/dev/null 2>&1 
+      command -v clang >/dev/null 2>&1
       if (( $? )); then
         echo "fail"
         echo "Unable to find c compiler to generate embed tool!"
@@ -768,6 +779,15 @@ SOURCES=(
   'External/slre.c'
   "${RESOURCE_FILE}"
 )
+
+if [[ $USEDISCORD ]]; then
+  SOURCES+=(
+    'Engine/Components/DiscordEvents.cpp'
+  )
+  HEADERS+=(
+    'Engine/Components/DiscordEvents.hpp'
+  )
+fi
 
 HEADERS=(
   'Engine/Components/Async.hpp'
@@ -929,6 +949,7 @@ export PATH     := \$(EXTLIB)/bin:\$(PATH)
 export CFLAGS   := -I\$(EXTLIB)/include \$(CFLAGS) $EXTRACFLAGS
 export CPPFLAGS := -I\$(EXTLIB)/include \$(CPPFLAGS) $EXTRACFLAGS
 export LDFLAGS  := -L\$(EXTLIB)/lib \$(LDFLAGS) $EXTRALDFLAGS
+export USEDISCORD := $USEDISCORD
 export CSTD     := $CSTD
 export CXXSTD   := $CXXSTD
 
@@ -967,7 +988,7 @@ LIBS = \$(EXTRAOSLDFLAGS) -L\$(EXTLIB)/lib $LINK_START_GROUP \\
 	$LINKSDL2_mixer $LINKogg $LINKvorbis $LINKvorbisfile \\
 	$LINKSDL2_gpu $LINKepoxy $LINKbz2 \\
 	$LINKavutil $LINKavformat $LINKavcodec $LINKswscale $LINKswresample \\
-	$LINKass $LINKusb $LINKfribidi $LINKharfbuzz $LINKunwind $LINK_END_GROUP
+	$LINKass $LINKusb $LINKfribidi $LINKharfbuzz $LINKunwind $LINKdiscordsdk $LINKdiscord_game_sdk $LINK_END_GROUP
 
 .SUFFIXES:
 .SUFFIXES: $OBJ .cpp .h .c

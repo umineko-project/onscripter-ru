@@ -1,16 +1,37 @@
 pkgname=fribidi
-pkgver=1.0.5
+pkgver=1.0.11
 pkgrel=1
 depends=('freetype')
-sources=("https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/fribidi-${pkgver}.tar.bz2")
-hashes=('6a64f2a687f5c4f203a46fa659f43dd43d1f8b845df8d723107e8a7e6158e4ce')
+sources=(
+    "https://github.com/m3t4f1v3/onscripter-deps-updated/raw/master/archives/${pkgname}-${pkgver}.tar.xz" #https://github.com/fribidi/fribidi/releases/latest
+    'fribidi-remove-dll-import.patch'
+)
+hashes=(
+    '30f93e9c63ee627d1a2cedcf59ac34d45bf30240982f99e44c6e015466b4e73d'
+    '4da845b4265e67ae9a503cec8a422d588fdb1f64c80491ad654d20aad62f8da8'
+)
 
 configopts=(
+    '--enable-static'
     '--disable-shared'
     '--disable-debug'
     '--with-glib=no'
     "--libdir=$outdir/lib"
 )
+
+host=$($CC -dumpmachine)
+
+configopts_droid=(
+    '--target=aarch64-unknown-linux-android'
+    '--host=$host'
+)
+
+prebuild() {
+    pushd "$pkgname-${pkgver}" &>/dev/null
+    if [ "$(getTarget)" == "win32" ]; then
+        apply_patch "${sources[1]}"
+    fi
+}
 
 # Special version that uses bsdtar (which works with 32-bit uid_t)
 extract_sources() {

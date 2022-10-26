@@ -1,19 +1,18 @@
-diff -rupN a/configure.in b/configure.in
---- a/configure.in	2018-10-31 18:07:22.000000000 +0300
-+++ b/configure.in	2019-06-22 12:44:51.000000000 +0300
-@@ -241,7 +241,8 @@ if test x$enable_libc = xyes; then
+--- a/configure.ac	2022-06-18 12:04:33.680259206 +1000
++++ b/configure.ac	2022-06-18 12:05:47.882253699 +1000
+@@ -310,7 +310,8 @@ if test x$enable_libc = xyes; then
  
-     dnl Check for C library headers
+ dnl Check for C library headers
      AC_HEADER_STDC
 -    AC_CHECK_HEADERS(sys/types.h stdio.h stdlib.h stddef.h stdarg.h malloc.h memory.h string.h strings.h wchar.h inttypes.h stdint.h limits.h ctype.h math.h float.h iconv.h signal.h)
 +    #AC_CHECK_HEADERS(sys/types.h stdio.h stdlib.h stddef.h stdarg.h malloc.h memory.h string.h strings.h wchar.h inttypes.h stdint.h limits.h ctype.h math.h float.h iconv.h signal.h)
 +    AC_CHECK_HEADERS(sys/types.h stdio.h stdlib.h stddef.h stdarg.h malloc.h memory.h string.h strings.h wchar.h inttypes.h stdint.h limits.h ctype.h math.h float.h signal.h)
  
-     dnl Check for typedefs, structures, etc.
+ dnl Check for typedefs, structures, etc.
      AC_TYPE_SIZE_T
-@@ -280,13 +281,13 @@ if test x$enable_libc = xyes; then
+@@ -342,13 +343,13 @@ dnl Checks for library functions.
      AC_CHECK_LIB(m, pow, [LIBS="$LIBS -lm"; EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lm"])
-     AC_CHECK_FUNCS(acos acosf asin asinf atan atanf atan2 atan2f ceil ceilf copysign copysignf cos cosf exp expf fabs fabsf floor floorf fmod fmodf log logf log10 log10f pow powf scalbn scalbnf sin sinf sqrt sqrtf tan tanf)
+     AC_CHECK_FUNCS(acos acosf asin asinf atan atanf atan2 atan2f ceil ceilf copysign copysignf cos cosf exp expf fabs fabsf floor floorf trunc truncf fmod fmodf log logf log10 log10f lround lroundf pow powf round roundf scalbn scalbnf sin sinf sqrt sqrtf tan tanf)
  
 -    AC_CHECK_LIB(iconv, iconv_open, [LIBS="$LIBS -liconv"; EXTRA_LDFLAGS="$EXTRA_LDFLAGS -liconv"])
 -    AC_CHECK_FUNCS(iconv)
@@ -22,18 +21,9 @@ diff -rupN a/configure.in b/configure.in
  
      AC_CHECK_MEMBER(struct sigaction.sa_sigaction,[AC_DEFINE([HAVE_SA_SIGACTION], 1, [ ])], ,[#include <signal.h>])
  
-     dnl Check for additional non-standard headers
+ dnl Check for additional non-standard headers
 -    AC_CHECK_HEADERS(libunwind.h)
 +    #AC_CHECK_HEADERS(libunwind.h)
  fi
  
  dnl AC_CHECK_SIZEOF(void*)
-@@ -3046,7 +3047,7 @@ AC_HELP_STRING([--enable-directx], [use 
-                   , enable_directx=yes)
-     if test x$enable_directx = xyes; then
-         AC_CHECK_HEADER(d3d9.h, have_d3d=yes)
--        AC_CHECK_HEADER(d3d11_1.h, have_d3d11=yes)
-+        #AC_CHECK_HEADER(d3d11_1.h, have_d3d11=yes)
-         AC_CHECK_HEADER(ddraw.h, have_ddraw=yes)
-         AC_CHECK_HEADER(dsound.h, have_dsound=yes)
-         AC_CHECK_HEADER(dinput.h, have_dinput=yes)

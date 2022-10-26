@@ -1,12 +1,12 @@
 diff -rupN a/configure b/configure
 --- a/configure	2015-11-13 18:48:28.000000000 +0300
 +++ b/configure	2015-11-13 18:48:18.000000000 +0300
-@@ -12969,7 +12969,7 @@ ac_res=$ac_cv_search_iconv_open
- if test "$ac_res" != no; then :
-   test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
- 
--$as_echo "#define CONFIG_ICONV 1" >>confdefs.h
-+$as_echo "Ignoring ivonv"
- 
+@@ -13640,7 +13640,7 @@
+ then :
+
+
+-printf "%s\n" "#define CONFIG_ICONV 1" >>confdefs.h
++#printf "%s\n" "Ignoring iconv"
+
+
  fi
- 

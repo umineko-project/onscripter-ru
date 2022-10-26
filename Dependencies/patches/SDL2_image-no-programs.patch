@@ -1,15 +1,10 @@
 diff -rupN a/Makefile.am b/Makefile.am
 --- a/Makefile.am	2016-01-03 08:52:28.000000000 +0300
 +++ b/Makefile.am	2017-02-04 00:11:30.000000000 +0300
-@@ -65,9 +65,9 @@ pkgconfig_DATA = SDL2_image.pc
- %.o : %.rc
- 	$(WINDRES) $< $@
- 
+@@ -72,5 +72,5 @@ pkgconfig_DATA = SDL2_image.pc
+
 -noinst_PROGRAMS = showimage
 +# noinst_PROGRAMS = showimage
- 
+
 -showimage_LDADD = libSDL2_image.la
 +# showimage_LDADD = libSDL2_image.la
- 
- # Rule to build tar-gzipped distribution package
- $(PACKAGE)-$(VERSION).tar.gz: distcheck

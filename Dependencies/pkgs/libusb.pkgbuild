@@ -1,28 +1,21 @@
 pkgname=libusb
-pkgver=1.0.22
+pkgver=1.0.26
 pkgrel=2
 sources=(
-    "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/libusb-${pkgver}.tar.bz2"
+    "https://github.com/m3t4f1v3/onscripter-deps-updated/raw/master/archives/${pkgname}-${pkgver}.tar.bz2" #https://github.com/libusb/libusb/releases/latest
     'libusb-guid-mingw.patch'
 )
 hashes=(
-    '75aeb9d59a4fdb800d329a545c2e6799f732362193b465ea198f2aa275518157'
+    '12ce7a61fc9854d1d2a1ffe095f7b5fac19ddba095c259e6067a46500381b5a5'
     '654fb8f00ecaf616fa03440bc6783ae4a0f7d336368ff16f71c9b09a8087459d'
 )
 
 configopts=(
-    '--disable-dependency-tracking'
     '--disable-shared'
 )
 
 configopts_linux=(
     '--disable-udev'
 )
-
-prebuild() {
-    pushd "$pkgname-$pkgver" &>/dev/null
-
-    apply_patch "${sources[1]}"
-}
 
 # vim: set syntax=sh:

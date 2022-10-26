@@ -129,6 +129,9 @@ pacman -S mingw-w64-i686-codelite-git mingw-w64-i686-gcc-debug mingw-w64-i686-cl
 
 **NOTES**:
 
+**BUILDING STATICALLY**
+rm \*.so.\* \*.so in DerivedData/(whatever platform you are building for)/Dependencies/onscrlib/lib
+
 - GDB may find no source in your executable, `make DEBUG=1` is needed to build a debug binary.
 - If you need to build a shared SDL2 library, after you change `--disable-shared` to `--disable-static` you may get an error on compilation step with `SDL_window_main.o` not found. To fix that you are in need to go to SDL2 sources and copy the contents of build/.libs to build (perhaps one more time after next step). Then manually run `make` and `make install`. To mark the package as built run `touch onscrlib/onscrlib/.pkgs/SDL2`.
 - Latest gdb versions from MSYS2 distribution do not always work properly in Codelite. A slightly older mingw build may be more stable (try [gdb2014-05-23.zip](https://sourceforge.net/projects/gdbmingw/files/)).

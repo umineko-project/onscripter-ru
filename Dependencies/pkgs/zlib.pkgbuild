@@ -1,18 +1,17 @@
 pkgname=zlib
-pkgver=1.2.11
+pkgver=1.2.12
 pkgrel=1
 sources=(
-    "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/zlib-$pkgver.tar.xz"
+    "https://github.com/m3t4f1v3/onscripter-deps-updated/raw/master/archives/${pkgname}-${pkgver}.tar.gz" #https://sourceforge.net/projects/libpng/files/latest/download
     'zlib-windows-configure.patch'
 )
-
+CFLAGS="$CFLAGS ${cflags[@]} -fPIC"
 hashes=(
-    '4ff941449631ace0d4d203e3483be9dbc9da454084111f97ea0a2114e19bf066'
+    '91844808532e5ce316b3c010929493c0244f3d37593afd6de04f71821d5136d9'
     'dd46ca3e05fece429a4f32953a7a444439356648a61ee9ac4ac6c1afc22f7b17'
 )
-
 build() {
-    pushd "$pkgname-$pkgver" &>/dev/null
+    pushd "$pkgname-${pkgver}" &>/dev/null
     if [ "$(getHost)" == "win32" ]; then
         apply_patch "${sources[1]}"
     fi
@@ -39,7 +38,7 @@ build() {
             ./configure --prefix="$outdir" --static &>"$logfile" || ret=$?
         ;;
     esac
-    
+        
     if (( $ret )); then
         tail -n 20 "$logfile"
         error "Configuring %s failed" "$pkgname"

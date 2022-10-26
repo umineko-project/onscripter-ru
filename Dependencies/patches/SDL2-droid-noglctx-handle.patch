@@ -1,30 +1,38 @@
-diff -rupN a/src/video/android/SDL_androidevents.c b/src/video/android/SDL_androidevents.c
---- a/src/video/android/SDL_androidevents.c	2016-10-20 06:56:26.000000000 +0300
-+++ b/src/video/android/SDL_androidevents.c	2017-02-12 02:09:40.000000000 +0300
-@@ -82,7 +82,7 @@ Android_PumpEvents(_THIS)
- #if SDL_ANDROID_BLOCK_ON_PAUSE
-     if (isPaused && !isPausing) {
+--- a/src/video/android/SDL_androidevents.c		2022-02-03 17:01:24.232333800 +1100
++++ b/src/video/android/SDL_androidevents.c		2022-02-03 17:04:44.719725000 +1100
+@@ -116,7 +116,7 @@ Android_PumpEvents_Blocking(_THIS)
          /* Make sure this is the last thing we do before pausing */
--        android_egl_context_backup();
-+        //android_egl_context_backup();
-         ANDROIDAUDIO_PauseDevices();
-         if(SDL_SemWait(Android_ResumeSem) == 0) {
- #else
-@@ -93,7 +93,7 @@ Android_PumpEvents(_THIS)
-             ANDROIDAUDIO_ResumeDevices();
+         if (!isContextExternal) {
+             SDL_LockMutex(Android_ActivityMutex);
+-            android_egl_context_backup(Android_Window);
++            //android_egl_context_backup(Android_Window);
+             SDL_UnlockMutex(Android_ActivityMutex);
+         }
+ 
+@@ -140,7 +140,7 @@ Android_PumpEvents_Blocking(_THIS)
              /* Restore the GL Context from here, as this operation is thread dependent */
-             if (!SDL_HasEvent(SDL_QUIT)) {
--                android_egl_context_restore();
-+                //android_egl_context_restore();
+             if (!isContextExternal && !SDL_HasEvent(SDL_QUIT)) {
+                 SDL_LockMutex(Android_ActivityMutex);
+-                android_egl_context_restore(Android_Window);
++                //android_egl_context_restore(Android_Window);
+                 SDL_UnlockMutex(Android_ActivityMutex);
              }
-         }
-     }
-@@ -112,7 +112,7 @@ Android_PumpEvents(_THIS)
-         }
- #else
-         if(SDL_SemTryWait(Android_PauseSem) == 0) {
--            android_egl_context_backup();
-+            //android_egl_context_backup();
-             ANDROIDAUDIO_PauseDevices();
-             isPaused = 1;
-         }
+ 
+@@ -190,7 +190,7 @@ Android_PumpEvents_NonBlocking(_THIS)
+ 
+             if (!isContextExternal) {
+                 SDL_LockMutex(Android_ActivityMutex);
+-                android_egl_context_backup(Android_Window);
++                //android_egl_context_backup(Android_Window);
+                 SDL_UnlockMutex(Android_ActivityMutex);
+             }
+ 
+@@ -222,7 +222,7 @@ Android_PumpEvents_NonBlocking(_THIS)
+             /* Restore the GL Context from here, as this operation is thread dependent */
+             if (!isContextExternal && !SDL_HasEvent(SDL_QUIT)) {
+                 SDL_LockMutex(Android_ActivityMutex);
+-                android_egl_context_restore(Android_Window);
++                //android_egl_context_restore(Android_Window);
+                 SDL_UnlockMutex(Android_ActivityMutex);
+             }
+ 

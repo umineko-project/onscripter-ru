@@ -1,0 +1,22 @@
+--- a/ffi.h	2022-09-22 16:06:55.591268023 +1000
++++ b/ffi.h	2022-09-22 16:06:50.391269224 +1000
+@@ -2,7 +2,7 @@
+ #define _DISCORD_GAME_SDK_H_
+ 
+ #ifdef _WIN32
+-#include <Windows.h>
++#include <windows.h>
+ #include <dxgi.h>
+ #endif
+ 
+--- a/types.h	2022-09-22 16:08:50.983248931 +1000
++++ b/types.h	2022-09-22 16:08:44.545249667 +1000
+@@ -3,7 +3,7 @@
+ #include "ffi.h"
+ #include "event.h"
+ #ifdef _WIN32
+-#include <Windows.h>
++#include <windows.h>
+ #include <dxgi.h>
+ #endif
+ 

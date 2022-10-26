@@ -1,19 +1,20 @@
 pkgname=harfbuzz
-pkgver=2.5.2
+pkgver=4.2.1
 pkgrel=1
 depends=('freetype')
 sources=(
-    "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/harfbuzz-${pkgver}.tar.xz"
+    "https://github.com/m3t4f1v3/onscripter-deps-updated/raw/master/archives/${pkgname}-${pkgver}.tar.xz" #https://github.com/harfbuzz/harfbuzz/releases/latest
     'harfbuzz-multithread-mingw.patch'
 )
 hashes=(
-    '7c8fcf9a2bbe3df5ed9650060d89f9b7cfd40ec5729671447ace8b0505527e8b'
-    '9b54df6b3b095b639906009d749132104c3e6ce0143d66b3cac7f01a9d1810bd'
+    'bd17916513829aeff961359a5ccebba6de2f4bf37a91faee3ac29c120e3d7ee1'
+    '6a0dc511332fefffd72daaff43305a0bc98bb6fcbb8ed8d5d31426427a1ee130'
 )
 
 configopts=(
-    '--disable-dependency-tracking'
+    '--enable-static'
     '--disable-shared'
+    '--disable-dependency-tracking'
     '--with-glib=no'
     '--with-cairo=no'
     '--with-gobject=no'
@@ -23,7 +24,7 @@ configopts=(
     "FREETYPE_LIBS=-L$outdir/lib"
 )
 
-ldflags="-L$outdir/lib -lfreetype"
+ldflags="-L$outdir/lib -lfreetype -lpng16 -lm"
 # Xcode 10 does not have libstdc++
 if [ "$MMAC_VER_MIN" != "10.6" ]; then
     ldflags_mac_extra="-stdlib=libc++"
@@ -31,7 +32,6 @@ fi
 
 prebuild() {
     pushd "$pkgname-$pkgver" &>/dev/null
-    apply_patch "${sources[1]}"
 
     # harfbuzz requires insisting on our architecture, all configure options, cflags and ldflags are ignored 
     case $(getTarget) in

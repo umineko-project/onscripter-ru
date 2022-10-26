@@ -1,8 +1,8 @@
 pkgname=SDL2
-pkgver=2.0.9
+pkgver=2.0.22
 pkgrel=2
 sources=(
-    "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/SDL2-$pkgver.tar.gz"
+    "https://github.com/m3t4f1v3/onscripter-deps-updated/raw/master/archives/${pkgname}-${pkgver}.tar.gz" #https://github.com/libsdl-org/SDL/releases/latest
     'SDL2-disable-libs.patch'
     'SDL2-windows-haptic.patch'
     'SDL2-droid-noglctx-handle.patch'
@@ -11,16 +11,16 @@ sources=(
     'SDL2-sensor-ios.patch'
 )
 hashes=(
-    '255186dc676ecd0c1dbf10ec8a2cc5d6869b5079d8a38194c2aecdff54b324b1'
-    '1564340e7f6c1eb95eb2e64e55be3bfa70e0faa89c92af4b915b500e3d21946d'
-    '3b1f02d495e299dce066a21f64936ea588052856f11b5e5b490adc414a80bcae'
-    'd6aedf087de4334584c5c82af29b644d96d7c023ad7c3acffe14cc7002fb02a6'
+    'fe7cbf3127882e3fc7259a75a0cb585620272c51745d3852ab9dd87960697f2e'
+    'f2b8a20a42caf25f48ec486a12e9c71a9708efb1c7fdf46372590422a379d19b'
+    'b6089984c729590b20aa876d90d3738295a57087fe3894b309850c7afd6ff28f'
+    'd2360b18140c871442e0b4b7a12462aea1e1cd9dae72b454359e4d808a0f6223'
     '8d86b718ec4ebea6cc49d7457d02cc23eef90a73ef325dadf462e03bc15673b6'
-    '56c704a533320c3f4c61f334420fbc9881938e00c5fd2e5bbc98a6a7309ea9fc'
+    '18ac95ccc0a915f795bb3a6986beea60fce178729fd3486e1135963c09de3a39'
     '39ee540876ac2bbd1d9595df186b77a174a0507a048853252e8fd60df1df5f04'
 )
 
-cflags="-O3"
+cflags="-O3 -fPIC"
 cflags_win32="-I$outdir/include/khronos"
 
 configopts_win32=(
@@ -55,6 +55,10 @@ cflags_ios_extra=(
 
 configopts_droid=(
     '--disable-pulseaudio'
+    '--disable-jack'
+    '--disable-pipewire'
+    '--disable-video-wayland'
+    '--disable-video-kmsdrm'
 )
 
 prebuild() {
@@ -80,7 +84,7 @@ prebuild() {
         ;;
     esac
 
-    autogen
+    autogenerate
 }
 
 compile() {

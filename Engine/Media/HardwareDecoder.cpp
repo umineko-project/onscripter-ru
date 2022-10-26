@@ -170,7 +170,7 @@ static AVPixelFormat init(AVCodecContext *context, const AVPixelFormat *format) 
 	return MediaProcController::HardwareDecoderIFace::defaultFormat(format);
 }
 
-static AVCodec *findDecoder(AVCodecContext *context) {
+static const AVCodec *findDecoder(AVCodecContext *context) {
 	switch (context->codec_id) {
 		case AV_CODEC_ID_H264:
 			return avcodec_find_decoder_by_name("h264_mediacodec");
@@ -201,15 +201,7 @@ static AVFrame *process(AVFrame *dFrame, AVFrame *&tempFrame) {
 
 const std::unordered_set<int> MediaProcController::HardwareDecoderIFace::hardwareAcceleratedFormats {
 #if defined(LINUX)
-	AV_PIX_FMT_VDPAU_H264,
-	AV_PIX_FMT_VDPAU_MPEG1,
-	AV_PIX_FMT_VDPAU_MPEG2,
-	AV_PIX_FMT_VDPAU_WMV3,
-	AV_PIX_FMT_VDPAU_VC1,
 	AV_PIX_FMT_VDPAU,
-	AV_PIX_FMT_VAAPI_MOCO,
-	AV_PIX_FMT_VAAPI_IDCT,
-	AV_PIX_FMT_VAAPI,
 #elif defined(WIN32)
 	AV_PIX_FMT_DXVA2_VLD,
 	AV_PIX_FMT_D3D11VA_VLD,

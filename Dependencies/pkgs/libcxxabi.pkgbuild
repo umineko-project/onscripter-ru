@@ -1,16 +1,16 @@
 pkgname=libcxxabi
-pkgver=8.0.0
+pkgver=14.0.0
 pkgrel=1
 sources=(
-    "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/${pkgname}-${pkgver}.src.tar.xz"
+    "https://raw.githubusercontent.com/umineko-project/onscripter-deps/master/archives/${pkgname}-${pkgver}.src.tar.xz" #https://github.com/llvm/llvm-project/releases/latest
 )
 hashes=(
     'c2d6de9629f7c072ac20ada776374e9e3168142f20a46cdb9d6df973922b07cd'
 )
 
 prebuild() {
-    mkdir -p "$pkgname-$pkgver"
-    pushd "$pkgname-$pkgver" &>/dev/null
+    mkdir -p "$pkgname-${pkgver}"
+    pushd "$pkgname-${pkgver}" &>/dev/null
 }
 
 configure() {
@@ -39,7 +39,7 @@ configure() {
         fi
     done
 
-    cmake ../"$pkgname-$pkgver.src" -G "Unix Makefiles" -DCMAKE_C_FLAGS="$lcf -flto=thin -DNDEBUG" -DCMAKE_CXX_FLAGS="$lcxf -flto=thin -DNDEBUG" -DLLVM_CONFIG_PATH="$llvmconfig" \
+    cmake ../"$pkgname-${pkgver}.src" -G "Unix Makefiles" -DCMAKE_C_FLAGS="$lcf -flto=thin -DNDEBUG" -DCMAKE_CXX_FLAGS="$lcxf -flto=thin -DNDEBUG" -DLLVM_CONFIG_PATH="$llvmconfig" \
      -DLLVM_ENABLE_LIBCXX=1 -DLIBCXXABI_ENABLE_ASSERTIONS=OFF -DLIBCXXABI_ENABLE_SHARED=OFF -DLIBCXXABI_INCLUDE_TESTS=OFF $deploy &>"$logfile" || ret=$?
 
     if (( $ret )); then
@@ -52,8 +52,8 @@ configure() {
 
 copy() {
     cp "lib/libc++abi.a" "$outdir/lib"
-    cp ../"$pkgname-$pkgver.src/include/cxxabi.h" "$outdir/include"
-    cp ../"$pkgname-$pkgver.src/include/__cxxabi_config.h" "$outdir/include"
+    cp ../"$pkgname-${pkgver}.src/include/cxxabi.h" "$outdir/include"
+    cp ../"$pkgname-${pkgver}.src/include/__cxxabi_config.h" "$outdir/include"
 }
 
 # vim: set syntax=sh:
