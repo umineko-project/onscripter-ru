@@ -23,6 +23,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Install deps
         run: |
           sudo apt-get update
@@ -30,7 +32,7 @@ jobs:
           pip3 install meson ninja
       - name: Env setup
         run: |
-          BUILD=$(git rev-list --count --first-parent HEAD)
+          BUILD=$(($(git rev-list --count --first-parent HEAD)+3500)
           TODAY=$(date +"%d.%m.%y")
           echo "BUILD=${BUILD}" >> "$GITHUB_ENV"
           echo "TODAY=${TODAY}" >> "$GITHUB_ENV"
@@ -77,6 +79,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Install deps
         run: |
           sudo apt-get update
@@ -84,7 +88,7 @@ jobs:
           pip3 install meson ninja
       - name: Env setup
         run: |
-          BUILD=$(git rev-list --count --first-parent HEAD)
+          BUILD=$(($(git rev-list --count --first-parent HEAD)+3500)
           echo "Build number ${BUILD}"
           echo "BUILD=${BUILD}" >> $GITHUB_ENV
           mkdir -p ciout
@@ -120,12 +124,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Install deps
         run: |
           brew install yasm meson ninja
       - name: Env setup
         run: |
-          BUILD=$(git rev-list --count --first-parent HEAD)
+          BUILD=$(($(git rev-list --count --first-parent HEAD)+3500)
           echo "Build number ${BUILD}"
           echo "BUILD=${BUILD}" >> $GITHUB_ENV
           mkdir -p ciout
