@@ -49,6 +49,14 @@ jobs:
           make -j$(nproc)
           mv DerivedData/MinGW-i686/onscripter-ru.exe ciout ; cp -r Resources/Windows/dlls ciout/dlls ; cd ciout
           zip -qry onscripter-ru_win_r${BUILD}${{env.dev}}.zip onscripter-ru.exe dlls
+      - name: Upload files
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          replacesArtifacts: false
+          tag: z${{ env.BUILD }}
+          name: ONScripter-ru r${{ env.BUILD }}
+          artifacts: "*.zip"
 
   Linux:
     # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
@@ -86,6 +94,14 @@ jobs:
           mv DerivedData/Posix-x86_64/onscripter-ru ciout ; cd ciout
           zip -qry onscripter-ru_linux64_r${BUILD}${{env.dev}}.zip onscripter-ru || exit 1
           rm onscripter-ru ; cd ..
+      - name: Upload files
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          replacesArtifacts: false
+          tag: z${{ env.BUILD }}
+          name: ONScripter-ru r${{ env.BUILD }}
+          artifacts: "*.zip"
 
   macOS:
     # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
@@ -111,3 +127,11 @@ jobs:
           mv build/${{matrix.BUILD_TYPE}}/onscripter-ru-osx.app ciout ; cd ciout
           zip -qry onscripter-ru_osx_r${BUILD}${{env.dev}}.zip onscripter-ru-osx.app || exit 1
           rm -rf onscripter-ru-osx.app ; cd -
+      - name: Upload files
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          replacesArtifacts: false
+          tag: z${{ env.BUILD }}
+          name: ONScripter-ru r${{ env.BUILD }}
+          artifacts: "*.zip"
