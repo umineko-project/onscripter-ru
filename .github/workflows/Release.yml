@@ -30,7 +30,7 @@ jobs:
           pip3 install meson ninja
       - name: Env setup
         run: |
-          BUILD=$(($(git rev-list --count --first-parent HEAD) + 3500))
+          BUILD=$(($(git rev-list --count HEAD) + 3500))
           TODAY=$(date +"%d.%m.%y")
           echo "BUILD=${BUILD}" >> "$GITHUB_ENV"
           echo "TODAY=${TODAY}" >> "$GITHUB_ENV"
@@ -84,7 +84,7 @@ jobs:
           pip3 install meson ninja
       - name: Env setup
         run: |
-          BUILD=$(($(git rev-list --count --first-parent HEAD) + 3500))
+          BUILD=$(($(git rev-list --count HEAD) + 3500))
           echo "Build number ${BUILD}"
           echo "BUILD=${BUILD}" >> $GITHUB_ENV
           mkdir -p ciout
@@ -125,7 +125,7 @@ jobs:
           brew install yasm meson ninja
       - name: Env setup
         run: |
-          BUILD=$(($(git rev-list --count --first-parent HEAD) + 3500))
+          BUILD=$(($(git rev-list --count HEAD) + 3500))
           echo "Build number ${BUILD}"
           echo "BUILD=${BUILD}" >> $GITHUB_ENV
           mkdir -p ciout
